@@ -103,8 +103,10 @@ install_dependencies(){
 	pip install setuptools
 	pip install evdev spidev Adafruit_BBIO
 
-	wget https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0 -o /usr/src/pru-software-support-package-5.1.0.tar.gz
-	tar -zxvf /usr/src/pru-software-support-package-5.1.0.tar.gz /usr/src/pru-software-support-package
+	wget https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0
+	mv v5.1.0 v5.1.0.tar.gz
+	tar -zxvf v5.1.0.tar.gz /usr/src/pru-software-support-package
+	rm v5.1.0.tar.gz
 
 	wget https://github.com/beagleboard/am335x_pru_package/archive/master.zip
 	unzip master.zip
