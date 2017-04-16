@@ -4,7 +4,7 @@ set -x
 exec >  >(tee -ia /root/prep_ubuntu.log)
 exec 2> >(tee -ia /root/prep_ubuntu.log >&2)
 
-WD=/usr/src/Kamikaze2/
+WD=/usr/src/Umikaze2/
 
 network_fixes() {
 	echo "Fixing network interface config..."
