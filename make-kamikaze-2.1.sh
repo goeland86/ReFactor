@@ -44,10 +44,9 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # Choose Toggle config
 
 # this defines the octoprint release tag version#
-OCTORELEASE="1.3.1"
-WD=`pwd`/
-VERSION="Kamikaze 2.1.1"
-OCTORELEASE=1.3.1
+OCTORELEASE="1.3.2"
+WD=/usr/src/Umikaze2/
+VERSION="Umikaze 2.1.1 RC2"
 ROOTPASS="kamikaze"
 DATE=`date`
 echo "**Making ${VERSION}**"
@@ -69,7 +68,7 @@ EOL
 
 install_dependencies(){
 	echo "** Removing old kernels **"
-	apt-get purge -y linux-image-4.4.40-ti* linux-image-4.9* rtl8723bu-modules-4.4.30-ti* rtl8723bu-modules-4.9*
+	apt-get purge -y linux-image-4.9* rtl8723bu-modules-4.4.30-ti* rtl8723bu-modules-4.9*
 	echo "** Install dependencies **"
 	echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf.d/99local
 	echo "APT::Install-Suggests \"false\";" >> /etc/apt/apt.conf.d/99local
@@ -130,11 +129,11 @@ install_dependencies(){
 
 install_sgx() {
 	echo "** install SGX **"
-	cd /usr/src/Kamikaze2
+	cd $WD
 	tar xfv GFX_5.01.01.02_es8.x.tar.gz -C /
 	cd /opt/gfxinstall/
 	./sgx-install.sh
-	cd /usr/src/Kamikaze2/
+	cd $WD
 	cp scripts/sgx-startup.service /lib/systemd/system/
 	systemctl enable sgx-startup.service
 	depmod -a `uname -r`
@@ -169,12 +168,12 @@ install_redeem() {
 	chown -R octo:octo /etc/redeem/
 	chown -R octo:octo /usr/src/redeem/
 
-	cd /usr/src/Kamikaze2
+	cd $WD
 
 	# Install rules
 	cp scripts/spidev.rules /etc/udev/rules.d/
 
-	# Install Kamikaze2 specific systemd script
+	# Install Umikaze2 specific systemd script
 	cp scripts/redeem.service /lib/systemd/system
 	systemctl enable redeem
 	systemctl start redeem
@@ -192,7 +191,7 @@ install_octoprint() {
 	su - octo -c 'pip install https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip --user'
 	su - octo -c 'pip install https://github.com/kennethjiang/OctoPrint-Slicer/archive/master.zip --user'
 
-	cd /usr/src/Kamikaze2
+	cd $WD
 	# Make config file for Octoprint
 	cp OctoPrint/config.yaml /home/octo/.octoprint/
 	chown octo:octo "/home/octo/.octoprint/config.yaml"
@@ -282,7 +281,7 @@ install_cura() {
 	cp build/CuraEngine /usr/bin/
 
 	# Copy profiles into Cura.
-	cd /usr/src/Kamikaze2
+	cd $WD
 	mkdir -p /home/octo/.octoprint/slicingProfiles/cura/
 	cp ./Cura/profiles/*.profile /home/octo/.octoprint/slicingProfiles/cura/
 	chown octo:octo /home/octo/.octoprint/slicingProfiles/cura/
@@ -291,7 +290,7 @@ install_cura() {
 
 install_uboot() {
 	echo "** install U-boot**" 
-	cd /usr/src/Kamikaze2
+	cd $WD
 	export DISK=/dev/mmcblk0
 	dd if=./u-boot/MLO of=${DISK} count=1 seek=1 bs=128k
 	dd if=./u-boot/u-boot.img of=${DISK} count=2 seek=1 bs=384k
@@ -307,7 +306,7 @@ other() {
 	sed -i 's/AcceptEnv LANG LC_*/#AcceptEnv LANG LC_*/'  /etc/ssh/sshd_config
 	echo "** Set Root password to $ROOTPASS **"
 	echo "root:$ROOTPASS" | chpasswd
-	chown -R octo:octo /usr/src/Kamikaze2
+	chown -R octo:octo $WD
 
 	apt-get clean
 	apt-get autoclean
