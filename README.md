@@ -1,5 +1,5 @@
-# Kamikaze2
-Simplified Kamikaze image generation
+# Umikaze2
+Simplified Kamikaze image generation, based on Ubuntu
 
 The starting point for Kamikaze 2.1.0 is the Ubuntu console image, details are in the wiki here:
 https://github.com/goeland86/Kamikaze2/wiki
