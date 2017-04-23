@@ -20,7 +20,7 @@ prep_ubuntu() {
 	git pull
 	sh update_kernel.sh --bone-kernel --lts-4_4
 	apt-get -y upgrade
-	apt-get -y install unzip iptables
+	apt-get -y --no-install-recommends install unzip iptables
 	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 }
 
