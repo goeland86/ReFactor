@@ -72,8 +72,8 @@ install_dependencies(){
 	echo "** Install dependencies **"
 	echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf.d/99local
 	echo "APT::Install-Suggests \"false\";" >> /etc/apt/apt.conf.d/99local
-	apt-get install -y libegl1-sgx-omap3 libgles2-sgx-omap3
-	apt-get install -y \
+	apt-get install --no-install-recommends -y libegl1-sgx-omap3 libgles2-sgx-omap3
+	apt-get install --no-install-recommends -y \
 	python-pip \
 	python-dev \
 	swig \
@@ -329,7 +329,7 @@ install_usbreset() {
 
 install_smbd() {
 	echo "** Installing samba **"
-	apt-get -y install samba
+	apt-get -y install --no-install-recommends samba
 	cat > /etc/samba/smb.conf <<EOF
 	dns proxy = no
 	log file = /var/log/samba/log.%m
@@ -383,7 +383,7 @@ EOF
 
 install_dummy_logging() {
 	echo "** Install dummy logging **"
-	apt-get install rungetty
+	apt-get install --no-install-recommends rungetty
 	useradd -m dummy
 	usermod -a -G systemd-journal dummy
 	echo "clear" >> /home/dummy/.profile
@@ -394,7 +394,7 @@ install_dummy_logging() {
 
 install_mjpgstreamer() {
 	echo "** Install mjpgstreamer **"
-	apt-get install -y cmake libjpeg62-dev
+	apt-get install -y --no-install-recommends cmake libjpeg62-dev
 	cd /usr/src/
 	git clone --depth 1 https://github.com/jacksonliam/mjpg-streamer
 	cd mjpg-streamer/mjpg-streamer-experimental
