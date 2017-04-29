@@ -187,9 +187,9 @@ install_octoprint() {
 	fi
 	chown -R octo:octo /usr/local/lib/python2.7/dist-packages/
 	chown -R octo:octo /usr/local/bin/
-	su - octo -c 'cd OctoPrint && python setup.py clean install'
-	su - octo -c 'pip install https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip --user'
-	su - octo -c 'pip install https://github.com/kennethjiang/OctoPrint-Slicer/archive/master.zip --user'
+	su - octo -c "cd OctoPrint && python setup.py clean install"
+	su - octo -c "pip install https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip --user"
+	su - octo -c "pip install https://github.com/kennethjiang/OctoPrint-Slicer/archive/master.zip --user"
 
 	cd $WD
 	# Make config file for Octoprint
@@ -276,7 +276,7 @@ install_cura() {
 	fi
 	cd CuraEngine-15.04.6/
 	# Do perimeters first
-	sed -i 's/SETTING(perimeterBeforeInfill, 0);/SETTING(perimeterBeforeInfill, 1);/' src/settings.cpp
+	sed -i "s/SETTING(perimeterBeforeInfill, 0);/SETTING(perimeterBeforeInfill, 1);/" src/settings.cpp
 	make
 	cp build/CuraEngine /usr/bin/
 
@@ -300,10 +300,10 @@ install_uboot() {
 
 other() {
 	echo "** Performing general actions **"
-	sed -i 's/cape_universal=enable/consoleblank=0 fbcon=rotate:1 omap_wdt.nowayout=0/' /boot/uEnv.txt
-	sed -i 's/arm/kamikaze/' /etc/hostname
-	sed -i 's/arm/kamikaze/g' /etc/hosts
-	sed -i 's/AcceptEnv LANG LC_*/#AcceptEnv LANG LC_*/'  /etc/ssh/sshd_config
+	sed -i "s/cape_universal=enable/consoleblank=0 fbcon=rotate:1 omap_wdt.nowayout=0/" /boot/uEnv.txt
+	sed -i "s/arm/kamikaze/" /etc/hostname
+	sed -i "s/arm/kamikaze/g" /etc/hosts
+	sed -i "s/AcceptEnv LANG LC_*/#AcceptEnv LANG LC_*/"  /etc/ssh/sshd_config
 	echo "** Set Root password to $ROOTPASS **"
 	echo "root:$ROOTPASS" | chpasswd
 	chown -R octo:octo $WD
@@ -313,8 +313,8 @@ other() {
 	rm -rf /var/cache/doc*
 	apt-get -y autoremove
 	echo "$VERSION $DATE" > /etc/dogtag
-	echo 'KERNEL=="uinput", GROUP="wheel", MODE:="0660"' > /etc/udev/rules.d/80-lcd-screen.rules
-	echo 'SYSFS{idVendor}=="0eef", SYSFS{idProduct}=="0001", KERNEL=="event*",SYMLINK+="input/touchscreen_eGalaxy3"' >> /etc/udev/rules.d/80-lcd-screen.rules
+	echo "KERNEL==\"uinput\", GROUP=\"wheel\", MODE:=\"0660\"" > /etc/udev/rules.d/80-lcd-screen.rules
+	echo "SYSFS{idVendor}==\"0eef\", SYSFS{idProduct}==\"0001\", KERNEL==\"event*\",SYMLINK+=\"input/touchscreen_eGalaxy3\"" >> /etc/udev/rules.d/80-lcd-screen.rules
 	date=$(date +"%d-%m-%Y")
 	echo "$VERSION $date" > /etc/kamikaze-release
 }
@@ -398,10 +398,10 @@ install_mjpgstreamer() {
 	cd /usr/src/
 	git clone --depth 1 https://github.com/jacksonliam/mjpg-streamer
 	cd mjpg-streamer/mjpg-streamer-experimental
-	sed -i 's:add_subdirectory(plugins/input_raspicam):#add_subdirectory(plugins/input_raspicam):' CMakeLists.txt
+	sed -i "s:add_subdirectory(plugins/input_raspicam):#add_subdirectory(plugins/input_raspicam):" CMakeLists.txt
 	make
 	make install
-	echo 'KERNEL=="video0", TAG+="systemd"' > /etc/udev/rules.d/50-video.rules
+	echo "KERNEL==\"video0\", TAG+=\"systemd\"" > /etc/udev/rules.d/50-video.rules
 	cat > /lib/systemd/system/mjpg.service << EOL
 [Unit]
  Description=Mjpg streamer
