@@ -123,7 +123,7 @@ install_dependencies(){
 	source linuxbuild
 	cp ../pasm /usr/bin/
 	chmod +x /usr/bin/pasm
-	echo 'GOVERNOR'="performance"' > /etc/defaults/cpufrequtils
+	echo "GOVERNOR=\"performance\"" > /etc/defaults/cpufrequtils
 	apt-get autoremove -y
 }
 
