@@ -79,7 +79,7 @@ install_dependencies(){
 	python-dev \
 	swig \
 	socat \
-	ti-sgx-es8-modules-`uname -r` \
+	ti-sgx-es8-modules-4.4.59 \
 	libyaml-dev \
 	gir1.2-mash-0.3-0 \
 	gir1.2-mx-2.0 \
@@ -100,7 +100,7 @@ install_dependencies(){
 	ti-pru-cgt-installer
 
 	pip install --upgrade pip
-	pip install setuptools
+	pip install numpy
 	pip install evdev spidev Adafruit_BBIO
 
 	wget https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0
