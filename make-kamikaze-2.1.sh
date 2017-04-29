@@ -75,6 +75,7 @@ install_dependencies(){
 	apt-get install --no-install-recommends -y libegl1-sgx-omap3 libgles2-sgx-omap3
 	apt-get install --no-install-recommends -y \
 	python-pip \
+	python-setuptools \
 	python-dev \
 	swig \
 	socat \
