@@ -388,7 +388,7 @@ install_dummy_logging() {
 	usermod -a -G systemd-journal dummy
 	echo "clear" >> /home/dummy/.profile
 	echo "journalctl -f" >> /home/dummy/.profile
-	text='ExecStart=-/sbin/getty -a dummy 115200 %I'
+	text="ExecStart=-/sbin/getty -a dummy 115200 %I"
 	sed -i "/.*ExecStart*./ c $text" /etc/systemd/system/getty.target.wants/getty@tty1.service
 }
 
