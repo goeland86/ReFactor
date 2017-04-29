@@ -68,7 +68,7 @@ EOL
 
 install_dependencies(){
 	echo "** Removing old kernels **"
-	apt-get purge -y linux-image-4.1* rtl8723bu-modules-4.4.30-ti* rtl8723bu-modules-4.1*
+	apt-get purge -y linux-image-4.1* rtl8723bu-modules-`uname -r` rtl8723bu-modules-4.1*
 	echo "** Install dependencies **"
 	echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf.d/99local
 	echo "APT::Install-Suggests \"false\";" >> /etc/apt/apt.conf.d/99local
