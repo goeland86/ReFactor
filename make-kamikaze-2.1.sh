@@ -68,7 +68,8 @@ EOL
 
 install_dependencies(){
 	echo "** Removing old kernels **"
-	apt-get purge -y linux-image-4.1* rtl8723bu-modules-`uname -r` rtl8723bu-modules-4.1*
+	apt-get purge -y linux-image-4.1* rtl8723bu-modules-4.1*
+	apt-get install -y --no-install-recommends rtl8723bu-modules-`uname -r`
 	echo "** Install dependencies **"
 	echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf.d/99local
 	echo "APT::Install-Suggests \"false\";" >> /etc/apt/apt.conf.d/99local
@@ -96,7 +97,7 @@ install_dependencies(){
 	libclutter-imcontext-0.1-bin \
 	libcogl-common \
 	libmx-bin \
-	cpufreq-utils \
+	cpufrequtils \
 	ti-pru-cgt-installer
 
 	pip install --upgrade pip
