@@ -106,7 +106,8 @@ install_dependencies(){
 
 	wget https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0
 	mv v5.1.0 v5.1.0.tar.gz
-	tar -zxvf v5.1.0.tar.gz /usr/src/pru-software-support-package
+	tar -zxvf v5.1.0.tar.gz
+	mv pru-software-support-package-pru-software-support-package/ /usr/src/pru-software-support-package
 	rm v5.1.0.tar.gz
 
 	wget https://github.com/beagleboard/am335x_pru_package/archive/master.zip
@@ -185,7 +186,8 @@ install_octoprint() {
 	echo "** Install OctoPrint **" 
 	cd /home/octo
 	if [ ! -d "OctoPrint" ]; then
-		su - octo -c "git clone -branch tags/$OCTORELEASE https://github.com/foosel/OctoPrint.git"
+		su - octo -c "git clone https://github.com/foosel/OctoPrint.git"
+		su - octo -c "cd OctoPrint && git checkout tags/$OCTORELEASE"
 	fi
 	chown -R octo:octo /usr/local/lib/python2.7/dist-packages/
 	chown -R octo:octo /usr/local/bin/
