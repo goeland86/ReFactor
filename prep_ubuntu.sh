@@ -48,7 +48,7 @@ wlan_fixes() {
 	touch /etc/pm/sleep.d/wireless
 
 	echo "** Install Network Manager **"
-	apt-get -y install network-manager
+	apt-get -y install --no-install-recommends network-manager
 	ln -s /run/resolvconf/resolv.conf /etc/resolv.conf
 	sed -i 's/^\[main\]/\[main\]\ndhcp=internal/' /etc/NetworkManager/NetworkManager.conf
 	cp $WD/interfaces /etc/network/
