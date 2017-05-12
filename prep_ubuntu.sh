@@ -39,9 +39,9 @@ EOL
 wlan_fixes() {
 	echo "** Install wireless firmware **"
 	#add BBB wireless firmware for wireless boards.
-	git clone --depth 1 git://git.ti.com/wilink8-wlan/wl18xx_fw.git /usr/src/wl18xx_fw
-	cp /usr/src/wl18xx_fw/wl18xx-fw-4.bin /lib/firmware/ti-connectivity/
-	rm -rf /usr/src/wl18xx_fw/
+	wget https://git.ti.com/wilink8-wlan/wl18xx_fw/blobs/raw/fe3909e93d15a4b17e43699dde2bba0e9a3c0abc/wl18xx-fw-4.bin
+	cp wl18xx-fw-4.bin /lib/firmware/ti-connectivity/
+	rm wl18xx-fw-4.bin
 
 	echo "** Disable wireless power management **"
 	mkdir -p /etc/pm/sleep.d
