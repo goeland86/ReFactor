@@ -18,7 +18,7 @@ prep_ubuntu() {
 	echo "** Preparing Ubuntu for kamikaze2 **"
 	cd /opt/scripts/tools/
 	git pull
-	sh update_kernel.sh --bone-kernel --lts-4_4
+	sh update_kernel.sh --lts-4_4
 	apt-get -y upgrade
 	apt-get -y --no-install-recommends install unzip iptables
 	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -53,10 +53,11 @@ wlan_fixes() {
 	sed -i 's/^\[main\]/\[main\]\ndhcp=internal/' /etc/NetworkManager/NetworkManager.conf
 	cp $WD/interfaces /etc/network/
 
-	echo "** Remove default TI firmware **"
+	apt-get install -y --no-install-recommends rtl8723bu-modules-`uname -r`
+	#echo "** Remove default TI firmware **"
 	#This is to remove the default TI firmware for the wireless.
 	#Due to https://gist.github.com/theojulienne/9251b79bcbd68b4e9240
-	rm -rf /lib/firmware/ti-connectivity/wl1271-nvs.bin
+	#rm -rf /lib/firmware/ti-connectivity/wl1271-nvs.bin
 }
 
 remove_unneeded_packages() {
@@ -66,11 +67,11 @@ remove_unneeded_packages() {
 	rm -rf /usr/local/lib/node_modules
 	rm -rf /var/lib/cloud9
 	rm -rf /usr/lib/node_modules/
-	apt-get purge -y apache2 apache2-bin apache2-data apache2-utils
+	apt-get purge -y apache2 apache2-bin apache2-data apache2-utils hostapd
 }
 
 cleanup() {
-	apt-get remove -y libgtk-3-common bb-wl18xx-firmware
+	apt-get remove -y libgtk-3-common
 	apt-get autoremove -y
 }
 
