@@ -67,10 +67,8 @@ EOL
 }
 
 install_dependencies(){
-	echo "** Removing old kernels **"
-	apt-get purge -y linux-image-4.1* rtl8723bu-modules-4.1*
-	apt-get install -y --no-install-recommends rtl8723bu-modules-`uname -r`
 	echo "** Install dependencies **"
+	apt-get update
 	echo "APT::Install-Recommends \"false\";" > /etc/apt/apt.conf.d/99local
 	echo "APT::Install-Suggests \"false\";" >> /etc/apt/apt.conf.d/99local
 	apt-get install --no-install-recommends -y libegl1-sgx-omap3 libgles2-sgx-omap3
