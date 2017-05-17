@@ -292,6 +292,19 @@ install_cura() {
 	chown octo:octo /home/octo/.octoprint/slicingProfiles/cura/
 }
 
+install_slic3r() {
+	echo "** install Slic3r **"
+	cd /usr/src
+	if [ ! -d "Slic3r" ]; then
+		git clone --depth 1 https://github.com/prusa3d/Slic3r.git
+		sudo apt install -y --no-install-recommends build-essential libgtk2.0-dev libwxgtk3.0-dev libwx-perl libmodule-build-perl git cpanminus libextutils-cppguess-perl libboost-all-dev libxmu-dev liblocal-lib-perl wx-common libopengl-perl libwx-glcanvas-perl libtbb-dev
+		sudo apt-get install -y --no-install-recommends libboost-thread-dev libboost-system-dev libboost-filesystem-dev
+		sudo apt-get install -y --no-install-recommends libxmu-dev freeglut3-dev libwxgtk-media3.0-dev
+	fi
+	LDLOADLIBS=-lstdc++ perl Build.PL
+	chmod +x slic3r.pl
+	ln -s slic3r.pl /usr/local/bin/
+}
 
 install_uboot() {
 	echo "** install U-boot**" 
@@ -445,6 +458,7 @@ dist() {
 	install_overlays
 	install_toggle
 	install_cura
+	install_slic3r
 	install_uboot
 	other
 	install_usbreset
