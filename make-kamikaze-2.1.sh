@@ -301,6 +301,7 @@ install_slic3r() {
 		sudo apt-get install -y --no-install-recommends libboost-thread-dev libboost-system-dev libboost-filesystem-dev
 		sudo apt-get install -y --no-install-recommends libxmu-dev freeglut3-dev libwxgtk-media3.0-dev
 	fi
+	cd Slic3r
 	LDLOADLIBS=-lstdc++ perl Build.PL
 	chmod +x slic3r.pl
 	ln -s slic3r.pl /usr/local/bin/
