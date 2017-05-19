@@ -14,7 +14,6 @@ network_fixes() {
 prep_ubuntu() {
 	echo "Upgrading packages"
 	apt-get update
-	apt-get -y upgrade
 	echo "** Preparing Ubuntu for kamikaze2 **"
 	cd /opt/scripts/tools/
 	git pull
@@ -36,13 +35,7 @@ EOL
 	apt-get update
 }
 
-wlan_fixes() {
-	echo "** Install wireless firmware **"
-	#add BBB wireless firmware for wireless boards.
-	wget https://git.ti.com/wilink8-wlan/wl18xx_fw/blobs/raw/fe3909e93d15a4b17e43699dde2bba0e9a3c0abc/wl18xx-fw-4.bin
-	cp wl18xx-fw-4.bin /lib/firmware/ti-connectivity/
-	rm wl18xx-fw-4.bin
-
+network_fixes() {
 	echo "** Disable wireless power management **"
 	mkdir -p /etc/pm/sleep.d
 	touch /etc/pm/sleep.d/wireless
@@ -53,11 +46,6 @@ wlan_fixes() {
 	sed -i 's/^\[main\]/\[main\]\ndhcp=internal/' /etc/NetworkManager/NetworkManager.conf
 	cp $WD/interfaces /etc/network/
 
-	apt-get install -y --no-install-recommends rtl8723bu-modules-`uname -r`
-	#echo "** Remove default TI firmware **"
-	#This is to remove the default TI firmware for the wireless.
-	#Due to https://gist.github.com/theojulienne/9251b79bcbd68b4e9240
-	#rm -rf /lib/firmware/ti-connectivity/wl1271-nvs.bin
 }
 
 remove_unneeded_packages() {
@@ -79,7 +67,7 @@ prep() {
 	network_fixes
 	prep_ubuntu
 	install_repo
-	wlan_fixes
+	network_fixes
 	remove_unneeded_packages
 	cleanup
 }
@@ -87,4 +75,3 @@ prep() {
 prep
 
 echo "Now reboot into the new kernel and run make-kamikaze-2.1.sh"
-
