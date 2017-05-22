@@ -14,10 +14,18 @@ network_fixes() {
 prep_ubuntu() {
 	echo "Upgrading packages"
 	apt-get update
+	echo "Removing unwanted kernel packages"
+	apt-get -y remove linux-image-4.9*
+	apt-get -y autoremove
+	systemctl disable bb-wl18xx-wlan0
+	echo "Updating uboot..."
+	sed -i 's\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\' /boot/uEnv.txt
+	sed -i 's\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\'
 	echo "** Preparing Ubuntu for kamikaze2 **"
-	cd /opt/scripts/tools/
-	git pull
-	sh update_kernel.sh --lts-4_4
+#	cd /opt/scripts/tools/
+#	git pull
+#	sh update_kernel.sh --lts-4_4 --
+	apt-get -y install linux-image-4.4.68-bone17
 	apt-get -y upgrade
 	apt-get -y --no-install-recommends install unzip iptables
 	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
