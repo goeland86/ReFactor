@@ -1,15 +1,11 @@
 #!/bin/bash
 set -x
+set -e
 >/root/prep_ubuntu.log
 exec >  >(tee -ia /root/prep_ubuntu.log)
 exec 2> >(tee -ia /root/prep_ubuntu.log >&2)
 
 WD=/usr/src/Umikaze2/
-
-network_fixes() {
-	echo "Fixing network interface config..."
-	sed -i 's/After=network.target auditd.service/After=auditd.service/' /etc/systemd/system/multi-user.target.wants/ssh.service
-}
 
 prep_ubuntu() {
 	echo "Upgrading packages"
@@ -22,11 +18,27 @@ prep_ubuntu() {
 	sed -i 's\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\' /boot/uEnv.txt
 	sed -i 's\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\' /boot/uEnv.txt
 	echo "** Preparing Ubuntu for kamikaze2 **"
-	cd /opt/scripts/tools/
-	git pull
-	sh update_kernel.sh --lts-4_4
+
+#	cd /opt/scripts/tools/
+#	git pull
+#	sh update_kernel.sh --lts-4_4 --
+	apt-get -y install \
+	linux-image-4.4.69-bone17 \
+	linux-firmware-image-4.4.69-bone17 \
+	ti-sgx-es8-modules-4.4.69-bone17 \
+	linux-headers-4.4.69-bone17
+
+	depmod 4.4.69-bone17
+	update-initramfs -k 4.4.69-bone17 -u
+
+	# 4.4.69-bone17 can't deal with the U-Boot overlays
+	sed -i 's\enable_uboot_overlays=1\#enable_uboot_overlays=1\' /boot/uEnv.txt
+	# and it puts root at /dev/mmcblk0p1
+	sed -i 's\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable root=/dev/mmcblk0p1\' /boot/uEnv.txt
+
 	apt-get -y upgrade
-	apt-get -y --no-install-recommends install unzip iptables
+	apt-get -y -q --no-install-recommends --force-yes install unzip iptables iptables-persistent
+	systemctl enable netfilter-persistent
 	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 }
 
@@ -42,14 +54,14 @@ EOL
 	apt-get update
 }
 
-network_fixes() {
+network_manager() {
 	echo "** Disable wireless power management **"
 	mkdir -p /etc/pm/sleep.d
 	touch /etc/pm/sleep.d/wireless
 
 	echo "** Install Network Manager **"
 	apt-get -y install --no-install-recommends network-manager
-	ln -s /run/resolvconf/resolv.conf /etc/resolv.conf
+	#ln -s /run/resolvconf/resolv.conf /etc/resolv.conf
 	sed -i 's/^\[main\]/\[main\]\ndhcp=internal/' /etc/NetworkManager/NetworkManager.conf
 	cp $WD/interfaces /etc/network/
 
@@ -71,10 +83,9 @@ cleanup() {
 }
 
 prep() {
-	network_fixes
 	prep_ubuntu
 	install_repo
-	network_fixes
+	network_manager
 	remove_unneeded_packages
 	cleanup
 }
