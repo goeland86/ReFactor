@@ -160,7 +160,7 @@ install_redeem() {
 	fi
 	cd redeem
 	git pull
-	python setup.py clean install
+	make install
 	# Make profiles uploadable via Octoprint
 	cp -r configs /etc/redeem
 	cp -r data /etc/redeem
