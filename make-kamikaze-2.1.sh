@@ -78,7 +78,6 @@ install_dependencies(){
 	python-dev \
 	swig \
 	socat \
-	ti-sgx-es8-modules-4.4.59 \
 	libyaml-dev \
 	gir1.2-mash-0.3-0 \
 	gir1.2-mx-2.0 \
