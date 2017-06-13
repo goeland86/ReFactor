@@ -177,11 +177,11 @@ install_redeem() {
 	echo "**install_redeem**"
 	cd /usr/src/
 	if [ ! -d "redeem" ]; then
-		git clone https://bitbucket.org/intelligentagent/redeem
+		git clone --no-single-branch --depth 1 https://bitbucket.org/intelligentagent/redeem
 	fi
 	cd redeem
 	git pull
-    git checkout develop
+    	git checkout develop
 	make install
 
 	# Make profiles uploadable via Octoprint
@@ -206,7 +206,7 @@ install_octoprint() {
 	echo "** Install OctoPrint **" 
 	cd /home/octo
 	if [ ! -d "OctoPrint" ]; then
-		su - octo -c "git clone https://github.com/foosel/OctoPrint.git"
+		su - octo -c "git clone --no-single-branch --depth 1 https://github.com/foosel/OctoPrint.git"
 		su - octo -c "cd OctoPrint && git checkout tags/$OCTORELEASE"
 	fi
 	chown -R octo:octo /usr/local/lib/python2.7/dist-packages/
@@ -247,7 +247,7 @@ install_octoprint_redeem() {
 	echo "**install_octoprint_redeem**"
 	cd /usr/src/
 	if [ ! -d "octoprint_redeem" ]; then
-		git clone --depth 1 https://github.com/eliasbakken/octoprint_redeem
+		git clone --no-single-branch --depth 1 https://github.com/eliasbakken/octoprint_redeem
 	fi
 	cd octoprint_redeem
 	python setup.py install
@@ -257,7 +257,7 @@ install_octoprint_toggle() {
 	echo "**install_octoprint_toggle**"
 	cd /usr/src
 	if [ ! -d "octoprint_toggle" ]; then
-		git clone --depth 1 https://github.com/eliasbakken/octoprint_toggle
+		git clone --no-single-branch --depth 1 https://github.com/eliasbakken/octoprint_toggle
 	fi
 	cd octoprint_toggle
 	python setup.py install
@@ -267,7 +267,7 @@ install_overlays() {
 	echo "**install_overlays**"
 	cd /usr/src/
 	if [ ! -d "bb.org-overlays" ]; then
-		git clone https://github.com/eliasbakken/bb.org-overlays
+		git clone --no-single-branch --depth 1 https://github.com/eliasbakken/bb.org-overlays
 	fi
 	cd bb.org-overlays
 	./dtc-overlay.sh # upgrade DTC version!
@@ -278,7 +278,7 @@ install_toggle() {
 	echo "** install toggle **"
 	cd /usr/src
     	if [ ! -d "toggle" ]; then
-		git clone --depth 1 https://bitbucket.org/intelligentagent/toggle
+		git clone --no-single-branch --depth 1 https://bitbucket.org/intelligentagent/toggle
     	fi
 	cd toggle
 	python setup.py clean install
@@ -315,7 +315,7 @@ install_slic3r() {
 	echo "** install Slic3r **"
 	cd /usr/src
 	if [ ! -d "Slic3r" ]; then
-		git clone --depth 1 https://github.com/prusa3d/Slic3r.git
+		git clone --no-single-branch --depth 1 https://github.com/prusa3d/Slic3r.git
 		sudo apt install -y --no-install-recommends build-essential libgtk2.0-dev libwxgtk3.0-dev libwx-perl libmodule-build-perl git cpanminus libextutils-cppguess-perl libboost-all-dev libxmu-dev liblocal-lib-perl wx-common libopengl-perl libwx-glcanvas-perl libtbb-dev
 		sudo apt-get install -y --no-install-recommends libboost-thread-dev libboost-system-dev libboost-filesystem-dev
 		sudo apt-get install -y --no-install-recommends libxmu-dev freeglut3-dev libwxgtk-media3.0-dev
@@ -434,7 +434,7 @@ install_mjpgstreamer() {
 	echo "** Install mjpgstreamer **"
 	apt-get install -y --no-install-recommends cmake libjpeg62-dev
 	cd /usr/src/
-	git clone --depth 1 https://github.com/jacksonliam/mjpg-streamer
+	git clone --no-single-branch --depth 1 https://github.com/jacksonliam/mjpg-streamer
 	cd mjpg-streamer/mjpg-streamer-experimental
 	sed -i "s:add_subdirectory(plugins/input_raspicam):#add_subdirectory(plugins/input_raspicam):" CMakeLists.txt
 	make
