@@ -2,11 +2,15 @@
 set -x
 set -e
 
-wget https://rcn-ee.com/rootfs/2017-05-21/microsd/bone-ubuntu-16.04.2-console-armhf-2017-05-21-2gb.img.xz
+BASEIMAGE=https://rcn-ee.com/rootfs/2017-05-21/microsd/bone-ubuntu-16.04.2-console-armhf-2017-05-21-2gb.img.xz
+TARGETIMAGE=kamikaze-rootfs.img
 
-xz -T 0 -d bone-ubuntu-16.04.2-console-armhf-2017-05-21-2gb.img.xz
-dd if=/dev/zero bs=1M count=2048 >> bone-ubuntu-16.04.2-console-armhf-2017-05-21-2gb.img
-DEVICE=`losetup -P -f --show bone-ubuntu-16.04.2-console-armhf-2017-05-21-2gb.img`
+rm -f $TARGETIMAGE
+
+curl $BASEIMAGE | xz -T 0 -d > $TARGETIMAGE
+
+truncate -s 4G $TARGETIMAGE
+DEVICE=`losetup -P -f --show $TARGETIMAGE`
 
 cat << EOF | fdisk ${DEVICE}
 p

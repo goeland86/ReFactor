@@ -267,11 +267,13 @@ install_overlays() {
 	echo "**install_overlays**"
 	cd /usr/src/
 	if [ ! -d "bb.org-overlays" ]; then
-		git clone --no-single-branch --depth 1 https://github.com/eliasbakken/bb.org-overlays
+		git clone --no-single-branch --depth 1 https://github.com/DecisiveMocha/bb.org-overlays
 	fi
 	cd bb.org-overlays
 	./dtc-overlay.sh # upgrade DTC version!
 	./install.sh
+
+	for kernel in `ls /lib/modules`; do update-initramfs -u -k $kernel; done
 }
 
 install_toggle() {
@@ -475,7 +477,7 @@ dist() {
 	install_octoprint
 	install_octoprint_redeem
 	install_octoprint_toggle
-	#install_overlays
+	install_overlays
 	install_toggle
 	install_cura
 	install_slic3r
