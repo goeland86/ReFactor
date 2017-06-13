@@ -101,8 +101,10 @@ sfdisk $DEVICE < /shrink.layout
 # Make sure the system sees the new partition layout, check the file system for issues
 #   and then resize the file system to the full size of the new partition if it is needed
 echo "Re-read partition table"
+echo "Wait for the kernel to re-read the table"
+sleep 5
 hdparm -z $DEVICE
-# Wait for the kernel to re-read the table
+echo "Wait for the kernel to re-read the table"
 sleep 5
 
 e2fsck -f $PARTITION
