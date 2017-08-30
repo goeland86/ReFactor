@@ -120,7 +120,7 @@ install_dependencies(){
 	pip install numpy
 	pip install evdev spidev Adafruit_BBIO sympy
 
-	wget https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0
+	wget --no-check-certificate https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0
 	mv v5.1.0 v5.1.0.tar.gz
 	tar -zxvf v5.1.0.tar.gz
 	mv pru-software-support-package-pru-software-support-package/ /usr/src/pru-software-support-package
@@ -324,6 +324,10 @@ install_slic3r() {
 	fi
 	cd Slic3r
 	LDLOADLIBS=-lstdc++ perl Build.PL
+	mkdir build
+	cd build
+	cmake -DCMAKE_BUILD_TYPE=release
+	make
 	chmod +x slic3r.pl
 	ln -s slic3r.pl /usr/local/bin/
 }
