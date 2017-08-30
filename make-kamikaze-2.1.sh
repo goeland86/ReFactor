@@ -181,7 +181,7 @@ install_redeem() {
 	fi
 	cd redeem
 	git pull
-    	git checkout develop
+    	git checkout staging
 	make install
 
 	# Make profiles uploadable via Octoprint
