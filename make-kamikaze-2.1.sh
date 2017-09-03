@@ -218,7 +218,7 @@ install_octoprint() {
 	cd $WD
 	# Make config file for Octoprint
 	cp OctoPrint/config.yaml /home/octo/.octoprint/
-	chown octo:octo "/home/octo/.octoprint/config.yaml"
+	chown  -R octo:octo "/home/octo/"
 
 	# Fix permissions for STL upload folder
 	mkdir -p /usr/share/models
