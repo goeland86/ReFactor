@@ -45,9 +45,9 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # Choose Toggle config
 
 # this defines the octoprint release tag version#
-OCTORELEASE="1.3.2"
+OCTORELEASE="1.3.4"
 WD=/usr/src/Umikaze2/
-VERSION="Umikaze 2.1.1 RC2"
+VERSION="Umikaze 2.1.1"
 ROOTPASS="kamikaze"
 DATE=`date`
 echo "**Making ${VERSION}**"
