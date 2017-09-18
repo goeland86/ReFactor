@@ -144,6 +144,8 @@ install_dependencies(){
 	chmod +x /usr/bin/pasm
 
 	echo "GOVERNOR=\"performance\"" > /etc/default/cpufrequtils
+	systemctl stop ondemand
+	systemctl disable ondemand
 	apt-get autoremove -y
 }
 
