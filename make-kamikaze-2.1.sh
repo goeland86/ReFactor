@@ -118,7 +118,7 @@ install_dependencies(){
 
 	pip install --upgrade pip
 	pip install numpy
-	pip install evdev spidev Adafruit_BBIO sympy
+	pip install evdev spidev Adafruit_BBIO sympy docutils sh
 
 	wget --no-check-certificate https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0
 	mv v5.1.0 v5.1.0.tar.gz
