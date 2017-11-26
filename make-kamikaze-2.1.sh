@@ -163,9 +163,11 @@ install_sgx() {
 	cd $WD
 	cp scripts/sgx-startup.service /lib/systemd/system/
 	systemctl enable sgx-startup.service
-	rm GFZ_5.01.01.02_es8.x.tar.gz
+	rm GFX_5.01.01.02_es8.x.tar.gz
 	#depmod -a `uname -r`
 	#ln -s /usr/lib/libEGL.so /usr/lib/libEGL.so.1
+	# housekeeping
+	rm -r /opt/gfxsdkdemos/ /opt/source/
 }
 
 create_user() {
