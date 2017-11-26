@@ -45,9 +45,9 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # Choose Toggle config
 
 # this defines the octoprint release tag version#
-OCTORELEASE="1.3.4"
+OCTORELEASE="1.3.5"
 WD=/usr/src/Umikaze2/
-VERSION="Umikaze 2.1.1"
+VERSION="Umikaze 2.1.1b"
 ROOTPASS="kamikaze"
 DATE=`date`
 echo "**Making ${VERSION}**"
@@ -115,6 +115,9 @@ install_dependencies(){
 	unzip \
 	cpufrequtils \
 	ti-pru-cgt-installer
+	
+	apt-get autoremove
+	apt-get purge linux-image-4.1* linux-image-4.9.*
 
 	pip install --upgrade pip
 	pip install numpy
@@ -125,6 +128,7 @@ install_dependencies(){
 	tar -zxvf v5.1.0.tar.gz
 	mv pru-software-support-package-pru-software-support-package/ /usr/src/pru-software-support-package
 	rm v5.1.0.tar.gz
+	rm -r /usr/src/pru-software-support-package/examples /usr/src/pru-software-support-package/labs 
 
 	wget https://github.com/beagleboard/am335x_pru_package/archive/master.zip
 	unzip master.zip
@@ -159,6 +163,7 @@ install_sgx() {
 	cd $WD
 	cp scripts/sgx-startup.service /lib/systemd/system/
 	systemctl enable sgx-startup.service
+	rm GFZ_5.01.01.02_es8.x.tar.gz
 	#depmod -a `uname -r`
 	#ln -s /usr/lib/libEGL.so /usr/lib/libEGL.so.1
 }
