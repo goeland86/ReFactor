@@ -119,7 +119,7 @@ install_dependencies(){
 	apt-get autoremove
 	apt-get purge linux-image-4.1* linux-image-4.9.*
 
-	pip install --upgrade pip
+	easy_install --upgrade pip
 	pip install numpy
 	pip install evdev spidev Adafruit_BBIO sympy docutils sh
 
