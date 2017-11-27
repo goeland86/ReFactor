@@ -248,6 +248,7 @@ install_octoprint() {
 
 	# Install systemd script
 	cp ./OctoPrint/octoprint.service /lib/systemd/system/
+	sed -f 's/Kamikaze 2.1.1/$VERSION/' /home/octo/.octoprint/config.yaml
 	systemctl enable octoprint
 	systemctl start octoprint
 }
@@ -475,6 +476,12 @@ rcn-ee.net console Ubuntu Image 2017-01-13
 
 Check that nothing is printing before any CPU/disk intensive operations!
 EOL
+}
+
+cleanup() {
+	userdel ubuntu
+	chage -d 0 root
+	 rm -r /var/cache/*
 }
 
 dist() {
