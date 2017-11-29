@@ -116,8 +116,8 @@ install_dependencies(){
 	cpufrequtils \
 	ti-pru-cgt-installer
 	
-	apt-get autoremove
-	apt-get purge linux-image-4.1* linux-image-4.9.*
+	apt-get -y autoremove
+	apt-get -y purge linux-image-4.1* linux-image-4.9.*
 
 	easy_install --upgrade pip
 	pip install numpy
@@ -429,7 +429,7 @@ EOF
 
 install_dummy_logging() {
 	echo "** Install dummy logging **"
-	apt-get install --no-install-recommends rungetty
+	apt-get install -y --no-install-recommends rungetty
 	useradd -m dummy
 	usermod -a -G systemd-journal dummy
 	echo "clear" >> /home/dummy/.profile
