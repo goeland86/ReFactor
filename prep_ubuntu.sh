@@ -5,7 +5,7 @@ set -e
 exec >  >(tee -ia /root/prep_ubuntu.log)
 exec 2> >(tee -ia /root/prep_ubuntu.log >&2)
 
-WD=/usr/src/Umikaze2/
+WD=/usr/src/Umikaze/
 
 prep_ubuntu() {
 	echo "Upgrading packages"
@@ -40,6 +40,7 @@ prep_ubuntu() {
 	apt-get -y -q --no-install-recommends --force-yes install unzip iptables iptables-persistent
 	systemctl enable netfilter-persistent
 	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+	apt-get -y remove linux-image-4.9.* linux-image-4.13.*
 }
 
 install_repo() {
