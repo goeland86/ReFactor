@@ -128,7 +128,6 @@ install_dependencies(){
 	tar -zxvf v5.1.0.tar.gz
 	mv pru-software-support-package-pru-software-support-package/ /usr/src/pru-software-support-package
 	rm v5.1.0.tar.gz
-	rm -r /usr/src/pru-software-support-package/examples /usr/src/pru-software-support-package/labs 
 
 	wget https://github.com/beagleboard/am335x_pru_package/archive/master.zip
 	unzip master.zip
@@ -163,11 +162,8 @@ install_sgx() {
 	cd $WD
 	cp scripts/sgx-startup.service /lib/systemd/system/
 	systemctl enable sgx-startup.service
-	rm GFX_5.01.01.02_es8.x.tar.gz
 	#depmod -a `uname -r`
 	#ln -s /usr/lib/libEGL.so /usr/lib/libEGL.so.1
-	# housekeeping
-	rm -r /opt/gfxsdkdemos/ /opt/source/
 }
 
 create_user() {
@@ -481,7 +477,10 @@ EOL
 cleanup() {
 	userdel ubuntu
 	chage -d 0 root
-	 rm -r /var/cache/*
+ 	rm -r /var/cache/*
+	rm GFX_5.01.01.02_es8.x.tar.gz
+	rm -r /usr/src/pru-software-support-package/examples /usr/src/pru-software-support-package/labs
+	rm -r /opt/gfxsdkdemos/ /opt/source/
 }
 
 dist() {
@@ -504,6 +503,7 @@ dist() {
 	install_dummy_logging
 	install_mjpgstreamer
 	rename_ssh
+	cleanup
 }
 
 dist
