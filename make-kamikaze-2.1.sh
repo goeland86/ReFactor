@@ -483,6 +483,11 @@ cleanup() {
 	rm -r /opt/gfxsdkdemos/ /opt/source/
 }
 
+prepare_flasher() {
+	cp functions.sh init-eMMC-flasher-v3.sh /opt/tools/scripts/eMMC/
+	sed -i 's/#cmdline=/cmdline=/' /boot/uEnv.txt
+}
+
 dist() {
 	port_forwarding
 	install_dependencies
@@ -504,6 +509,7 @@ dist() {
 	install_mjpgstreamer
 	rename_ssh
 	cleanup
+	prepare_flasher
 }
 
 dist
