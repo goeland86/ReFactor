@@ -191,10 +191,10 @@ backup_umikaze_settings() {
 	mkdir /tmp/input
 	mount $destination"p1" /tmp/input
 	# copy the network config over from 2.1.0+
-	cp -r /tmp/input/etc/NetworkManager /etc
+	cp -rf /tmp/input/etc/NetworkManager /etc
 
 	# copy the OctoPrint configuration, overwrite it.
-	cp -r /tmp/input/home/octo/.octoprint/ /home/octo/.octoprint
+	cp -rf /tmp/input/home/octo/.octoprint /home/octo/.octoprint
 
 	# copy the Redeem local.cfg file over
 	cp /tmp/input/etc/redeem/local.cfg /etc/redeem/local.cfg
