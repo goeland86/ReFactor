@@ -244,7 +244,7 @@ install_octoprint() {
 
 	# Install systemd script
 	cp ./OctoPrint/octoprint.service /lib/systemd/system/
-	sed -i 's/Kamikaze 2.1.1/$VERSION/' /home/octo/.octoprint/config.yaml
+	sed -i "s/Kamikaze 2.1.1/$VERSION/" /home/octo/.octoprint/config.yaml
 	systemctl enable octoprint
 	systemctl start octoprint
 }
