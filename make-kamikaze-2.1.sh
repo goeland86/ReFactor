@@ -78,7 +78,7 @@ COMMIT
 # Completed on Thu May 25 03:45:33 2017
 EOF
 	iptables --flush
-	iptables save
+	iptables-save
 }
 
 install_dependencies(){
