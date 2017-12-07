@@ -183,7 +183,7 @@ install_redeem() {
 	echo "**install_redeem**"
 	cd /usr/src/
 	if [ ! -d "redeem" ]; then
-		git clone --no-single-branch --depth 1 https://bitbucket.org/intelligentagent/redeem
+		git clone --no-single-branch --depth 1 https://github.com/intelligent-agent/redeem
 	fi
 	cd redeem
 	git pull
@@ -287,7 +287,7 @@ install_toggle() {
 	echo "** install toggle **"
 	cd /usr/src
     	if [ ! -d "toggle" ]; then
-		git clone --no-single-branch --depth 1 https://bitbucket.org/intelligentagent/toggle
+		git clone --no-single-branch --depth 1 https://github.com/intelligent-agent/toggle
     	fi
 	cd toggle
 	python setup.py clean install
