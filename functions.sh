@@ -187,24 +187,59 @@ prepare_environment() {
 }
 
 backup_umikaze_settings() {
+	echo "##################################"
+	echo "MOUNTING ROOT RW"
+	echo "##################################"
+
 	mount -o remount,rw /
 	mkdir /tmp/input
 	mount $destination"p1" /tmp/input
-	# copy the network config over from 2.1.0+
-	cp -Lrf /tmp/input/etc/NetworkManager /etc
 
-	# copy the OctoPrint configuration, overwrite it.
-	cp -Lrf /tmp/input/home/octo/.octoprint /home/octo/.octoprint
+	echo "##################################"
+	echo "mounted eMMC to /tmp/input"
+	echo "##################################"
 
-	# copy the Redeem local.cfg file over
-	cp -L /tmp/input/etc/redeem/local.cfg /etc/redeem/local.cfg
 
-	# copy the Toggle local.cfg file over
-	cp -L /tmp/input/etc/toggle/local.cfg /etc/toggle/local.cfg
+	if [ -f /tmp/input/etc/kamikaze-release ]; then
+		echo "##################################"
+		echo "Detected a kamikaze-release file, backup of configs beginning."
+		echo "##################################"
+		echo "Network manager config..."
+		# copy the network config over from 2.1.0+
+		cp -Lrf /tmp/input/etc/NetworkManager /etc
+		echo "done"
+		echo "updating octoprint's name with the new Umikaze release name"
+		# use sed to modify the octoprint config.yaml to register the new Umikaze version
+		VERSION=`cat /etc/kamikaze-release | awk -F ' ' '{print $1 $2}'`
+		sed -i "s/name:.*/name: $VERSION/" /tmp/input/home/octo/.octoprint/config.yaml
+		echo "done"
 
-	umount /tmp/input
-	rmdir /tmp/input
-	mount -o remount,ro /
+		echo "Backup of octoprint instance config..."
+		# copy the OctoPrint configuration, overwrite it.
+		cp -Lrf /tmp/input/home/octo/.octoprint /home/octo/
+		chown -R octo:octo /home/octo/
+		echo "done"
+
+		echo "Backup of Redeem's local.cfg"
+		# copy the Redeem local.cfg file over
+		cp -L /tmp/input/etc/redeem/local.cfg /etc/redeem/local.cfg
+		echo "done"
+		echo "Backup of Toggle's configuration"
+		# copy the Toggle local.cfg file over
+		cp -rfL /tmp/input/etc/toggle/ /etc/
+		echo "done"
+
+		echo "##################################"
+		echo "BACKUP FINISHED"
+		echo "##################################"
+		echo "Unmount of eMMC"
+		umount /tmp/input
+		echo "done"
+		rmdir /tmp/input
+		echo "Remount SD as RO"
+		mount -o remount,ro /
+		echo "done"
+	fi
 }
 
 prepare_environment_reverse() {
