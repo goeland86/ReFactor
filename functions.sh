@@ -191,8 +191,14 @@ backup_umikaze_settings() {
 	echo "MOUNTING ROOT RW"
 	echo "##################################"
 
-	mount -o remount,rw /
+	mount -force -o remount,rw /
+	echo "mounted / with rw"
+
+	echo "##################################"
+	echo "available partitions:"
+	echo `ls /dev/mmc*`
 	mkdir /tmp/input
+	echo "mounting $destination as input"
 	mount $destination"p1" /tmp/input
 
 	echo "##################################"
@@ -228,18 +234,17 @@ backup_umikaze_settings() {
 		# copy the Toggle local.cfg file over
 		cp -rfL /tmp/input/etc/toggle/ /etc/
 		echo "done"
-
-		echo "##################################"
-		echo "BACKUP FINISHED"
-		echo "##################################"
-		echo "Unmount of eMMC"
-		umount /tmp/input
-		echo "done"
-		rmdir /tmp/input
-		echo "Remount SD as RO"
-		mount -o remount,ro /
-		echo "done"
 	fi
+	echo "##################################"
+	echo "BACKUP FINISHED"
+	echo "##################################"
+	echo "Unmount of eMMC"
+	umount /tmp/input
+	echo "done"
+	rmdir /tmp/input
+	echo "Remount SD as RO"
+	mount -o remount,ro /
+	echo "done"
 }
 
 prepare_environment_reverse() {
@@ -870,10 +875,10 @@ _format_boot() {
 
 _format_root() {
   empty_line
-  echo_broadcast "==> Formatting rootfs with mkfs.ext4 ${ext4_options} ${rootfs_partition} -L ${rootfs_label}"
+  echo_broadcast "==> Formatting rootfs with mkfs.ext4 -F ${ext4_options} ${rootfs_partition} -L ${rootfs_label}"
   generate_line 80
   empty_line
-  LC_ALL=C mkfs.ext4 ${ext4_options} ${rootfs_partition} -L ${rootfs_label}
+  LC_ALL=C mkfs.ext4 -F ${ext4_options} ${rootfs_partition} -L ${rootfs_label}
   generate_line 80
   echo_broadcast "==> Formatting rootfs: ${rootfs_partition} complete"
   flush_cache
