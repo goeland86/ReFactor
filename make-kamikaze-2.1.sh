@@ -115,6 +115,7 @@ install_dependencies(){
 	htop \
 	unzip \
 	cpufrequtils \
+	f2fs-tools \
 	ti-pru-cgt-installer
 	
 	apt-get -y autoremove
