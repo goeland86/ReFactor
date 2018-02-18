@@ -125,11 +125,9 @@ install_dependencies(){
 	pip install numpy
 	pip install evdev spidev Adafruit_BBIO sympy docutils sh
 
-	wget --no-check-certificate https://git.ti.com/pru-software-support-package/pru-software-support-package/archive-tarball/v5.1.0
-	mv v5.1.0 v5.1.0.tar.gz
-	tar -zxvf v5.1.0.tar.gz
-	mv pru-software-support-package-pru-software-support-package/ /usr/src/pru-software-support-package
-	rm v5.1.0.tar.gz
+	cd /usr/src/
+	git clone --branch v5.1.0 --single-branch --depth 1 git://git.ti.com/pru-software-support-package/pru-software-support-package.git
+	cd $WD
 
 	wget https://github.com/beagleboard/am335x_pru_package/archive/master.zip
 	unzip master.zip
