@@ -7,6 +7,8 @@ exec 2> >(tee -ia /root/prep_ubuntu.log >&2)
 
 WD=/usr/src/Umikaze/
 
+KERNEL_VERSION="4.4.116-bone21"
+
 prep_ubuntu() {
 	echo "Upgrading packages"
 	apt-get update
@@ -23,15 +25,15 @@ prep_ubuntu() {
 #	git pull
 #	sh update_kernel.sh --lts-4_4 --
 	apt-get -y install \
-	linux-image-4.4.69-bone17 \
-	linux-firmware-image-4.4.69-bone17 \
-	ti-sgx-es8-modules-4.4.69-bone17 \
-	linux-headers-4.4.69-bone17
+	linux-image-$KERNEL_VERSION \
+	linux-firmware-image-$KERNEL_VERSION \
+	ti-sgx-es8-modules-$KERNEL_VERSION \
+	linux-headers-$KERNEL_VERSION
 
-	depmod 4.4.69-bone17
-	update-initramfs -k 4.4.69-bone17 -u
+	depmod $KERNEL_VERSION
+	update-initramfs -k $KERNEL_VERSION -u
 
-	# 4.4.69-bone17 can't deal with the U-Boot overlays
+	# 4.4.x-bone series can't deal with the U-Boot overlays
 	sed -i 's\enable_uboot_overlays=1\#enable_uboot_overlays=1\' /boot/uEnv.txt
 	# and it puts root at /dev/mmcblk0p1
 	sed -i 's\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable root=/dev/mmcblk0p1\' /boot/uEnv.txt
