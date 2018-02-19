@@ -7,8 +7,6 @@ exec 2> >(tee -ia /root/prep_ubuntu.log >&2)
 
 WD=/usr/src/Umikaze/
 
-KERNEL_VERSION="4.4.116-bone21"
-
 prep_ubuntu() {
 	echo "Upgrading packages"
 	apt-get update
@@ -21,15 +19,11 @@ prep_ubuntu() {
 	sed -i 's\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\' /boot/uEnv.txt
 	echo "** Preparing Ubuntu for kamikaze2 **"
 
-#	cd /opt/scripts/tools/
-#	git pull
-#	sh update_kernel.sh --lts-4_4 --
-	apt-get -y install \
-	linux-image-$KERNEL_VERSION \
-	linux-firmware-image-$KERNEL_VERSION \
-	ti-sgx-es8-modules-$KERNEL_VERSION \
-	linux-headers-$KERNEL_VERSION
-
+	cd /opt/scripts/tools/
+	git pull
+	sh update_kernel.sh --lts-4_4 --bone-kernel # this is what will update to the latest bone kernel with initrd!
+	KERNEL_VERSION=`ls /boot/ | grep bone | grep initrd | awk -F '-' '{print $2"-"$3}'`
+	apt-get -y install ti-sgx-es8-modules-$KERNEL_VERSION
 	depmod $KERNEL_VERSION
 	update-initramfs -k $KERNEL_VERSION -u
 
@@ -42,7 +36,6 @@ prep_ubuntu() {
 	apt-get -y -q --no-install-recommends --force-yes install unzip iptables iptables-persistent
 	systemctl enable netfilter-persistent
 	sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-	apt-get -y remove linux-image-4.9.* linux-image-4.13.*
 }
 
 install_repo() {
