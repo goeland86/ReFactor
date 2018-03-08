@@ -123,7 +123,7 @@ install_dependencies(){
 
 	easy_install --upgrade pip
 	pip install numpy
-	pip install evdev spidev Adafruit_BBIO sympy docutils sh
+	pip install evdev spidev Adafruit_BBIO Adafruit-GPIO sympy docutils sh
 
 	cd /usr/src/
 	git clone --branch v5.1.0 --single-branch --depth 1 git://git.ti.com/pru-software-support-package/pru-software-support-package.git
