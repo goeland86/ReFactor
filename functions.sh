@@ -191,7 +191,7 @@ backup_umikaze_settings() {
 	echo "MOUNTING ROOT RW"
 	echo "##################################"
 
-	mount -force -o remount,rw /
+	mount -o remount,rw /
 	echo "mounted / with rw"
 
 	echo "##################################"
