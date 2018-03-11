@@ -230,9 +230,15 @@ backup_umikaze_settings() {
 		# copy the Redeem local.cfg file over
 		cp -L /tmp/input/etc/redeem/local.cfg /etc/redeem/local.cfg
 		echo "done"
+		
 		echo "Backup of Toggle's configuration"
 		# copy the Toggle local.cfg file over
 		cp -rfL /tmp/input/etc/toggle/ /etc/
+		echo "done"
+		
+		echo "Backup of user's GCode files"
+		# copy the gcodes in /usr/share/models
+		cp -L /tmp/input/usr/share/models/* /usr/share/models
 		echo "done"
 	fi
 	echo "##################################"
