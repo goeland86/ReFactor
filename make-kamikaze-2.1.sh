@@ -499,8 +499,8 @@ dist() {
 	install_octoprint_toggle
 	install_overlays
 	install_toggle
-	install_cura
-	install_slic3r
+#	install_cura
+#	install_slic3r
 	#install_uboot
 	other
 	install_usbreset
