@@ -210,36 +210,51 @@ backup_umikaze_settings() {
 		echo "##################################"
 		echo "Detected a kamikaze-release file, backup of configs beginning."
 		echo "##################################"
-		echo "Network manager config..."
 		# copy the network config over from 2.1.0+
-		cp -Lrf /tmp/input/etc/NetworkManager /etc
-		echo "done"
-		echo "updating octoprint's name with the new Umikaze release name"
-		# use sed to modify the octoprint config.yaml to register the new Umikaze version
-		VERSION=`cat /etc/kamikaze-release | awk -F ' ' '{print $1 $2}'`
-		sed -i "s/name:.*/name: $VERSION/" /tmp/input/home/octo/.octoprint/config.yaml
-		echo "done"
+		if [ -d /tmp/input/etc/NetworkManager]; then
+			echo "Network manager config..."
+			cp -Lrf /tmp/input/etc/NetworkManager /etc
+			echo "done"
+		fi
+		if [ -d /tmp/input/home/octo/.octoprint ]; then
+			echo "updating octoprint's name with the new Umikaze release name"
+			# use sed to modify the octoprint config.yaml to register the new Umikaze version		
+			VERSION=`cat /etc/kamikaze-release | awk -F ' ' '{print $1 $2}'`
+			sed -i "s/name:.*kaze.*/name: $VERSION/" /tmp/input/home/octo/.octoprint/config.yaml
+			echo "done"
 
-		echo "Backup of octoprint instance config..."
-		# copy the OctoPrint configuration, overwrite it.
-		cp -Lrf /tmp/input/home/octo/.octoprint /home/octo/
-		chown -R octo:octo /home/octo/
-		echo "done"
+			echo "Backup of octoprint instance config..."
+			# copy the OctoPrint configuration, overwrite it.
+			cp -Lrf /tmp/input/home/octo/.octoprint /home/octo/
+			echo "done"
+			chown -R octo:octo /home/octo/
+		fi
 
-		echo "Backup of Redeem's local.cfg"
 		# copy the Redeem local.cfg file over
-		cp -L /tmp/input/etc/redeem/local.cfg /etc/redeem/local.cfg
-		echo "done"
-		
-		echo "Backup of Toggle's configuration"
-		# copy the Toggle local.cfg file over
-		cp -rfL /tmp/input/etc/toggle/ /etc/
-		echo "done"
-		
-		echo "Backup of user's GCode files"
-		# copy the gcodes in /usr/share/models
-		cp -L /tmp/input/usr/share/models/* /usr/share/models
-		echo "done"
+		if [ -f /tmp/input/etc/redeem/local.cfg ]; then
+			echo "Backup of Redeem's local.cfg"
+			cp -L /tmp/input/etc/redeem/local.cfg /etc/redeem/local.cfg
+			echo "done"
+		fi
+		if [ -f /tmp/input/etc/redeem/printer.cfg ]; then
+			echo "Backup of Redeem's printer.cfg"
+			cp -d /tmp/input/etc/redeem/printer.cfg /etc/redeem/printer.cfg
+			echo "done"
+		fi
+
+		if [ -d /tmp/input/etc/toggle/]; then
+			echo "Backup of Toggle's configuration"
+			# copy the Toggle local.cfg file over
+			cp -rfL /tmp/input/etc/toggle/ /etc/
+			echo "done"
+		fi
+
+		if [ -d /tmp/input/usr/share/models]; then
+			echo "Backup of user's GCode files"
+			# copy the gcodes in /usr/share/models
+			cp -L /tmp/input/usr/share/models/* /usr/share/models
+			echo "done"
+		fi
 	fi
 	echo "##################################"
 	echo "BACKUP FINISHED"
@@ -1506,4 +1521,3 @@ activate_cylon_leds() {
     echo "Not activating Cylon LEDs as we are not a BBB compatible device"
   fi
 }
-
