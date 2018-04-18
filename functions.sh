@@ -205,54 +205,81 @@ backup_umikaze_settings() {
 	echo "mounted eMMC to /tmp/input"
 	echo "##################################"
 
+	INPUT=/tmp/input
 
-	if [ -f /tmp/input/etc/kamikaze-release ]; then
+	if [ -f $INPUT/etc/kamikaze-release ]; then
 		echo "##################################"
 		echo "Detected a kamikaze-release file, backup of configs beginning."
 		echo "##################################"
+		# copy the hostname over
+		cp -Lf $INPUT/etc/hostname /etc/hostname
+		
+		if [ -d $INPUT/etc/avahi ]; then
+			cp -Lrf $INPUT/etc/avahi /etc/
+		fi
+		
+		if [ -d $INPUT/root/.ssh ]; then
+			cp -Lrf $INPUT/root/.ssh /root/
+		fi
+		
 		# copy the network config over from 2.1.0+
-		if [ -d /tmp/input/etc/NetworkManager]; then
+		if [ -d $INPUT/etc/NetworkManager]; then
 			echo "Network manager config..."
-			cp -Lrf /tmp/input/etc/NetworkManager /etc
+			cp -Lrf $INPUT/etc/NetworkManager /etc/
 			echo "done"
 		fi
-		if [ -d /tmp/input/home/octo/.octoprint ]; then
+		if [ -d $INPUT/home/octo/.octoprint ]; then
 			echo "updating octoprint's name with the new Umikaze release name"
 			# use sed to modify the octoprint config.yaml to register the new Umikaze version		
 			VERSION=`cat /etc/kamikaze-release | awk -F ' ' '{print $1 $2}'`
-			sed -i "s/name:.*kaze.*/name: $VERSION/" /tmp/input/home/octo/.octoprint/config.yaml
+			sed -i "s/name:.*kaze.*/name: $VERSION/" $INPUT/home/octo/.octoprint/config.yaml
 			echo "done"
+
+			# clear the logs from the .octoprint folder
+			if [ -f $INPUT/home/octo/.octoprint/logs/plugin_redeem.log ]; then
+				rm $INPUT/home/octo/.octoprint/logs/plugin_redeem.log
+			fi
+			if [ -f $INPUT/home/octo/.octoprint/logs/octoprint.log ]; then
+				rm $INPUT/home/octo/.octoprint/logs/octoprint.log*
+			fi
+			if [ -f $INPUT/home/octo/.octoprint/logs/serial.log ]; then
+				rm $INPUT/home/octo/.octoprint/logs/serial.log*
+			fi
 
 			echo "Backup of octoprint instance config..."
 			# copy the OctoPrint configuration, overwrite it.
-			cp -Lrf /tmp/input/home/octo/.octoprint /home/octo/
+			cp -Lrf $INPUT/home/octo/.octoprint /home/octo/
 			echo "done"
 			chown -R octo:octo /home/octo/
 		fi
 
 		# copy the Redeem local.cfg file over
-		if [ -f /tmp/input/etc/redeem/local.cfg ]; then
+		if [ -f $INPUT/etc/redeem/local.cfg ]; then
 			echo "Backup of Redeem's local.cfg"
-			cp -L /tmp/input/etc/redeem/local.cfg /etc/redeem/local.cfg
+			cp -Lf $INPUT/etc/redeem/local.cfg /etc/redeem/local.cfg
 			echo "done"
 		fi
-		if [ -f /tmp/input/etc/redeem/printer.cfg ]; then
+		if [ -f $INPUT/etc/redeem/printer.cfg ]; then
 			echo "Backup of Redeem's printer.cfg"
-			cp -d /tmp/input/etc/redeem/printer.cfg /etc/redeem/printer.cfg
+			cp -d $INPUT/etc/redeem/printer.cfg /etc/redeem/printer.cfg
 			echo "done"
 		fi
-
-		if [ -d /tmp/input/etc/toggle/]; then
+		
+		chown -R octo:octo /etc/redeem/
+		
+		if [ -d $INPUT/etc/toggle/]; then
 			echo "Backup of Toggle's configuration"
 			# copy the Toggle local.cfg file over
-			cp -rfL /tmp/input/etc/toggle/ /etc/
+			cp -rfL $INPUT/etc/toggle/ /etc/
 			echo "done"
 		fi
-
-		if [ -d /tmp/input/usr/share/models]; then
+		
+		chown -R octo:octo /etc/toggle/
+		
+		if [ -d $INPUT/usr/share/models]; then
 			echo "Backup of user's GCode files"
 			# copy the gcodes in /usr/share/models
-			cp -L /tmp/input/usr/share/models/* /usr/share/models
+			cp -Lrf $INPUT/usr/share/models/* /usr/share/models
 			echo "done"
 		fi
 	fi
@@ -260,9 +287,9 @@ backup_umikaze_settings() {
 	echo "BACKUP FINISHED"
 	echo "##################################"
 	echo "Unmount of eMMC"
-	umount /tmp/input
+	umount $INPUT
 	echo "done"
-	rmdir /tmp/input
+	rmdir $INPUT
 	echo "Remount SD as RO"
 	mount -o remount,ro /
 	echo "done"
