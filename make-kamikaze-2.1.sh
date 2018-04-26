@@ -45,9 +45,9 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # Choose Toggle config
 
 # this defines the octoprint release tag version#
-OCTORELEASE="1.3.6"
+OCTORELEASE="1.3.8"
 WD=/usr/src/Umikaze/
-VERSION="Umikaze 2.1.2-rc2"
+VERSION="Umikaze 2.1.2-rc6"
 ROOTPASS="kamikaze"
 DATE=`date`
 echo "**Making ${VERSION}**"
@@ -186,7 +186,7 @@ install_redeem() {
 	fi
 	cd redeem
 	git pull
-    	git checkout staging
+    	git checkout 2.1.x
 	make install
 
 	# Make profiles uploadable via Octoprint
@@ -486,6 +486,7 @@ cleanup() {
 prepare_flasher() {
 	cp functions.sh init-eMMC-flasher-v3.sh /opt/scripts/tools/eMMC/
 	sed -i 's/#cmdline=/cmdline=/' /boot/uEnv.txt
+	sed -i 's/mmcblk0p1/mmcblk1p1/' /boot/uEnv.txt
 }
 
 dist() {
