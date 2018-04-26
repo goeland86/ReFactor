@@ -6,8 +6,8 @@ auto lo
 iface lo inet loopback
 
 # The primary network interface
-#auto eth0
-#iface eth0 inet dhcp
+auto eth0
+iface eth0 inet dhcp
 # Example to keep MAC address between reboots
 #hwaddress ether DE:AD:BE:EF:CA:FE
 
@@ -15,6 +15,8 @@ iface lo inet loopback
 
 # Ethernet/RNDIS gadget (g_ether)
 # Used by: /opt/scripts/boot/autoconfigure_usb0.sh
+
+auto usb0
 iface usb0 inet static
     address 192.168.7.2
     netmask 255.255.255.252
