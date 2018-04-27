@@ -1012,6 +1012,7 @@ __EOF__
 			echo "uuid=${root_uuid}" >> ${tmp_rootfs_dir}/boot/uEnv.txt
 		fi
 	fi
+
 }
 
 get_fstab_id_for_device() {
@@ -1098,6 +1099,8 @@ _copy_rootfs() {
   fi
 
   _generate_uEnv ${tmp_rootfs_dir}/boot/uEnv.txt
+
+  sed -i 's/mmcblk0p1/mmcblk1p1/' ${tmp_rootfs_dir}/boot/uEnv.txt
 
   _generate_fstab
 
@@ -1490,6 +1493,7 @@ prepare_drive() {
     _copy_rootfs
     _teardown_future_rootfs
   fi
+  
   teardown_environment
   end_script
 }

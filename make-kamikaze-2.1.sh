@@ -487,7 +487,6 @@ cleanup() {
 prepare_flasher() {
 	cp functions.sh init-eMMC-flasher-v3.sh /opt/scripts/tools/eMMC/
 	sed -i 's/#cmdline=/cmdline=/' /boot/uEnv.txt
-	sed -i 's/mmcblk0p1/mmcblk1p1/' /boot/uEnv.txt
 }
 
 dist() {
