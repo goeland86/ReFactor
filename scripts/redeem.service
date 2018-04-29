@@ -1,6 +1,6 @@
 [Unit]
-After=sys-devices-platform-ocp-481a0000.spi-spi_master-spi1-spi1.1-spidev-spidev1.1.device,sys-devices-platform-ocp-481a0000.spi-spi_master-spi1-spi2.1-spidev-spidev2.1.device
-Requires=sys-devices-platform-ocp-481a0000.spi-spi_master-spi1-spi1.1-spidev-spidev1.1.device
+After=dev-steppers.device
+Requires=steppers.device
 Description=The Replicape Daemon
 
 [Service]
@@ -8,4 +8,3 @@ ExecStart=/usr/local/bin/redeem
 
 [Install]
 WantedBy=basic.target
-
