@@ -44,14 +44,17 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # Sync Redeem master with develop.
 # Choose Toggle config
 
-# this defines the octoprint release tag version#
-OCTORELEASE="1.3.8"
+# Get the versioning information from the entries in version.d/
+
+for f in `ls versions.d/*`
+  do
+    source $f
+  done
+
+# Some additional global variables
 WD=/usr/src/Umikaze/
-VERSION="Umikaze 2.1.2-rc8"
-ROOTPASS="kamikaze"
-REDEEM_REPOSITORY="https://github.com/intelligent-agent/redeem"
-REDEEM_BRANCH="2.1.x"
 DATE=`date`
+
 echo "**Making ${VERSION}**"
 
 export LC_ALL=C
@@ -180,77 +183,6 @@ create_user() {
 	chown -R octo:octo /usr/local/lib/python2.7/
 	chown -R octo:octo /usr/local/bin
 	chmod 755 -R /usr/local/lib/python2.7/
-}
-
-install_redeem() {
-	echo "**install_redeem**"
-	cd /usr/src/
-	if [ ! -d "redeem" ]; then
-		git clone --no-single-branch --depth 1 $REDEEM_REPOSITORY
-	fi
-	cd redeem
-	git pull
-    git checkout $REDEEM_BRANCH
-	make install
-
-	# Make profiles uploadable via Octoprint
-	cp -r configs /etc/redeem
-	cp -r data /etc/redeem
-	touch /etc/redeem/local.cfg
-	chown -R octo:octo /etc/redeem/
-	chown -R octo:octo /usr/src/redeem/
-
-	cd $WD
-
-	# Install rules
-	cp scripts/spidev.rules /etc/udev/rules.d/
-
-	# Install Umikaze2 specific systemd script
-	cp scripts/redeem.service /lib/systemd/system
-	systemctl enable redeem
-#	systemctl start redeem
-}
-
-install_octoprint() {
-	echo "** Install OctoPrint **"
-	cd /home/octo
-	if [ ! -d "OctoPrint" ]; then
-		su - octo -c "git clone --no-single-branch --depth 1 https://github.com/foosel/OctoPrint.git"
-		su - octo -c "cd OctoPrint && git checkout tags/$OCTORELEASE"
-	fi
-	chown -R octo:octo /usr/local/lib/python2.7/dist-packages/
-	chown -R octo:octo /usr/local/bin/
-	su - octo -c "cd OctoPrint && python setup.py clean install"
-	su - octo -c "pip install https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip --user"
-	su - octo -c "pip install https://github.com/kennethjiang/OctoPrint-Slicer/archive/master.zip --user"
-
-	cd $WD
-	# Make config file for Octoprint
-	cp OctoPrint/config.yaml /home/octo/.octoprint/
-	chown  -R octo:octo "/home/octo/"
-
-	# Fix permissions for STL upload folder
-	mkdir -p /usr/share/models
-	chown octo:octo /usr/share/models
-	chmod 777 /usr/share/models
-
-	# Grant octo redeem restart rights
-	echo "%octo ALL=NOPASSWD: /bin/systemctl restart redeem.service" >> /etc/sudoers
-	echo "%octo ALL=NOPASSWD: /bin/systemctl restart toggle.service" >> /etc/sudoers
-	echo "%octo ALL=NOPASSWD: /bin/systemctl restart mjpg.service" >> /etc/sudoers
-	echo "%octo ALL=NOPASSWD: /bin/systemctl restart octoprint.service" >> /etc/sudoers
-	echo "%octo ALL=NOPASSWD: /sbin/reboot" >> /etc/sudoers
-	echo "%octo ALL=NOPASSWD: /sbin/shutdown -h now" >> /etc/sudoers
-	echo "%octo ALL=NOPASSWD: /sbin/poweroff" >> /etc/sudoers
-
-	echo "%octo ALL=NOPASSWD: /usr/bin/make -C /usr/src/redeem install" >> /etc/sudoers
-	echo "%octo ALL=NOPASSWD: /usr/bin/make -C /usr/src/toggle install" >> /etc/sudoers
-
-	# Install systemd script
-	cp ./OctoPrint/octoprint.service /lib/systemd/system/
-	sed -i "s/KAMIKAZE/$VERSION/" /home/octo/.octoprint/config.yaml
-	systemctl enable octoprint
-	systemctl start octoprint
 }
 
 install_octoprint_redeem() {
@@ -497,20 +429,25 @@ prepare_flasher() {
 	sed -i 's/#enable_/enable_/' /boot/uEnv.txt
 }
 
-dist() {
+construct_distribution() {
 	port_forwarding
 	install_dependencies
-	#install_sgx
+#   install_sgx
 	create_user
+
+    source Redeem/build_script_functions.sh
 	install_redeem
+
+    source OctoPrint/build_script_functions.sh
 	install_octoprint
+
 	install_octoprint_redeem
 	install_octoprint_toggle
 	install_overlays
 	install_toggle
 #	install_cura
 #	install_slic3r
-	#install_uboot
+#   install_uboot
 	other
 	install_usbreset
 	install_smbd
@@ -521,7 +458,6 @@ dist() {
 	prepare_flasher
 }
 
-dist
+construct_distribution
 
 echo "Now reboot!"
-
