@@ -8,26 +8,26 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # base is https://rcn-ee.com/rootfs/2018-02-09/flasher/BBB-eMMC-flasher-ubuntu-16.04.3-console-armhf-2018-02-09-2gb.img.xz
 #
 
-# TODO 2.1: 
+# TODO 2.1:
 # PCA9685 in devicetree
 # Make redeem dependencies built into redeem
 # Remove xcb/X11 dependencies
 # Add sources to clutter packages
 # Slic3r support
 # Edit Cura profiles
-# Remove root access 
+# Remove root access
 # /dev/ttyGS0
 
 # TODO 2.0:
-# After boot, 
-# initrd img / depmod-a on new kernel. 
+# After boot,
+# initrd img / depmod-a on new kernel.
 
-# STAGING: 
+# STAGING:
 # Copy uboot files to /boot/uboot
 # Restart commands on install for Redeem and Toggle
 # Update to Clutter 1.26.0+dsfg-1
 
-# DONE: 
+# DONE:
 # consoleblank=0
 # sgx-install after changing kernel
 # Custom uboot
@@ -41,7 +41,7 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # clear cache
 # Update dogtag
 # Update Redeem / Toggle
-# Sync Redeem master with develop.  
+# Sync Redeem master with develop.
 # Choose Toggle config
 
 # this defines the octoprint release tag version#
@@ -49,6 +49,8 @@ OCTORELEASE="1.3.8"
 WD=/usr/src/Umikaze/
 VERSION="Umikaze 2.1.2-rc8"
 ROOTPASS="kamikaze"
+REDEEM_REPOSITORY="https://github.com/intelligent-agent/redeem"
+REDEEM_BRANCH="2.1.x"
 DATE=`date`
 echo "**Making ${VERSION}**"
 
@@ -118,11 +120,11 @@ install_dependencies(){
 	f2fs-tools \
 	ti-pru-cgt-installer \
 	ffmpeg
-	
+
 	apt-get -y autoremove
 	apt-get -y purge linux-image-4.9.* linux-image-4.4.*
 	apt-mark hold linux-image-`uname -r`
-	
+
 	easy_install --upgrade pip
 	pip install numpy
 	pip install evdev spidev Adafruit_BBIO Adafruit-GPIO sympy docutils sh
@@ -184,11 +186,11 @@ install_redeem() {
 	echo "**install_redeem**"
 	cd /usr/src/
 	if [ ! -d "redeem" ]; then
-		git clone --no-single-branch --depth 1 https://github.com/intelligent-agent/redeem
+		git clone --no-single-branch --depth 1 $REDEEM_REPOSITORY
 	fi
 	cd redeem
 	git pull
-    	git checkout 2.1.x
+    git checkout $REDEEM_BRANCH
 	make install
 
 	# Make profiles uploadable via Octoprint
@@ -210,7 +212,7 @@ install_redeem() {
 }
 
 install_octoprint() {
-	echo "** Install OctoPrint **" 
+	echo "** Install OctoPrint **"
 	cd /home/octo
 	if [ ! -d "OctoPrint" ]; then
 		su - octo -c "git clone --no-single-branch --depth 1 https://github.com/foosel/OctoPrint.git"
@@ -246,7 +248,7 @@ install_octoprint() {
 
 	# Install systemd script
 	cp ./OctoPrint/octoprint.service /lib/systemd/system/
-	sed -i "s/Kamikaze 2.1.1/$VERSION/" /home/octo/.octoprint/config.yaml
+	sed -i "s/KAMIKAZE/$VERSION/" /home/octo/.octoprint/config.yaml
 	systemctl enable octoprint
 	systemctl start octoprint
 }
@@ -285,11 +287,11 @@ install_overlays() {
 }
 
 install_toggle() {
-	echo "** install toggle **"
-	cd /usr/src
-    	if [ ! -d "toggle" ]; then
-		git clone --no-single-branch --depth 1 https://github.com/intelligent-agent/toggle
-    	fi
+    echo "** install toggle **"
+    cd /usr/src
+    if [ ! -d "toggle" ]; then
+        git clone --no-single-branch --depth 1 https://github.com/intelligent-agent/toggle
+    fi
 	cd toggle
 	python setup.py clean install
 	# Make it writable for updates
@@ -337,7 +339,7 @@ install_slic3r() {
 }
 
 install_uboot() {
-	echo "** install U-boot**" 
+	echo "** install U-boot**"
 	cd $WD
 	export DISK=/dev/mmcblk0
 	dd if=./u-boot/MLO of=${DISK} count=1 seek=1 bs=128k
@@ -456,10 +458,10 @@ install_mjpgstreamer() {
  Wants=dev-video0.device
  After=dev-video0.device
 
- [Service]
+[Service]
  ExecStart=/usr/local/bin/mjpg_streamer -i "/usr/local/lib/mjpg-streamer/input_uvc.so" -o "/usr/local/lib/mjpg-streamer/output_http.so"
 
- [Install]
+[Install]
  WantedBy=basic.target
 EOL
 	systemctl enable mjpg.service
@@ -482,8 +484,8 @@ cleanup() {
 	cd $WD
 	userdel ubuntu
 	chage -d 0 root
- 	rm -r /var/cache/*
-	rm GFX_5.01.01.02_es8.x.tar.gz
+    rm -r /var/cache/*
+    rm GFX_5.01.01.02_es8.x.tar.gz
 	rm -r /usr/src/pru-software-support-package/examples /usr/src/pru-software-support-package/labs
 	rm -r /opt/gfxsdkdemos/ /opt/source/
 	sed -i 's\	*.=notice;*.=warn	|/dev/xconsole\	*.=notice;*.=warn\' /etc/rsyslog.d/50-default.conf
