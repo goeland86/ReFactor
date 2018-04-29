@@ -116,7 +116,8 @@ install_dependencies(){
 	unzip \
 	cpufrequtils \
 	f2fs-tools \
-	ti-pru-cgt-installer
+	ti-pru-cgt-installer \
+	ffmpeg
 	
 	apt-get -y autoremove
 	apt-get -y purge linux-image-4.1* linux-image-4.9.*
