@@ -477,6 +477,7 @@ EOL
 }
 
 cleanup() {
+	cd $WD
 	userdel ubuntu
 	chage -d 0 root
  	rm -r /var/cache/*
