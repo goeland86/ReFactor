@@ -275,7 +275,7 @@ install_overlays() {
 	echo "**install_overlays**"
 	cd /usr/src/
 	if [ ! -d "bb.org-overlays" ]; then
-		git clone --no-single-branch --depth 1 https://github.com/DecisiveMocha/bb.org-overlays
+		git clone --no-single-branch --depth 1 https://github.com/ThatWileyGuy/bb.org-overlays
 	fi
 	cd bb.org-overlays
 	./dtc-overlay.sh # upgrade DTC version!
