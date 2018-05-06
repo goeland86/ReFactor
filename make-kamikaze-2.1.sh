@@ -123,7 +123,6 @@ install_dependencies(){
 	apt-get -y purge linux-image-4.1* linux-image-4.9.*
 
 	easy_install --upgrade pip
-	pip install --upgrade 'pip==9.0.3' # needed because Redeem 2.1.x currently cannot install with 10.0.1
 	pip install numpy
 	pip install evdev spidev Adafruit_BBIO Adafruit-GPIO sympy docutils sh
 
