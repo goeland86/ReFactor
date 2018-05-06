@@ -21,11 +21,16 @@ prep_ubuntu() {
 
 	cd /opt/scripts/tools/
 	git pull
-	sh update_kernel.sh --lts-4_4 --bone-kernel # this is what will update to the latest bone kernel with initrd!
+	sh update_kernel.sh --lts-4_9 --ti-kernel # this is what will update to the latest bone kernel with initrd!
 	KERNEL_VERSION=`ls /boot/ | grep bone | grep initrd | awk -F '-' '{print $2"-"$3}'`
-	apt-get -y install ti-sgx-es8-modules-$KERNEL_VERSION
+	apt-get install linux-headers-$KERNEL_VERSION
+	# apt-get -y install ti-sgx-es8-modules-$KERNEL_VERSION
 	depmod $KERNEL_VERSION
 	update-initramfs -k $KERNEL_VERSION -u
+	
+	cd /usr/src/
+	git clone git://git.ti.com/wilink8-wlan/wl18xx_fw.git
+	cp /usr/src/wl18xx_fw/wl18xx-fw-4.bin /lib/firmware/ti-connectivity/wl18xx-fw-4.bin
 
 	# 4.4.x-bone series can't deal with the U-Boot overlays
 	sed -i 's\enable_uboot_overlays=1\#enable_uboot_overlays=1\' /boot/uEnv.txt
