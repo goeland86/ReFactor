@@ -120,7 +120,7 @@ install_dependencies(){
 	ffmpeg
 	
 	apt-get -y autoremove
-	apt-get -y purge linux-image-4.1* linux-image-4.9.*
+	apt-get -y purge linux-image-4.1* linux-image-4.4.*
 
 	easy_install --upgrade pip
 	pip install numpy
