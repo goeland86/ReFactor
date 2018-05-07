@@ -213,6 +213,8 @@ backup_umikaze_settings() {
 		echo "##################################"
 		# copy the hostname over
 		cp -Lf $INPUT/etc/hostname /etc/hostname
+		# backup the content of hosts
+		cat $INPUT/etc/hosts >> /etc/hosts
 		
 		if [ -d $INPUT/etc/avahi ]; then
 			cp -Lrf $INPUT/etc/avahi /etc/
