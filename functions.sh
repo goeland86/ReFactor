@@ -234,8 +234,12 @@ backup_umikaze_settings() {
 			echo "updating octoprint's name with the new Umikaze release name"
 			# use sed to modify the octoprint config.yaml to register the new Umikaze version		
 			VERSION=`cat /etc/kamikaze-release | awk -F ' ' '{print $1 $2}'`
-			sed -i "s/name:.*kaze.*/name: $VERSION/" $INPUT/home/octo/.octoprint/config.yaml
+			sed -i "s/name: .*kaze.*/name: $VERSION/" $INPUT/home/octo/.octoprint/config.yaml
 			echo "done"
+			HOSTNAME=`cat /etc/hostname`
+			sed -i "s\kamikaze.local:8080/?action=stream\$HOSTNAME:8080/?action=stream\\" $INPUT/home/octo/.octoprint/config.yaml
+			sed -i "s\kamikaze.local:8080/?action=snapshot\localhost:8080/?action=snapshot\\" $INPUT/home/octo/.octoprint/config.yaml
+
 
 			# clear the logs from the .octoprint folder
 			if [ -f $INPUT/home/octo/.octoprint/logs/plugin_redeem.log ]; then
