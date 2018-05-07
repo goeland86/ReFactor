@@ -121,7 +121,8 @@ install_dependencies(){
 	
 	apt-get -y autoremove
 	apt-get -y purge linux-image-4.1* linux-image-4.4.*
-
+	apt-mark hold linux-image-`uname -r`
+	
 	easy_install --upgrade pip
 	pip install numpy
 	pip install evdev spidev Adafruit_BBIO Adafruit-GPIO sympy docutils sh
