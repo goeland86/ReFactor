@@ -47,7 +47,7 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # this defines the octoprint release tag version#
 OCTORELEASE="1.3.8"
 WD=/usr/src/Umikaze/
-VERSION="Umikaze 2.1.2-rc6"
+VERSION="Umikaze 2.1.2-rc7"
 ROOTPASS="kamikaze"
 DATE=`date`
 echo "**Making ${VERSION}**"
@@ -473,6 +473,8 @@ rcn-ee.net console Ubuntu Image 2017-01-13
 
 Check that nothing is printing before any CPU/disk intensive operations!
 EOL
+	rm /etc/issue
+	ln -s /etc/issue.net /etc/issue
 }
 
 cleanup() {
@@ -483,6 +485,7 @@ cleanup() {
 	rm GFX_5.01.01.02_es8.x.tar.gz
 	rm -r /usr/src/pru-software-support-package/examples /usr/src/pru-software-support-package/labs
 	rm -r /opt/gfxsdkdemos/ /opt/source/
+	sed -i 's\	*.=notice;*.=warn	|/dev/xconsole\	*.=notice;*.=warn\' /etc/rsyslog.d/50-default.conf
 }
 
 prepare_flasher() {
