@@ -58,7 +58,7 @@ system:
 temperature: {}
 webcam:
   stream: http://kamikaze.local:8080/?action=stream
-  snapshot: http://kamikaze.local:8080/?action=snapshot
+  snapshot: http://localhost:8080/?action=snapshot
   ffmpeg: /usr/bin/avconv
 controls:
   - name: Stepper current and microstepping
