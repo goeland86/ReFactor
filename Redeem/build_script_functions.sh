@@ -5,7 +5,7 @@ for f in `ls versions.d/*`
 
 install_redeem() {
   echo "**install_redeem**"
-  cd /usr/src/
+  cd /usr/local/src/
   if [ ! -d "redeem" ]; then
     git clone --no-single-branch --depth 1 $REDEEM_REPOSITORY
   fi
@@ -19,7 +19,7 @@ install_redeem() {
   cp -r data /etc/redeem
   touch /etc/redeem/local.cfg
   chown -R octo:octo /etc/redeem/
-  chown -R octo:octo /usr/src/redeem/
+  chown -R octo:octo /usr/local/src/redeem/
 
   cd $WD
 

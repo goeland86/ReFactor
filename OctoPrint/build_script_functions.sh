@@ -35,7 +35,7 @@ install_octoprint() {
 	echo "%octo ALL=NOPASSWD: /sbin/shutdown -h now" >> /etc/sudoers
 	echo "%octo ALL=NOPASSWD: /sbin/poweroff" >> /etc/sudoers
 
-	echo "%octo ALL=NOPASSWD: /usr/bin/make -C /usr/src/redeem install" >> /etc/sudoers
+	echo "%octo ALL=NOPASSWD: /usr/bin/make -C /usr/local/src/redeem install" >> /etc/sudoers
 	echo "%octo ALL=NOPASSWD: /usr/bin/make -C /usr/src/toggle install" >> /etc/sudoers
 
 	# Install systemd script
