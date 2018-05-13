@@ -47,7 +47,7 @@ exec 2> >(tee -ia /root/make-kamikaze.log >&2)
 # this defines the octoprint release tag version#
 OCTORELEASE="1.3.8"
 WD=/usr/src/Umikaze/
-VERSION="Umikaze 2.1.2-rc7"
+VERSION="Umikaze 2.1.2-rc8"
 ROOTPASS="kamikaze"
 DATE=`date`
 echo "**Making ${VERSION}**"
@@ -120,7 +120,7 @@ install_dependencies(){
 	ffmpeg
 	
 	apt-get -y autoremove
-	apt-get -y purge linux-image-4.1* linux-image-4.4.*
+	apt-get -y purge linux-image-4.9.* linux-image-4.4.*
 	apt-mark hold linux-image-`uname -r`
 	
 	easy_install --upgrade pip
@@ -498,7 +498,7 @@ prepare_flasher() {
 dist() {
 	port_forwarding
 	install_dependencies
-	install_sgx
+	#install_sgx
 	create_user
 	install_redeem
 	install_octoprint
