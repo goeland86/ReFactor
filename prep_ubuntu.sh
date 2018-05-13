@@ -21,7 +21,7 @@ prep_ubuntu() {
 
 	cd /opt/scripts/tools/
 	git pull
-	sh update_kernel.sh --lts-4_9 --ti-kernel # this is what will update to the latest bone kernel with initrd!
+	sh update_kernel.sh --lts-4_14 --ti-kernel # this is what will update to the latest bone kernel with initrd!
 	KERNEL_VERSION=`ls /boot/ | grep bone | grep initrd | awk -F '-' '{print $2"-"$3}'`
 	apt-get install linux-headers-$KERNEL_VERSION
 	# apt-get -y install ti-sgx-es8-modules-$KERNEL_VERSION
@@ -32,9 +32,7 @@ prep_ubuntu() {
 	git clone git://git.ti.com/wilink8-wlan/wl18xx_fw.git
 	cp /usr/src/wl18xx_fw/wl18xx-fw-4.bin /lib/firmware/ti-connectivity/wl18xx-fw-4.bin
 
-	# 4.4.x-bone series can't deal with the U-Boot overlays
-	sed -i 's\enable_uboot_overlays=1\#enable_uboot_overlays=1\' /boot/uEnv.txt
-	# and it puts root at /dev/mmcblk0p1
+	# root at /dev/mmcblk0p1
 	sed -i 's\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable root=/dev/mmcblk0p1\' /boot/uEnv.txt
 
 	apt-get -y upgrade
@@ -64,8 +62,6 @@ network_manager() {
 	apt-get -y install --no-install-recommends network-manager
 	#ln -s /run/resolvconf/resolv.conf /etc/resolv.conf
 	sed -i 's/^\[main\]/\[main\]\ndhcp=internal/' /etc/NetworkManager/NetworkManager.conf
-	cp $WD/interfaces /etc/network/
-
 }
 
 remove_unneeded_packages() {
