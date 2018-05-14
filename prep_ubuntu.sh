@@ -32,9 +32,6 @@ prep_ubuntu() {
 	git clone git://git.ti.com/wilink8-wlan/wl18xx_fw.git
 	cp /usr/src/wl18xx_fw/wl18xx-fw-4.bin /lib/firmware/ti-connectivity/wl18xx-fw-4.bin
 
-	# root at /dev/mmcblk0p1
-	sed -i 's\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable\cmdline=coherent_pool=1M net.ifnames=0 quiet cape_universal=enable root=/dev/mmcblk0p1\' /boot/uEnv.txt
-
 	apt-get -y upgrade
 	apt-get -y -q --no-install-recommends --force-yes install unzip iptables iptables-persistent
 	systemctl enable netfilter-persistent
