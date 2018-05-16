@@ -22,7 +22,7 @@ prep_ubuntu() {
 	cd /opt/scripts/tools/
 	git pull
 	sh update_kernel.sh --lts-4_14 --ti-kernel # this is what will update to the latest bone kernel with initrd!
-	KERNEL_VERSION=`ls /boot/ | grep bone | grep initrd | awk -F '-' '{print $2"-"$3}'`
+	KERNEL_VERSION=`cat /boot/uEnv.txt | grep uname_r | awk -F '=' '{print $2}'`
 	apt-get install linux-headers-$KERNEL_VERSION
 	# apt-get -y install ti-sgx-es8-modules-$KERNEL_VERSION
 	depmod $KERNEL_VERSION
