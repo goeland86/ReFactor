@@ -33,7 +33,7 @@ echo "Device: $DEVICE"
 echo "Partition: $PARTITION"
 
 # This makes it so the image will boot on other BB not just the one it was built on
-echo "Removing UUID references and uncommenting flahser option from /boot/uEnv.txt"
+echo "Removing UUID references and uncommenting flasher option from /boot/uEnv.txt"
 mkdir /mnt/zero
 mount $PARTITION /mnt/zero
 sed -ie '/^uuid=/d' /mnt/zero/boot/uEnv.txt
@@ -94,7 +94,7 @@ unit: sectors
 $PARTITION : start=${partblockstart}, size=${partsize}, Id=83, bootable
 EOF
 
-# Perform actual modificaitons to the partition layout
+# Perform actual modifications to the partition layout
 sfdisk $DEVICE < /shrink.layout
 #rm -rf /shrink.layout
 
