@@ -7,7 +7,7 @@ install_octoprint() {
 	echo "** Install OctoPrint **"
 	cd /home/octo
 	if [ ! -d "OctoPrint" ]; then
-		su - octo -c "git clone --no-single-branch --depth 1 $OCTOPRINT_RELEASE"
+		su - octo -c "git clone --no-single-branch --depth 1 $OCTOPRINT_REPOSITORY"
 		su - octo -c "cd OctoPrint && git checkout tags/$OCTOPRINT_RELEASE"
 	fi
 	chown -R octo:octo /usr/local/lib/python2.7/dist-packages/
