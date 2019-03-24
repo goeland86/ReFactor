@@ -62,19 +62,11 @@ if [ ! -d ${TOGGLE_ENVIRONMENT} ]; then
   python2 -m virtualenv ${TOGGLE_ENVIRONMENT}
 fi
 
-<<<<<<< Updated upstream
-cat >${TOGGLE_ENVIRONMENT}/lib/python2.7/site-packages/dist-packages.pth <<EOF
-import sys; sys.__plen = len(sys.path)
-/usr/lib/python2.7/dist-packages
-/usr/local/lib/python2.7/dist-packages
-EOF
-=======
 #cat >${TOGGLE_ENVIRONMENT}/lib/python3.6/site-packages/dist-packages.pth <<EOF
 #import sys; sys.__plen = len(sys.path)
 #/usr/lib/python3.6/dist-packages
 #/usr/local/lib/python3.6/dist-packages
 #EOF
->>>>>>> Stashed changes
 
 if [ ! -d ${TOGGLE_ENVIRONMENT}/src/toggle ]; then
   mkdir -p ${TOGGLE_ENVIRONMENT}/src/toggle
