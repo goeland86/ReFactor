@@ -2,14 +2,17 @@
 # SPDX-License-Identifier: GPL-2.0
 
 set -e
-set -x
 for f in `ls ${VERSIONING}/*`
   do
     source $f
   done
+if [ -f "customize.sh" ] ; then
+  source customize.sh
+fi
 cd Packages
 
 echo "** install Slic3r **"
+set -x
 if [ ! -d "${SLIC3R_HOME}" ]; then
   git clone --no-single-branch --depth 1 ${SLIC3R_REPOSITORY} ${SLIC3R_HOME}
   sudo apt install -y --no-install-recommends build-essential libgtk2.0-dev libwxgtk3.0-dev libwx-perl libmodule-build-perl git cpanminus libextutils-cppguess-perl libboost-all-dev libxmu-dev liblocal-lib-perl wx-common libopengl-perl libwx-glcanvas-perl libtbb-dev

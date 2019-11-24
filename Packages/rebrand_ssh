@@ -2,21 +2,24 @@
 # SPDX-License-Identifier: GPL-2.0
 
 set -e
-set -x
 for f in `ls ${VERSIONING}/*`
   do
     source $f
   done
+if [ -f "customize.sh" ] ; then
+  source customize.sh
+fi
 cd Packages
 
 echo "** Update SSH message **"
+set -x
 cat > /etc/issue.net << EOL
 $VERSION
 rcn-ee.net console Ubuntu Image ${BASEIMAGE_DATE}
 
 Check that nothing is printing before any CPU/disk intensive operations!
 EOL
-rm /etc/issue
+
 ln -s /etc/issue.net /etc/issue
 
 # Enable ZeroConf for ssh

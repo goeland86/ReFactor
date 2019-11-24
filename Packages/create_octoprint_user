@@ -2,14 +2,17 @@
 # SPDX-License-Identifier: GPL-2.0
 
 set -e
-set -x
 for f in `ls ${VERSIONING}/*`
   do
     source $f
   done
+if [ -f "customize.sh" ] ; then
+  source customize.sh
+fi
 cd Packages
 
 echo "** Create user 'octo' **"
+set -x
 default_groups="admin,adm,dialout,i2c,kmem,spi,cdrom,floppy,audio,dip,video,netdev,plugdev,users,systemd-journal,tisdk,weston-launch,xenomai"
 mkdir -p ${OCTOPRINT_HOME}/.octoprint
 if ! id octo >/dev/null 2>&1; then
@@ -19,3 +22,6 @@ chown -R octo:octo ${OCTOPRINT_HOME}
 chown -R octo:octo /usr/local/lib/python2.7/
 chown -R octo:octo /usr/local/bin
 chmod 755 -R /usr/local/lib/python2.7/
+
+# The octo user will get sudo permissions
+echo "# Explicit Permissions for Octoprint" > /etc/sudoers.d/octo

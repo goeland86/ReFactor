@@ -11,9 +11,8 @@ if [ -f "customize.sh" ] ; then
 fi
 cd Packages
 
-echo "** Installing usbreset **"
+echo "** install ffmpeg **"
 set -x
-cd USB
-cc usbreset.c -o usbreset
-chmod +x usbreset
-mv usbreset /usr/local/sbin/
+
+apt-get install --no-install-recommends -y \
+ffmpeg

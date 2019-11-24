@@ -2,18 +2,30 @@
 # SPDX-License-Identifier: GPL-2.0
 
 set -e
-set -x
 for f in `ls ${VERSIONING}/*`
   do
     source $f
   done
+if [ -f "customize.sh" ] ; then
+  source customize.sh
+fi
 cd Packages
 
 echo "** Install dummy logging **"
+set -x
 apt-get install -y --no-install-recommends rungetty
 useradd -m dummy
 usermod -a -G systemd-journal dummy
 echo "clear" >> /home/dummy/.profile
 echo "journalctl -f" >> /home/dummy/.profile
-text="ExecStart=-/sbin/getty -a dummy 115200 %I"
-sed -i "/.*ExecStart*./ c $text" /etc/systemd/system/getty.target.wants/getty@tty1.service
+#text="ExecStart=-/sbin/getty -a dummy 115200 %I"
+#sed -i "/.*ExecStart*./ c $text" /etc/systemd/system/getty.target.wants/getty@tty1.service
+mkdir /etc/systemd/system/getty@tty1.service.d
+touch /etc/systemd/system/getty@tty1.service.d/override.conf
+echo  "[Service]" > /etc/systemd/system/getty@tty1.service.d/override.conf
+echo "ExecStart=-/sbin/agetty --noissue --autologin myusername %I $TERM" >> /etc/systemd/system/getty@tty1.service.d/override.conf
+echo "Type=idle" >> /etc/systemd/system/getty@tty1.service.d/override.conf
+
+mv /etc/systemd/system/getty.target.wants/getty@tty1.service /lib/systemd/system/
+systemctl daemon-reload
+systemctl enable getty@tty1.service

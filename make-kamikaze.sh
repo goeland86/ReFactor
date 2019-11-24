@@ -19,21 +19,22 @@ export PATH=`pwd`/Packages:$PATH
 install_sgx
 setup_port_forwarding
 install_dependencies
-create_user
+create_octoprint_user
+install_service_virtualization
 install_redeem
 install_octoprint
 install_octoprint_redeem
 install_octoprint_toggle
-install_overlays
 install_toggle
 # install_cura
 # install_slic3r
-# install_u-boot
+install_u-boot
 make_general_adjustments
 install_usbreset
 install_smbd
 install_dummy_logging
 install_videostreamer
+install_ffmpeg
 rebrand_ssh
 perform_cleanup
 prepare_flasher

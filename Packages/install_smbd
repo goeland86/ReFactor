@@ -2,7 +2,6 @@
 # SPDX-License-Identifier: GPL-2.0
 
 set -e
-set -x
 for f in `ls ${VERSIONING}/*`
   do
     source $f
@@ -10,6 +9,7 @@ for f in `ls ${VERSIONING}/*`
 cd Packages
 
 echo "** Installing samba **"
+set -x
 apt-get -y install --no-install-recommends samba
 cat > /etc/samba/smb.conf <<EOF
 dns proxy = no

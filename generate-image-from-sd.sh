@@ -47,22 +47,22 @@ echo
 
 # Likely not needed but for the sake of making the image smaller we defrag first
 echo "Defragmenting partition."
-e4defrag ${MOUNTPOINT} > /dev/null
+e4defrag -c ${MOUNTPOINT} > /dev/null
 umount ${MOUNTPOINT}
 echo
 
 # Run file system checks and then shrink the file system as much as possible
 echo "Resizing filesystem."
-e2fsck -f $PARTITION
+e2fsck -f $PARTITION -y
 resize2fs -pM $PARTITION
 resize2fs -pM $PARTITION
-e2fsck -f $PARTITION
+e2fsck -f $PARTITION -y
 echo
 
 # Zero out the free space remaining on the file system
 echo "Defrag and zero partition free space."
 mount $PARTITION ${MOUNTPOINT}
-e4defrag ${MOUNTPOINT} > /dev/null
+e4defrag -c ${MOUNTPOINT} > /dev/null
 dd if=/dev/zero of=${MOUNTPOINT}/zero_fill || true
 rm -rf ${MOUNTPOINT}/zero_fill
 umount ${MOUNTPOINT}
@@ -71,9 +71,9 @@ echo
 # Run the file system checks and another series of file system shrinks just in case
 #   we can shrink the file system any further after zeroing the free space.
 echo "Resizing filesystem again."
-e2fsck -f $PARTITION
+e2fsck -f $PARTITION -y
 resize2fs -pM $PARTITION
-e2fsck -f $PARTITION
+e2fsck -f $PARTITION -y
 echo
 
 # This is where the real danger starts with modifying the partitions
@@ -105,16 +105,16 @@ sync
 echo "Wait for the kernel to re-read the table"
 sleep 5
 
-e2fsck -f $PARTITION
+e2fsck -f $PARTITION -y
 resize2fs $PARTITION
-e2fsck -f $PARTITION
+e2fsck -f $PARTITION -y
 echo
 
 # Run one last defrag and zero of the free space before backing it up
 echo "Final defrag and zeroing partition free space."
 mount $PARTITION ${MOUNTPOINT}
 UmikamiVersion=$(cat ${MOUNTPOINT}/etc/dogtag | awk '{printf $2}')
-e4defrag ${MOUNTPOINT} > /dev/null
+e4defrag -c ${MOUNTPOINT} > /dev/null
 # ignore the failure on this line - it runs until it's out of space
 dd if=/dev/zero of=${MOUNTPOINT}/zero_fill || true
 rm -rf ${MOUNTPOINT}/zero_fill
@@ -124,7 +124,7 @@ echo
 
 # Final file system check
 echo "File system and partition shrink are complete, running last file system check."
-e2fsck -f $PARTITION
+e2fsck -f $PARTITION -y
 echo
 
 # Mounting the USB thumb drive and generating the compressed image file on it from the sd card
