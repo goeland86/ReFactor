@@ -1,0 +1,34 @@
+---
+- name: setup octo user
+  user: 
+    name: octo
+    state: present
+    shell: /bin/bash
+    become: yes
+    become_method: sudo
+
+- name: installing depedencies
+  apt:
+    name: "{{item}}"
+    state: latest
+    update_cache: yes
+  with_items:
+   - python3
+   - python3-pip
+
+- name: create installation directory
+  file:
+    path: /home/octo/OctoPrint
+    mode: 0755
+    state: directory
+    owner: octo
+    group: octo
+  become: yes
+  become_method: sudo
+  
+- name: Download OctoPrint source
+  git: repo=https://github.com/foosel/OctoPrint.git
+       dest: /home/octo/OctoPrint
+  become: yes
+  become_user: octo
+

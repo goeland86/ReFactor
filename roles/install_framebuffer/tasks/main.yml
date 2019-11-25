@@ -1,0 +1,22 @@
+---
+- name: create console-setup
+  file:
+    path: /etc/default/console-setup
+    owner: root
+    group: root
+    state: touch
+- name: set font in console-setup
+  lineinfile:
+    path: /etc/default/console-setup
+    regex: 'FONT='
+    line: 'FONT=Lat15-Terminus12x6.psf.gz'
+- name: set colors in terminal for sessions
+  lineinfile:
+    path: /etc/profile
+    regex: 'force_color_prompt'
+    line: 'force_color_prompt=yes'
+- name: disable usb image file
+  lineinefile:
+    path: /etc/default/bb-boot
+    regex: 'USB_IMAGE_FILE_DISABLED'
+    line: 'USB_IMAGE_FILE_DISABLED=yes'

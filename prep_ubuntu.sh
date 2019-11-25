@@ -59,15 +59,15 @@ upgrade_base_operating_system() {
 }
 
 add_thing_printer_support_repository() {
-  echo "installing Kamikaze repository to the list"
-  cat >/etc/apt/sources.list.d/testing.list <<EOL
+  #echo "installing Kamikaze repository to the list"
+  #cat >/etc/apt/sources.list.d/testing.list <<EOL
 #### Kamikaze ####
-deb [arch=armhf] http://kamikaze.thing-printer.com/ubuntu/ xenial main
+#deb [arch=armhf] http://kamikaze.thing-printer.com/ubuntu/ xenial main
 #deb [arch=armhf] http://kamikaze.thing-printer.com/debian/ stretch main
-EOL
-  wget -q http://kamikaze.thing-printer.com/ubuntu/public.gpg -O- | apt-key add -
+#EOL
+#  wget -q http://kamikaze.thing-printer.com/ubuntu/public.gpg -O- | apt-key add -
 # wget -q http://kamikaze.thing-printer.com/debian/public.gpg -O- | apt-key add -
-  apt-get update
+#  apt-get update
 }
 
 install_rtl_update() {
