@@ -9,51 +9,53 @@ upgrade_base_operating_system() {
   export DEBIAN_FRONTEND=noninteractive 
   echo "Upgrading packages"
   apt-get update
+  apt-get install ansible
+  ansible-playbook prep-ubuntu.yml
   # nuke GRUB so it doesn't prompt about config changes
-  apt-get remove -y grub-efi-arm
+  #apt-get remove -y grub-efi-arm
   # removing issue and issue.net to avoid questioning prompt during upgrade.
-  rm /etc/issue /etc/issue.net
-  apt-get upgrade -y
-  echo "Removing unwanted kernel packages"
+  #rm /etc/issue /etc/issue.net
+  #apt-get upgrade -y
+  #echo "Removing unwanted kernel packages"
 # apt-get -y remove linux-image-*
-  apt-get -y remove linux-headers-*
-  apt-get -y autoremove
+  #apt-get -y remove linux-headers-*
+  #apt-get -y autoremove
 # systemctl disable bb-wl18xx-wlan0
-  echo "Updating uboot..."
-  sed -i 's\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\' /boot/uEnv.txt
-  sed -i 's\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\' /boot/uEnv.txt
-  sed -i 's\##uboot\#uboot\' /boot/uEnv.txt
-  echo "** Preparing Ubuntu for Umikaze **"
+  #echo "Updating uboot..."
+  #sed -i 's\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\' /boot/uEnv.txt
+  #sed -i 's\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\' /boot/uEnv.txt
+  #sed -i 's\##uboot\#uboot\' /boot/uEnv.txt
+  #echo "** Preparing Ubuntu for Umikaze **"
 
-  echo "Updating kernel..."
-  cd /opt/scripts/tools/
-  git pull
+  #echo "Updating kernel..."
+  #cd /opt/scripts/tools/
+  #git pull
   # Update to the latest ti kernel with initrd!
-  FORCEMACHINE=TI_AM335x_BeagleBoneBlack sh update_kernel.sh --lts-4_19 --ti-kernel
-  KERNEL_VERSION=`awk -F '=' '/uname_r/ {print $2}' /boot/uEnv.txt`
-  apt-get install -y linux-headers-$KERNEL_VERSION
-  depmod $KERNEL_VERSION
-  update-initramfs -k $KERNEL_VERSION -u
+  #FORCEMACHINE=TI_AM335x_BeagleBoneBlack sh update_kernel.sh --lts-4_19 --ti-kernel
+  #KERNEL_VERSION=`awk -F '=' '/uname_r/ {print $2}' /boot/uEnv.txt`
+  #apt-get install -y linux-headers-$KERNEL_VERSION
+  #depmod $KERNEL_VERSION
+  #update-initramfs -k $KERNEL_VERSION -u
 
-  echo "Upgrade everything..."
-  apt-get -y upgrade
+  #echo "Upgrade everything..."
+  #apt-get -y upgrade
 
-  echo "Handle iptables..."
+  #echo "Handle iptables..."
   # first do some magic so iptables-persistent doesn't prompt
-  apt-get -y install debconf-utils
-  echo "iptables-persistent     iptables-persistent/autosave_v4 boolean true" | debconf-set-selections
-  echo "iptables-persistent     iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
+  #apt-get -y install debconf-utils
+  #echo "iptables-persistent     iptables-persistent/autosave_v4 boolean true" | debconf-set-selections
+  #echo "iptables-persistent     iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
 
   # now install it
-  apt-get -y -q --no-install-recommends install unzip iptables iptables-persistent
-  systemctl enable netfilter-persistent
+  #apt-get -y -q --no-install-recommends install unzip iptables iptables-persistent
+  #systemctl enable netfilter-persistent
 
   # allow root logon to SSH
-  sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
-  echo 'PermitRootLogin yes' >>/etc/ssh/sshd_config
+  #sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+  #echo 'PermitRootLogin yes' >>/etc/ssh/sshd_config
 
   # disable the power button
-  echo "HandlePowerKey=ignore" >> /etc/systemd/logind.conf
+  #echo "HandlePowerKey=ignore" >> /etc/systemd/logind.conf
 }
 
 add_thing_printer_support_repository() {
