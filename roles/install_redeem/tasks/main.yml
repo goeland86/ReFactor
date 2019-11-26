@@ -1,0 +1,11 @@
+---
+- name: install apt dependencies
+  apt:
+    pkg:
+      - swig
+      - python-scipy
+      - python-numpy
+      - pythom-smbus
+      - ti-pru-cgt-installer
+    state: latest
+
