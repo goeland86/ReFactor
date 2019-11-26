@@ -54,10 +54,64 @@
     group: octo
   become: yes
   become_method: sudo
-  
-- name: Download OctoPrint source
-  git: repo=https://github.com/foosel/OctoPrint.git
-       dest: /home/octo/OctoPrint
-  become: yes
-  become_user: octo
 
+- name: Copy octoprint config
+  file:
+    dest: '{{ octoprint_home }}/.octoprint/config.yaml'
+    src: '{{ role_path }}/files/config.yaml'
+    owner: octo
+    group: octo
+
+- name: Use pip to install OctoPrint
+  pip:
+    chdir: '{{ octoprint_home }}/OctoPrint'
+    virtualenv: '{{ octoprint_home }}/OctoPrint/venv'
+    virtualenv_python: python2.7
+    state: latest
+    name: '{{ item }}'
+  with_item:
+    - OctoPrint
+    - https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip
+
+- name: Create upload folder
+  file:
+    path: /usr/share/models
+    state: directory
+    owner: octo
+    group: octo
+    mode: 777
+
+- name: annotate OctoPrint port in services
+  lineinfile:
+    path: /etc/services
+    regex: octoprint
+    line: octoprint 5000/tcp
+
+- name: setup sudoers.d/octo file
+  file:
+    path: /etc/sudoers.d/octo
+    owner: root
+    group: root
+    state: touch
+
+- name: grant octo user sudo privileges for some commands
+  blockinfile:
+    path: /etc/sudoers.d/octo
+    block: |
+      %octo ALL=NOPASSWD: /bin/systemctl restart octoprint.service
+      %octo ALL=NOPASSWD: /sbin/reboot
+      %octo ALL=NOPASSWD: /sbin/shutdown -h now
+      %octo ALL=NOPASSWD: /sbin/poweroff
+
+- name: install service file for OctoPrint
+  copy:
+    src: '{{ role_path }}/files/octoprint.service'
+    dest: /lib/systemd/system/octoprint.service
+    owner: root
+    group: root
+    mode: 644
+
+- name: enable octoprint service
+  service:
+    name: octoprint
+    enabled: yes

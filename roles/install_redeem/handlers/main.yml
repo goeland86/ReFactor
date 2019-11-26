@@ -1,0 +1,8 @@
+---
+- name: fetch pru support package
+  git:
+    repo: git://git.ti.com/pru-software-support-package/pru-software-support-package.git
+    dest: /usr/src/pru-software-support-package
+    clone: yes
+    depth: 1
+    version: v5.1.0
