@@ -1,11 +1,40 @@
 ---
-- name: setup octo user
+- name: copy port forwarding rules
+  copy:
+    src: '{{ role_path }}/files/rules.v4'
+    dest: /etc/iptables/rules.v4
+    owner: root
+    group: root
+    mode: 644
+
+- name: create octo user
   user: 
     name: octo
+    groups: admin,adm,dialout,i2c,kmem,spi,cdrom,floppy,audio,dip,video,netdev,plugdev,users,systemd-journal,tisdk,weston-launch,xenomai
     state: present
     shell: /bin/bash
     become: yes
     become_method: sudo
+
+- name: create home octoprint folder
+  file:
+    path: /home/octo/.octoprint
+    state: directory
+    owner: octo
+    group: octo
+
+- name: give octo permissions to python folders for updates
+  file:
+    path: '{{ item }}'
+    group: octo
+    owner: octo
+    mode: 755
+    recursive: yes
+    state: directory
+  with_item:
+    - '{{ octoprint_home }}'
+    - /usr/local/lib/python2.7
+    - /usr/local/bin
 
 - name: installing depedencies
   apt:

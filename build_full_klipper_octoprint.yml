@@ -1,0 +1,13 @@
+---
+- hosts: local
+  connection: local
+  roles:
+    - install_dummy_logger
+    - install_klipper
+    - install_octoprint
+    - install_octoprint_klipper_plugins
+    - install_slic3r
+    - install_smbshare
+    - install_toggle
+    - install_uboot
+    - install_usbreset

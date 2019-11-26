@@ -16,8 +16,6 @@ echo "**Making ${VERSION}**"
 export LC_ALL=C
 export PATH=`pwd`/Packages:$PATH
 
-install_sgx
-setup_port_forwarding
 install_dependencies
 create_octoprint_user
 install_service_virtualization

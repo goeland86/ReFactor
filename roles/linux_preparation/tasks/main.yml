@@ -25,13 +25,11 @@
     
 - name: remove login info
   file:
-    path: /etc/issue
+    path: "{{ item }}"
     state: absent
-    
-- name: remove ssh login info
-  file:
-    path: /etc/issue.net
-    state: absent
+  with_items:
+    - /etc/issue.net
+    - /etc/issue
     
 - name: upgrade packages
   apt:
@@ -56,79 +54,125 @@
     path: /boot/uEnv.txt
     regex: '/lib/firmware/AM335X-PRU-RPROC'
     line: '#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC'
+
 - name: enable uio overlay
   lineinfile:
     path: /boot/uEnv.txt
     regex: '/lib/firmware/AM335X-PRU-UIO'
     line: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO'
+
 - name: fix double hash
   lineinfile: 
     path: /boot/uEnv.txt
     regex: '##uboot'
     line: '#uboot'
+
 - name: update RCN scripts
   command:
     chdir: /opt/scripts/tools
     cmd: 'git pull'
+
 - name: update kernel using RCN scripts
   command:
     chdir: /opt/scripts/tools
     cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack sh update_kernel.sh --lts-4_19 --ti-kernel'
+
 - name: install debconf-utils
   apt:
     name: debconf-utils
-    state: present
+    state: latest
+
 - name: configure ipv4
   command:
     cmd: 'echo "iptables-persistent     iptables-persistent/autosave_v4 boolean true" | debconf-set-selections'
+
 - name: configure ipv6
   command:
     cmd: 'echo "iptables-persistent     iptables-persistent/autosave_v6 boolean true" | debconf-set-selections'
-- name: install iptables
+
+- name: add thing printer debian repository
+  apt_repository:
+    repo: deb [arch=armhf] http://kamikaze.thing-printer.com/ubuntu/ xenial main
+    state: present
+
+- name: add thing printer key
+  apt_key:
+    url: http://kamikaze.thing-printer.com/ubuntu/public.gpg
+    state: present
+
+- name: update package list
+  apt:
+    update_cache: yes
+
+- name: install packages
   apt:
     pkg:
     - unzip
     - iptables
     - iptables-persistent
+    - python-pip
+    - python-pip3
+    - python-dev
+    - python-virtualenv
+    - libyaml-dev
+    - libavahi-compat-libdnssd1
+    - libnss-mdns
+    - screen
+    - byobu
+    - htop
+    - unzip
+    - cpufrequtils
+    - f2fs-tools
+    - parted
+    - python-parted
+    - network-manager
+    - pkg-config
+    - python3-dev
+    - network-manager
+    - libcairo2-dev
+    - libgirepository1.0-dev
+    - python3-gi-cairo
+    - libcairo2-dev
+    - pkg-config
+    - python3-dev
+    - gir1.2-gtk-3.0
     state: latest
+
+- name: install pip libs
+  command:
+    cmd: "yes | pip install setuptools wheel pycairo PyGObject"
+- name: install pip3 libs
+  command:
+    cmd: "yes | pip3 install setuptools wheel pycairo PyGObject"
+
 - name: enable netfilter
   service:
     name: netfilter-persistent
     enabled: yes
+
 - name: enable root login via ssh
   lineinfile:
     path: /etc/ssh/sshd_config
     regex: 'PermitRootLogin'
     line: 'PermitRootLogin yes'
+
 - name: disable the power button
   lineinfile:
     path: /etc/systemd/logind.conf
     regex: 'HandlePowerKey'
     line: 'HandlePowerKey=ignore'
-- name: add thing printer debian repository
-  apt_repository:
-    repo: deb [arch=armhf] http://kamikaze.thing-printer.com/ubuntu/ xenial main
-    state: present
-- name: add thing printer key
-  apt_key:
-    url: http://kamikaze.thing-printer.com/ubuntu/public.gpg
-    state: present
-- name: update package list
-  apt:
-    update_cache: yes
+
 - name: disable wireless power management
   file:
     path: /etc/pm/sleep.d/wireless
     state: touch
-- name: install network manager
-  apt:
-    name: network-manager
-    state: present
+
 - name: update dhcp
   lineinfile:
     path: /etc/NetworkManager/NetworkManager.conf
     regex: 'dhcp'
     line: 'dhcp=internal'
+
 - name: setup network interfaces file
   blockinfile:
     path: /etc/network/interfaces
@@ -168,28 +212,4 @@
     - /root/.c9
     - /usr/lib/node_modules
     - /usr/local/lib/node_modules
-    - /var/lib/cloud9
-
-- name: install common packages
-  apt:
-    pkg:
-    - python-pip
-    - python-pip3
-    - python-dev
-    - python-virtualenv
-    - libyaml-dev
-    - libavahi-compat-libdnssd1
-    - libnss-mdns
-    - screen
-    - byobu
-    - htop
-    - unzip
-    - cpufrequtils
-    - f2fs-tools
-    - parted
-    - python-parted
-    - network-manager
-    - pkg-config
-    - python3-dev
-    state: latest
-    
+    - /var/lib/cloud9   
