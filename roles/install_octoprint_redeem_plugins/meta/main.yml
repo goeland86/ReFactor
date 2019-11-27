@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: install_octoprint }
+  - { role: install_redeem }

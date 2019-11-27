@@ -1,0 +1,108 @@
+---
+- name: install dependencies
+  apt:
+    pkg:
+      - gir1.2-clutter-1.0=1.26.0+dfsg-10.1
+      - gir1.2-cogl-1.0=1.22.2-2.1
+      - gir1.2-coglpango-1.0=1.22.2-2.1
+      - gir1.2-mash-0.3-0=0.3.0-1
+      - gir1.2-mx-2.0=1.99.4-1.1
+      - libcairo2-dev
+      - libclutter-1.0-0=1.26.0+dfsg-10.1
+      - libclutter-1.0-common=1.26.0+dfsg-10.1 
+      - libclutter-imcontext-0.1-0=0.1.4-3.1
+      - libclutter-imcontext-0.1-bin=0.1.4-3.1
+      - libcluttergesture-0.0.2-0=0.0.2.1-7.2
+      - libcogl-common=1.22.2-2.1
+      - libcogl-pango20=1.22.2-2.1
+      - libcogl-path20=1.22.2-2.1
+      - libcogl20=1.22.2-2.1
+      - libmash-0.3-0=0.3.0-1
+      - libmx-2.0-0=1.99.4-1.1
+      - libmx-bin=1.99.4-1.1
+      - libmx-common=1.99.4-1.1
+      - python3-networkmanager
+      - python3-cairo
+      - python3-gi-cairo
+      - python3-tornado
+      - python3-pip
+      - python3-venv
+      - python3-dbus
+      - libdbus-1-dev
+      - libglib2.0-dev
+    state: present
+
+- name: clone toggle from git
+  git:
+    repo: https://github.com/intelligent-agent/toggle
+    dest: '{{ toggle_home }}/src/toggle'
+    depth: 1
+
+- name: copy toggle service file
+  copy:
+    src: '{{ role_path }}/files/toggle.service'
+    dest: /lib/systemd/system/toggle.service
+
+- name: grant sudo to octo user for restarting toggle service
+  lineinfile:
+    path: /etc/sudoers.d/octo
+    regex: toggle.service
+    line: '%octo ALL=NOPASSWD: /bin/systemctl restart toggle.service'
+
+- name: install pip3 dependencies
+  pip:
+    virtualenv: '{{ toggle_home }}'
+    virtualenv_python: python3.6
+    name: '{{ item }}'
+  with_items:
+    - wheel
+    - pycairo
+    - pygobject
+
+- name: clone pyconnman
+  git:
+    repo: https://github.com/liamw9534/pyconnman
+    dest: '{{ toggle_home }}/src/pyconnman'
+    depth: 1
+
+- name: install pyconnman in venv
+  command:
+    cmd: 'cd {{ toggle_home }}/src/pyconnman/ ; {{ toggle_home }}/bin/python setup.py clean install'
+
+- name: install toggle in venv
+  command:
+    cmd: 'cd {{ toggle_home }}/src/toggle ; {{toggle_home}}/bin/pip install -e . -r requirements.txt ; {{ toggle_home }}/bin/python setup.py clean install'
+
+- name: copy toggle configs
+  copy:
+    src: '{{ toggle_home }}/src/toggle/configs/*.cfg'
+    dest: /etc/toggle/
+    owner: octo
+    group: octo
+
+- name: touch the local.cfg file
+  file:
+    path: /etc/toggle/local.cfg
+    state: touch
+    owner: octo
+    group: octo
+
+- name: enable the toggle service
+  service:
+    name: toggle
+    enabled: yes
+
+- name: clone octoprint toggle plugin from git
+  git:
+    repo: https://github.com/intelligent-agent/octoprint_toggle
+    dest: /usr/src/octoprint_toggle
+
+- name: install octoprint toggle plugin in virtualenv
+  command:
+    cmd: 'source /home/octo/OctoPrint/venv/bin/activate; cd /usr/src/octoprint_toggle; python setup.py clean install'
+
+- name: install sudoers entry for toggle restart
+  lineinfile:
+    path: /etc/sudoers.d/octo
+    regex: toggle
+    line: '%octo ALL=NOPASSWD: /usr/bin/make -C /usr/src/toggle install'

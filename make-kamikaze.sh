@@ -17,9 +17,6 @@ export LC_ALL=C
 export PATH=`pwd`/Packages:$PATH
 
 install_redeem
-install_octoprint_redeem
-install_octoprint_toggle
-install_toggle
 # install_cura
 # install_slic3r
 install_u-boot
