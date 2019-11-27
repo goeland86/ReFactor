@@ -19,7 +19,6 @@ export PATH=`pwd`/Packages:$PATH
 install_redeem
 # install_cura
 # install_slic3r
-install_u-boot
 make_general_adjustments
 install_usbreset
 install_smbd
