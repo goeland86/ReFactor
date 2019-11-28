@@ -115,3 +115,11 @@
   service:
     name: octoprint
     enabled: yes
+
+- name: allow octo user access to Umikaze repo folder
+  file:
+    path: /usr/src/Umikaze
+    owner: octo
+    group: octo
+    state: directory
+    recurse: yes

@@ -137,6 +137,8 @@
     - python3-dev
     - gir1.2-gtk-3.0
     state: latest
+    autoremove: yes
+    autoclean: yes
 
 - name: install pip libs
   command:
@@ -212,4 +214,63 @@
     - /root/.c9
     - /usr/lib/node_modules
     - /usr/local/lib/node_modules
-    - /var/lib/cloud9   
+    - /var/lib/cloud9
+    - /var/cache/doc*
+
+- name: create dogtag
+  file:
+    path: /etc/kamikaze-release
+    state: file
+
+- name: get date
+  command: 'date'
+  register: build_date
+
+- name: write dogtag
+  lineinfile:
+    line: '{{ version }} {{ build_date }}'
+    state: present
+    path: /etc/kamikaze-release
+    
+- name: write LCD screen rules
+  lineinfile:
+    path: /etc/udev/rules.d/80-lcd-screen.rules
+    line: '{{ item }}'
+    state: present
+  with_items:
+    - "SYSFS{idVendor}==\"0eef\", SYSFS{idProduct}==\"0001\", KERNEL==\"event*\",SYMLINK+=\"input/touchscreen_eGalaxy3\""
+    - "KERNEL==\"uinput\", GROUP=\"wheel\", MODE:=\"0660\""
+
+- name: remove hosts entry
+  lineinfile:
+    path: /etc/hosts
+    regex: arm
+    state: absent
+
+- name: set hostname
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.1.1 Kamikaze Kamikaze.local'
+    state: present
+
+- name: set root password
+  user:
+    name: root
+    password: kamikaze
+    shell: /bin/bash
+    generate_ssh_key: yes
+
+- name: write issue and issue.net
+  blockinfile:
+    path: '{{ item }}'
+    state: present
+    block: |
+      "{{ version }}
+      Built from an rcn-ee.net console image.
+
+      Check that nothing is printing before any intensive operation!"
+  with_items:
+    - /etc/issue.net
+    - /etc/issue
+
+- name: 

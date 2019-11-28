@@ -19,14 +19,7 @@ export PATH=`pwd`/Packages:$PATH
 install_redeem
 # install_cura
 # install_slic3r
-make_general_adjustments
-install_usbreset
-install_smbd
-install_dummy_logging
-install_videostreamer
-install_ffmpeg
-rebrand_ssh
+
 perform_cleanup
-prepare_flasher
 
 echo "Now reboot!"

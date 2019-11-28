@@ -1,0 +1,15 @@
+---
+- name: installing samba
+  apt:
+    name: samba
+    state: present
+
+- name: installing smb.conf
+  copy:
+    src: '{{ role_path }}/files/smb.conf'
+    dest: /etc/samba/smb.conf
+
+- name: enabling samba
+  service:
+    name: smbd
+    enabled: yes
