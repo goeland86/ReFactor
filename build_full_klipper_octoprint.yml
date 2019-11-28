@@ -8,7 +8,6 @@
     - install_octoprint
     - install_klipper
     - install_octoprint_klipper_plugins
-    - install_slic3r
     - install_smbshare
     - install_toggle
     - install_uboot

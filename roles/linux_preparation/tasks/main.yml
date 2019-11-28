@@ -272,5 +272,3 @@
   with_items:
     - /etc/issue.net
     - /etc/issue
-
-- name: 
