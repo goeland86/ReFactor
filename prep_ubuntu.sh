@@ -3,7 +3,7 @@
 export DEBIAN_FRONTEND=noninteractive 
 echo "Installing ansible"
 apt-get update
-apt-get install ansible
+apt-get install -y ansible
 echo "executing Ansible playbook for linux_preparation"
 ansible-playbook ./prep-ubuntu.yml
 

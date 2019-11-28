@@ -1,5 +1,5 @@
 ---
-- hosts: local
+- hosts: localhost
   connection: local
   vars:
     - version: Klipperkaze 1.0.0
