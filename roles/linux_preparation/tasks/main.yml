@@ -47,7 +47,7 @@
     - apache2-utils
     - hostapd
     - libgtk3-common
-    state: purge
+    state: removed
     autoremove: yes
 
 - name: disable rproc overlay
