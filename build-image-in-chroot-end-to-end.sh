@@ -12,6 +12,7 @@ fi
 
 TARGETIMAGE=kamikaze-rootfs.img
 MOUNTPOINT=$(mktemp -d /tmp/umikaze-root.XXXXXX)
+UMIKAZE_HOME="/usr/src/Umikaze"
 
 BASEIMAGE=`basename ${BASEIMAGE_URL}`
 
