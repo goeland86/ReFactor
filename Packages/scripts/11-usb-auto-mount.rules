@@ -1,8 +1,0 @@
-KERNEL!="sd[a-z][0-9]", GOTO="media_by_label_auto_mount_end"
-# Mount the device
-ACTION=="add", RUN+="/bin/mount /dev/%k /media/usb"
-# Clean up after removal
-ACTION=="remove", RUN+="/bin/umount -l /media/usb"
-# Exit
-LABEL="media_by_label_auto_mount_end"
-
