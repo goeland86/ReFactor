@@ -51,15 +51,15 @@
     autoremove: yes
 
 - name: disable rproc overlay
-  lineinfile:
+  replace:
     path: /boot/uEnv.txt
-    regex: '/lib/firmware/AM335X-PRU-RPROC'
+    regex: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC'
     line: '#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC'
 
 - name: enable uio overlay
-  lineinfile:
+  replace:
     path: /boot/uEnv.txt
-    regex: '/lib/firmware/AM335X-PRU-UIO'
+    regex: '#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO'
     line: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO'
 
 - name: fix double hash
