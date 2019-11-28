@@ -1,0 +1,53 @@
+---
+- name: clone klipper from the repository
+  git: 
+    repo: https://github.com/KevinOConnor/klipper
+    dest: /usr/src/klipper
+    update: yes
+    clone: yes
+
+- name: install system klipper dependencies
+  apt:
+    pkg:
+      - python-virtualenv
+      - virtualenv
+      - python-dev
+      - libffi-dev
+      - build-essential
+      - libncurses-dev
+      - libusb-dev
+      - stm32flash
+      - libnewlib-arm-none-eabi
+      - gcc-arm-none-eabi
+      - binutils-arm-none-eabi
+    state: latest
+    update_cache: yes
+
+- name: install pip klipper dependencies
+  pip:
+    virtualenv: /usr/local/klipper/
+    requirements: /usr/src/klipper/scripts/klippy-requirements.txt
+
+- name: create klipper service
+  blockinfile:
+    create: yes
+    path: /lib/systemd/system/klipper.service
+    state: present
+    block: |
+      #Systemd service file for klipper
+      [Unit]
+      Description=Starts klipper on startup
+      After=network.target
+      [Install]
+      WantedBy=multi-user.target
+      [Service]
+      Type=simple
+      User=octo
+      RemainAfterExit=yes
+      ExecStart=/usr/local/klipper/bin/python ${SRCDIR}/klippy/klippy.py /etc/klipper/printer.cfg -l /home/octo/.octoprint/logs/klipper.log
+
+- name: enable klipper service
+  service:
+    name: klipper
+    enabled: yes
+
