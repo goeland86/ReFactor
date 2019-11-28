@@ -15,6 +15,7 @@ echo "** install_toggle **"
 set -x
 
 # first get the dependencies
+apt install -y python3
 apt install -y \
  gir1.2-clutter-1.0=1.26.0+dfsg-10.1 \
  gir1.2-cogl-1.0=1.22.2-2.1 \
@@ -36,6 +37,7 @@ apt install -y \
  libmx-bin=1.99.4-1.1 \
  libmx-common=1.99.4-1.1 \
  python3-networkmanager \
+<<<<<<< HEAD
  python3-cairo \
  python3-gi-cairo \
  python3-tornado \
@@ -44,6 +46,10 @@ apt install -y \
  python3-dbus \
  libdbus-1-dev \
  libglib2.0-dev
+=======
+ python3-gi-cairo \
+ python3-tornado \
+>>>>>>> 46c852caa03ef68ceed77b5eacb2126bd9875bc3
 
 apt-mark hold \
  gir1.2-clutter-1.0 \
@@ -66,9 +72,21 @@ apt-mark hold \
  libmx-common \
 
 if [ ! -d ${TOGGLE_ENVIRONMENT} ]; then
+<<<<<<< HEAD
   python3 -m venv ${TOGGLE_ENVIRONMENT}
 fi
 
+=======
+  python -m virtualenv -p python3 --system-site-packages ${TOGGLE_ENVIRONMENT}
+fi
+
+#cat >${TOGGLE_ENVIRONMENT}/lib/python3.6/site-packages/dist-packages.pth <<EOF
+#import sys; sys.__plen = len(sys.path)
+#/usr/lib/python3.6/dist-packages
+#/usr/local/lib/python3.6/dist-packages
+#EOF
+
+>>>>>>> 46c852caa03ef68ceed77b5eacb2126bd9875bc3
 if [ ! -d ${TOGGLE_ENVIRONMENT}/src/toggle ]; then
   mkdir -p ${TOGGLE_ENVIRONMENT}/src/toggle
   rm -rf ${TOGGLE_ENVIRONMENT}/src/toggle
@@ -144,8 +162,12 @@ python setup.py clean install
 cd ${TOGGLE_ENVIRONMENT}/src/toggle
 git fetch
 git checkout $TOGGLE_BRANCH
+<<<<<<< HEAD
 pip install -e . -r requirements.txt
 python setup.py clean install
+=======
+python3 setup.py clean install
+>>>>>>> 46c852caa03ef68ceed77b5eacb2126bd9875bc3
 
 #This is a hack for Umikaze 2.2.1 compatibility
 __TOGGLE_ENVIRONMENT=${TOGGLE_ENVIRONMENT}

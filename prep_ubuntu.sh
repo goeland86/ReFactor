@@ -15,10 +15,8 @@ upgrade_base_operating_system() {
   rm /etc/issue /etc/issue.net
   apt-get upgrade -y
   echo "Removing unwanted kernel packages"
-# apt-get -y remove linux-image-*
   apt-get -y remove linux-headers-*
   apt-get -y autoremove
-# systemctl disable bb-wl18xx-wlan0
   echo "Updating uboot..."
   sed -i 's\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC\' /boot/uEnv.txt
   sed -i 's\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO\' /boot/uEnv.txt
@@ -45,7 +43,7 @@ upgrade_base_operating_system() {
   echo "iptables-persistent     iptables-persistent/autosave_v6 boolean true" | debconf-set-selections
 
   # now install it
-  apt-get -y -q --no-install-recommends install unzip iptables iptables-persistent
+  apt-get -y -q --no-install-recommends install unzip iptables iptables-persistent e2fsprogs
   systemctl enable netfilter-persistent
 
   # allow root logon to SSH

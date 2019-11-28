@@ -11,6 +11,7 @@ if [ -f "customize.sh" ] ; then
 fi
 set -x
 
+apt purge -y connman
 userdel ubuntu
 chage -d 0 root
 rm -rf /var/cache/*
