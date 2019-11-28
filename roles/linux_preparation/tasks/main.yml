@@ -9,14 +9,15 @@
 - name: disable install recommends
   lineinfile:
     path: /etc/apt/apt.conf.d/99local
-    regexp: 'Install-Recommends'
     line: 'APT::Install-Recommends "false";'
+    state: present
     
 - name: disable install suggestions
   lineinfile:
     path: /etc/apt/apt.conf.d/99local
-    regex: 'Install-Suggests'
     line: 'APT::Install-Suggests "false";'
+    state: present
+
     
 - name: remove grub
   apt:
