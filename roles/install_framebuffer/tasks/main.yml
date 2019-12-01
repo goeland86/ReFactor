@@ -44,5 +44,5 @@
 - name: disable usb image file
   lineinefile:
     path: /etc/default/bb-boot
-    regex: 'USB_IMAGE_FILE_DISABLED'
     line: 'USB_IMAGE_FILE_DISABLED=yes'
+    state: present

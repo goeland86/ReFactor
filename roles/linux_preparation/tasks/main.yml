@@ -90,6 +90,7 @@
 - name: add thing printer key
   shell:
     cmd: "curl http://kamikaze.thing-printer.com/ubuntu/public.gpg | apt-key add -"
+    warn: false
 
 - name: add thing printer debian repository
   apt_repository:
