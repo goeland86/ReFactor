@@ -13,8 +13,6 @@
     groups: admin,adm,dialout,i2c,kmem,spi,cdrom,floppy,audio,dip,video,netdev,plugdev,users,systemd-journal,tisdk,weston-launch,xenomai
     state: present
     shell: /bin/bash
-    become: yes
-    become_method: sudo
 
 - name: create home octoprint folder
   file:
@@ -29,9 +27,9 @@
     group: octo
     owner: octo
     mode: 755
-    recursive: yes
+    recurse: yes
     state: directory
-  with_item:
+  with_items:
     - '{{ octoprint_home }}'
     - /usr/local/lib/python2.7
     - /usr/local/bin
@@ -55,10 +53,21 @@
   become: yes
   become_method: sudo
 
+- name: Make octoprint config folder
+  file:
+    path: /home/octo/.octoprint
+    state: directory
+
+- name: Create octoprint config file
+  file:
+    path: /home/octo/.octoprint
+    state: touch
+
 - name: Copy octoprint config
   file:
-    dest: '{{ octoprint_home }}/.octoprint/config.yaml'
     src: '{{ role_path }}/files/config.yaml'
+    dest: '/home/octo/.octoprint/config.yaml'
+    
     owner: octo
     group: octo
 
@@ -69,7 +78,7 @@
     virtualenv_python: python2.7
     state: latest
     name: '{{ item }}'
-  with_item:
+  with_items:
     - OctoPrint
     - https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip
 
