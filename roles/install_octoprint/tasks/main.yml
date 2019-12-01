@@ -49,20 +49,9 @@
     path: /home/octo/.octoprint
     state: directory
 
-- name: get umikaze repo
-  shell:
-    cmd: "cd {{role_path}} && git remote get-url origin | awk -F: '{print $2}' | awk -F. '{print $1 }'"
-  register: umikaze_repo
-    
-- name: get git branch
-  shell:
-    cmd: "cd {{role_path}} && git branch | grep '*' | awk -F' ' '{ print $2}'"
-  register: umikaze_branch
-
-
 - name: Insert octoprint config
-  get_url:
-    url: "https://raw.githubusercontent.com/{{umikaze_repo}}/{{umikaze_branch}}/roles/install_octoprint/files/config.yaml"
+  copy:
+    src: "{{ role_path }}/files/config.yaml"
     dest: /home/octo/.octoprint/config.yaml
     owner: octo
     group: octo

@@ -51,7 +51,6 @@
 
 - name: install pip3 dependencies
   pip:
-    executable: pip3
     virtualenv: '{{ toggle_home }}'
     name: '{{ item }}'
   with_items:
@@ -67,11 +66,11 @@
 
 - name: install pyconnman in venv
   command:
-    cmd: 'cd {{ toggle_home }}/src/pyconnman/ ; source {{toggle_home}}/bin/activate; python setup.py clean install'
+    cmd: 'cd {{ toggle_home }}/src/pyconnman/ ; source {{ toggle_home }}/bin/activate; python setup.py clean install'
 
 - name: install toggle in venv
   command:
-    cmd: 'cd {{ toggle_home }}/src/toggle ; {{toggle_home}}/bin/pip install -e . -r requirements.txt ; {{ toggle_home }}/bin/python setup.py clean install'
+    cmd: 'cd {{ toggle_home }}/src/toggle ; {{ toggle_home }}/bin/pip install -e . -r requirements.txt ; {{ toggle_home }}/bin/python setup.py clean install'
 
 - name: copy toggle configs
   copy:
