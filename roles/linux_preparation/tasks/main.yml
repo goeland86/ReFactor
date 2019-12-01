@@ -51,36 +51,32 @@
     autoremove: yes
 
 - name: disable rproc overlay
-  replace:
+  lineinfile:
     path: /boot/uEnv.txt
-    regex: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC'
-    line: '#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC'
+    line: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC'
+    state: absent
 
 - name: enable uio overlay
-  replace:
+  lineinfile:
     path: /boot/uEnv.txt
-    regex: '#uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO'
     line: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO'
-
-- name: fix double hash
-  lineinfile: 
-    path: /boot/uEnv.txt
-    regex: '##uboot'
-    line: '#uboot'
+    state: present
+    insertbefore: uboot
 
 - name: update RCN scripts
   command:
-    chdir: /opt/scripts/tools
+    chdir: /opt/scripts
     cmd: 'git pull'
 
 - name: update kernel using RCN scripts
-  command:
-    chdir: /opt/scripts/tools
-    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack sh update_kernel.sh --lts-4_19 --ti-kernel'
+  shell:
+    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_19 --ti-kernel'
 
-- name: install debconf-utils
+- name: install debconf-utils and curl
   apt:
-    name: debconf-utils
+    pkg: 
+      - debconf-utils
+      - curl
     state: latest
 
 - name: configure ipv4
@@ -91,14 +87,13 @@
   command:
     cmd: 'echo "iptables-persistent     iptables-persistent/autosave_v6 boolean true" | debconf-set-selections'
 
+- name: add thing printer key
+  shell:
+    cmd: "curl http://kamikaze.thing-printer.com/ubuntu/public.gpg | apt-key add -"
+
 - name: add thing printer debian repository
   apt_repository:
     repo: deb [arch=armhf] http://kamikaze.thing-printer.com/ubuntu/ xenial main
-    state: present
-
-- name: add thing printer key
-  apt_key:
-    url: http://kamikaze.thing-printer.com/ubuntu/public.gpg
     state: present
 
 - name: update package list
@@ -112,7 +107,7 @@
     - iptables
     - iptables-persistent
     - python-pip
-    - python-pip3
+    - python3-pip
     - python-dev
     - python-virtualenv
     - libyaml-dev
@@ -141,12 +136,37 @@
     autoremove: yes
     autoclean: yes
 
+- name: upgrade pip3
+  pip:
+    executable: pip3
+    name: pip
+    extra_args: --upgrade
+
+- name: remove python-pip
+  apt:
+    name: python-pip
+    state: absent
+
+- name: install python-pip
+  apt:
+    name: python-pip
+    state: latest
+    
 - name: install pip libs
-  command:
-    cmd: "yes | pip install setuptools wheel pycairo PyGObject"
+  pip:
+    executable: pip
+    extra_args: --upgrade
+    name:
+      - setuptools 
+      - wheel 
+
 - name: install pip3 libs
-  command:
-    cmd: "yes | pip3 install setuptools wheel pycairo PyGObject"
+  pip:
+    executable: pip3
+    extra_args: --upgrade
+    name: 
+      - setuptools
+      - wheel
 
 - name: enable netfilter
   service:
@@ -156,14 +176,14 @@
 - name: enable root login via ssh
   lineinfile:
     path: /etc/ssh/sshd_config
-    regex: 'PermitRootLogin'
     line: 'PermitRootLogin yes'
+    state: present
 
 - name: disable the power button
   lineinfile:
     path: /etc/systemd/logind.conf
-    regex: 'HandlePowerKey'
     line: 'HandlePowerKey=ignore'
+    state: present
 
 - name: disable wireless power management
   file:
@@ -173,12 +193,14 @@
 - name: update dhcp
   lineinfile:
     path: /etc/NetworkManager/NetworkManager.conf
-    regex: 'dhcp'
     line: 'dhcp=internal'
+    insertafter: '[main]'
+    state: present
 
 - name: setup network interfaces file
   blockinfile:
     path: /etc/network/interfaces
+    create: yes
     block: |
       # This file describes the network interfaces available on your system
       # and how to activate them. For more information, see interfaces(5).
@@ -209,7 +231,6 @@
   file:
     path: "{{ item }}"
     state: absent
-    recurse: yes
   with_items:
     - /etc/apache2/
     - /root/.c9
@@ -221,7 +242,7 @@
 - name: create dogtag
   file:
     path: /etc/kamikaze-release
-    state: file
+    state: touch
 
 - name: get date
   command: 'date'
@@ -232,6 +253,11 @@
     line: '{{ version }} {{ build_date }}'
     state: present
     path: /etc/kamikaze-release
+
+- name: touch LCD screen rules
+  file:
+    path: /etc/udev/rules.d/80-lcd-screen.rules
+    state: touch
     
 - name: write LCD screen rules
   lineinfile:
@@ -245,7 +271,7 @@
 - name: remove hosts entry
   lineinfile:
     path: /etc/hosts
-    regex: arm
+    line: arm
     state: absent
 
 - name: set hostname
@@ -260,6 +286,14 @@
     password: kamikaze
     shell: /bin/bash
     generate_ssh_key: yes
+
+- name: create issue and issue.net file
+  file:
+    path: '{{ item }}'
+    state: touch
+  with_items:
+   - /etc/issue
+   - /etc/issue.net
 
 - name: write issue and issue.net
   blockinfile:
