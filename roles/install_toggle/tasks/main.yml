@@ -46,13 +46,13 @@
 - name: grant sudo to octo user for restarting toggle service
   lineinfile:
     path: /etc/sudoers.d/octo
-    regex: toggle.service
     line: '%octo ALL=NOPASSWD: /bin/systemctl restart toggle.service'
+    state: present
 
 - name: install pip3 dependencies
   pip:
+    executable: pip3
     virtualenv: '{{ toggle_home }}'
-    virtualenv_python: python3.6
     name: '{{ item }}'
   with_items:
     - wheel
@@ -67,7 +67,7 @@
 
 - name: install pyconnman in venv
   command:
-    cmd: 'cd {{ toggle_home }}/src/pyconnman/ ; {{ toggle_home }}/bin/python setup.py clean install'
+    cmd: 'cd {{ toggle_home }}/src/pyconnman/ ; source {{toggle_home}}/bin/activate; python setup.py clean install'
 
 - name: install toggle in venv
   command:
@@ -104,5 +104,5 @@
 - name: install sudoers entry for toggle restart
   lineinfile:
     path: /etc/sudoers.d/octo
-    regex: toggle
     line: '%octo ALL=NOPASSWD: /usr/bin/make -C /usr/src/toggle install'
+    state: present

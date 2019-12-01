@@ -34,15 +34,6 @@
     - /usr/local/lib/python2.7
     - /usr/local/bin
 
-- name: installing depedencies
-  apt:
-    name: "{{item}}"
-    state: latest
-    update_cache: yes
-  with_items:
-   - python3
-   - python3-pip
-
 - name: create installation directory
   file:
     path: /home/octo/OctoPrint
@@ -58,16 +49,21 @@
     path: /home/octo/.octoprint
     state: directory
 
-- name: Create octoprint config file
-  file:
-    path: /home/octo/.octoprint
-    state: touch
-
-- name: Copy octoprint config
-  file:
-    src: '{{ role_path }}/files/config.yaml'
-    dest: '/home/octo/.octoprint/config.yaml'
+- name: get umikaze repo
+  shell:
+    cmd: "cd {{role_path}} && git remote get-url origin | awk -F: '{print $2}' | awk -F. '{print $1 }'"
+  register: umikaze_repo
     
+- name: get git branch
+  shell:
+    cmd: "cd {{role_path}} && git branch | grep '*' | awk -F' ' '{ print $2}'"
+  register: umikaze_branch
+
+
+- name: Insert octoprint config
+  get_url:
+    url: "https://raw.githubusercontent.com/{{umikaze_repo}}/{{umikaze_branch}}/roles/install_octoprint/files/config.yaml"
+    dest: /home/octo/.octoprint/config.yaml
     owner: octo
     group: octo
 
@@ -93,8 +89,8 @@
 - name: annotate OctoPrint port in services
   lineinfile:
     path: /etc/services
-    regex: octoprint
     line: octoprint 5000/tcp
+    state: present
 
 - name: setup sudoers.d/octo file
   file:

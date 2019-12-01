@@ -110,7 +110,6 @@
     - python-pip
     - python3-pip
     - python-dev
-    - python-virtualenv
     - libyaml-dev
     - libavahi-compat-libdnssd1
     - libnss-mdns
@@ -150,7 +149,9 @@
 
 - name: install python-pip
   apt:
-    name: python-pip
+    pkg: 
+      - python-pip
+      - python-virtualenv
     state: latest
     
 - name: install pip libs
@@ -159,7 +160,8 @@
     extra_args: --upgrade
     name:
       - setuptools 
-      - wheel 
+      - wheel
+      - virtualenv 
 
 - name: install pip3 libs
   pip:
@@ -168,6 +170,7 @@
     name: 
       - setuptools
       - wheel
+      - virtualenv
 
 - name: enable netfilter
   service:
