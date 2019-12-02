@@ -77,7 +77,7 @@
     pkg: 
       - debconf-utils
       - curl
-    state: latest
+    state: present
 
 - name: configure ipv4
   command:
@@ -132,7 +132,7 @@
     - pkg-config
     - python3-dev
     - gir1.2-gtk-3.0
-    state: latest
+    state: present
     autoremove: yes
     autoclean: yes
 
@@ -274,22 +274,29 @@
 
 - name: remove hosts entry
   lineinfile:
-    path: /etc/hosts
+    path: /etc/hostname
     line: arm
     state: absent
 
 - name: set hostname
+  lineinfile:
+    path: /etc/hostname
+    line: kamikaze
+    state: present
+
+- name: set host entry
   lineinfile:
     path: /etc/hosts
     line: '127.0.1.1 Kamikaze Kamikaze.local'
     state: present
 
 - name: set root password
-  user:
-    name: root
-    password: kamikaze
-    shell: /bin/bash
-    generate_ssh_key: yes
+  shell:
+    cmd: "echo 'root:kamikaze' | chpasswd"
+
+- name: force user to change password on first login
+  shell:
+    cmd: "chage -d 0 root"
 
 - name: create issue and issue.net file
   file:

@@ -26,7 +26,7 @@
     path: '{{ item }}'
     group: octo
     owner: octo
-    mode: 755
+    mode: 0755
     recurse: yes
     state: directory
   with_items:
@@ -34,20 +34,12 @@
     - /usr/local/lib/python2.7
     - /usr/local/bin
 
-- name: create installation directory
-  file:
-    path: /home/octo/OctoPrint
-    mode: 0755
-    state: directory
-    owner: octo
-    group: octo
-  become: yes
-  become_method: sudo
-
 - name: Make octoprint config folder
   file:
     path: /home/octo/.octoprint
     state: directory
+    owner: octo
+    group: octo
 
 - name: Insert octoprint config
   copy:
@@ -58,8 +50,8 @@
 
 - name: Use pip to install OctoPrint
   pip:
-    chdir: '{{ octoprint_home }}/OctoPrint'
-    virtualenv: '{{ octoprint_home }}/OctoPrint/venv'
+    chdir: '{{ octoprint_home }}'
+    virtualenv: '{{ octoprint_home }}/venv'
     virtualenv_python: python2.7
     state: latest
     name: '{{ item }}'
@@ -73,7 +65,7 @@
     state: directory
     owner: octo
     group: octo
-    mode: 777
+    mode: 0777
 
 - name: annotate OctoPrint port in services
   lineinfile:
@@ -103,7 +95,7 @@
     dest: /lib/systemd/system/octoprint.service
     owner: root
     group: root
-    mode: 644
+    mode: 0644
 
 - name: enable octoprint service
   service:
