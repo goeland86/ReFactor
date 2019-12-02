@@ -1,5 +1,7 @@
 ---
 - hosts: localhost
   connection: local
+  vars:
+    - version: Klipperkaze 1.0.0
   roles:
     - linux_preparation

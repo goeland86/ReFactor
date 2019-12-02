@@ -6,6 +6,13 @@
     update: yes
     clone: yes
 
+- name: adjust ownership of klipper source
+  file:
+    path: /usr/src/klipper
+    owner: octo
+    group: octo
+    recurse: yes
+
 - name: install system klipper dependencies
   apt:
     pkg:
@@ -26,7 +33,15 @@
 - name: install pip klipper dependencies
   pip:
     virtualenv: /usr/local/klipper/
+    virtualenv_python: python2.7
     requirements: /usr/src/klipper/scripts/klippy-requirements.txt
+
+- name: compile binary blobs for klippy
+  shell:
+    cmd: "cd /usr/src/klipper ; cp {{ item }} .config ; make flash"
+  with_items:
+    - "{{ role_path }}/files/pru_config"
+    - "{{ role_path }}/files/linux_config"
 
 - name: create klipper service
   blockinfile:
@@ -44,10 +59,44 @@
       Type=simple
       User=octo
       RemainAfterExit=yes
-      ExecStart=/usr/local/klipper/bin/python ${SRCDIR}/klippy/klippy.py /etc/klipper/printer.cfg -l /home/octo/.octoprint/logs/klipper.log
+      ExecStart=/usr/local/klipper/bin/python /usr/src/klipper/klippy/klippy.py /etc/klipper/printer.cfg -l /home/octo/.octoprint/logs/klipper.log
 
 - name: enable klipper service
   service:
     name: klipper
     enabled: yes
+
+- name: create klipper config file
+  file:
+    path: /etc/klipper/printer.cfg
+    state: touch
+    owner: octo
+    group: octo
+
+- name: install gcc-pru
+  apt:
+    name: gcc-pru
+    state: latest
+    update_cache: yes
+
+- name: install PRU start scripts
+  copy:
+    src: /usr/src/klipper/scripts/klipper-pru-start.sh
+    dest: /etc/init.d/klipper_pru
+
+- name: update services
+  shell:
+    cmd: "update-rc.d klipper_pru defaults"
+
+- name: create udev rule file
+  file:
+    path: /etc/udev/rules.d/pru.rules
+    state: touch
+
+- name: populate udev rules
+  lineinfile:
+    path: /etc/udev/rules.d/pru.rules
+    line: 'KERNEL=="rpmsg_pru30", GROUP="tty", MODE="0660"'
+    state: present
+
 
