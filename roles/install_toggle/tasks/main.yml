@@ -52,6 +52,7 @@
 - name: install pip3 dependencies
   pip:
     virtualenv: '{{ toggle_home }}'
+    virtualenv_python: python3.6
     name: '{{ item }}'
   with_items:
     - wheel
@@ -65,17 +66,24 @@
     depth: 1
 
 - name: install pyconnman in venv
-  command:
-    cmd: 'cd {{ toggle_home }}/src/pyconnman/ ; source {{ toggle_home }}/bin/activate; python setup.py clean install'
+  shell:
+    cmd: 'cd {{ toggle_home }}/src/pyconnman ; ../../bin/python setup.py clean install'
 
 - name: install toggle in venv
-  command:
+  shell:
     cmd: 'cd {{ toggle_home }}/src/toggle ; {{ toggle_home }}/bin/pip install -e . -r requirements.txt ; {{ toggle_home }}/bin/python setup.py clean install'
+
+- name: make config directory
+  file:
+    path: /etc/toggle
+    state: directory
+    owner: octo
+    group: octo
 
 - name: copy toggle configs
   copy:
-    src: '{{ toggle_home }}/src/toggle/configs/*.cfg'
-    dest: /etc/toggle/
+    src: '{{ toggle_home }}/src/toggle/configs/'
+    dest: /etc/toggle
     owner: octo
     group: octo
 
@@ -97,8 +105,8 @@
     dest: /usr/src/octoprint_toggle
 
 - name: install octoprint toggle plugin in virtualenv
-  command:
-    cmd: 'source /home/octo/OctoPrint/venv/bin/activate; cd /usr/src/octoprint_toggle; python setup.py clean install'
+  shell:
+    cmd: 'cd /usr/src/octoprint_toggle; {{ octoprint_home }}/OctoPrint/venv/bin/python setup.py clean install'
 
 - name: install sudoers entry for toggle restart
   lineinfile:
