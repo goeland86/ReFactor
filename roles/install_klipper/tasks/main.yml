@@ -67,9 +67,9 @@
     enabled: yes
 
 - name: create klipper config file
-  file:
-    path: /etc/klipper/printer.cfg
-    state: touch
+  copy:
+    src: /usr/src/klipper/config/generic-replicape.cfg
+    dest: /etc/klipper/printer.cfg
     owner: octo
     group: octo
 
@@ -81,12 +81,22 @@
 
 - name: install PRU start scripts
   copy:
-    src: /usr/src/klipper/scripts/klipper-pru-start.sh
+    src: "{{ role_path }}/files/klipper_pru"
     dest: /etc/init.d/klipper_pru
 
 - name: update services
   shell:
     cmd: "update-rc.d klipper_pru defaults"
+
+- name: copy systemd klipper_pru file
+  copy:
+    src: "{{ role_path }}/files/klipper_pru.service
+    dest: /lib/systemd/system/klipper_pru.service
+
+- name: enable systemd klipper_pru
+  service:
+    name: klipper_pru
+    state: enabled
 
 - name: create udev rule file
   file:
@@ -99,4 +109,19 @@
     line: 'KERNEL=="rpmsg_pru30", GROUP="tty", MODE="0660"'
     state: present
 
+- name: stop octoprint
+  service:
+    name: octoprint
+    state: stopped
 
+- name: place Klipper-friendly config for octoprint in place
+  copy:
+    src: "{{ role_path }}/files/octoprint_config.yaml"
+    dest: /home/octo/.octoprint/config.yaml
+    owner: octo
+    group: octo
+
+- name: start octoprint
+  service:
+    name: octoprint
+    state: started
