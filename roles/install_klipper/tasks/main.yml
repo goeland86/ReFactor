@@ -43,23 +43,10 @@
     - "{{ role_path }}/files/pru_config"
     - "{{ role_path }}/files/linux_config"
 
-- name: create klipper service
-  blockinfile:
-    create: yes
-    path: /lib/systemd/system/klipper.service
-    state: present
-    block: |
-      #Systemd service file for klipper
-      [Unit]
-      Description=Starts klipper on startup
-      After=network.target
-      [Install]
-      WantedBy=multi-user.target
-      [Service]
-      Type=simple
-      User=octo
-      RemainAfterExit=yes
-      ExecStart=/usr/local/klipper/bin/python /usr/src/klipper/klippy/klippy.py /etc/klipper/printer.cfg -l /home/octo/.octoprint/logs/klipper.log
+- name: copy klipper service
+  copy:
+    src: "{{ role_path }}/files/klipper.service"
+    dest: /lib/systemd/system/klipper.service
 
 - name: enable klipper service
   service:
