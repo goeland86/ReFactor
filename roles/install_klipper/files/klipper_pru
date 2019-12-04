@@ -56,9 +56,6 @@ pru_start()
     echo 'start' > $RPROC0
     echo 'start' > $RPROC1
 
-
-#    log_daemon_msg "Loading ADC module"
-#    echo 'BB-ADC' > /sys/devices/platform/bone_capemgr/slots
 }
 
 mcu_host_stop()
