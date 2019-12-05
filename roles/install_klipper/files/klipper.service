@@ -8,7 +8,7 @@ Type=Simple
 Restart=yes
 RemainAfterExit=yes
 SuccessExitStatus=5 6
-ExecStart=/usr/local/klipper/bin/python /usr/src/klipper/klippy/klippy.py /etc/klipper/printer.cfg
+ExecStart=/usr/local/klipper/bin/python /usr/src/klipper/klippy/klippy.py /etc/klipper/printer.cfg -l /home/octo/.octoprint/klippy.log
 User=octo
 
 [Install]
