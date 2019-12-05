@@ -1,4 +1,15 @@
 ---
+- name: set kernel version to 4.14
+  shell:
+    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
+
+- name: enable replicape overlay loading
+  lineinfile:
+    line: 'uboot_overlay_addr0=/lib/firmware/BB-BONE-REPLICAP-0B3A.dtbo'
+    state: present
+    insertafter: 'enable_uboot_overlays=1'
+    path: /boot/uEnv.txt
+
 - name: clone klipper from the repository
   git: 
     repo: https://github.com/KevinOConnor/klipper
@@ -54,7 +65,6 @@
     name: klipper
     enabled: yes
 
-
 - name: make klipper config directory
   file:
     path: /etc/klipper
@@ -73,6 +83,7 @@
   copy:
     src: "{{ role_path }}/files/klipper_pru"
     dest: /etc/init.d/klipper_pru
+    mode: 0755
 
 - name: update services
   shell:
@@ -102,4 +113,11 @@
 
 - name: replace UIO with rproc kernel overlays
   shell: 
-    cmd: "sed -i 's\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\' /boot/uEnv.txt"
+    cmd: "sed -i 's\\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\' /boot/uEnv.txt"
+
+- name: enable rproc overlay
+  lineinfile:
+    line: uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo
+    insertbefore: enable_uboot_cape_universal=1
+    state: present
+    path: /boot/uEnv.txt
