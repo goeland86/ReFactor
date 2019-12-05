@@ -1,21 +1,15 @@
 [Unit]
 Documentation=man:systemd-sysv-generator(8)
-SourcePath=/etc/init.d/klipper_pru
-Description=LSB: Klipper_PRU daemon
+Description=Klipper thread application
 After=multi-user.target
 
 [Service]
-Type=forking
-Restart=no
-TimeoutSec=5min
-IgnoreSIGPIPE=no
-KillMode=process
-GuessMainPID=no
+Type=Simple
+Restart=yes
 RemainAfterExit=yes
 SuccessExitStatus=5 6
-ExecStart=/etc/init.d/klipper_pru start
-ExecStop=/etc/init.d/klipper_pru stop
-ExecReload=/etc/init.d/klipper_pru reload
+ExecStart=/usr/local/klipper/bin/python /usr/src/klipper/klippy/klippy.py /etc/klipper/printer.cfg
+User=octo
 
 [Install]
 WantedBy=multi-user.target

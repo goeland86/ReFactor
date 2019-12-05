@@ -121,3 +121,9 @@
     insertbefore: enable_uboot_cape_universal=1
     state: present
     path: /boot/uEnv.txt
+
+- name: add octo user to remoteproc group
+  user:
+    append: yes
+    group: remoteproc
+    name: octo
