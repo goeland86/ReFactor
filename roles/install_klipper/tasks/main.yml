@@ -96,7 +96,7 @@
 
 - name: enable systemd klipper_pru
   service:
-    name: klipper_pru
+    name: klipper_pru.service
     enabled: yes
 
 - name: create udev rule file
