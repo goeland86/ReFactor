@@ -27,6 +27,7 @@
       - libnewlib-arm-none-eabi
       - gcc-arm-none-eabi
       - binutils-arm-none-eabi
+      - gcc-pru
     state: latest
     update_cache: yes
 
@@ -53,18 +54,20 @@
     name: klipper
     enabled: yes
 
+
+- name: make klipper config directory
+  file:
+    path: /etc/klipper
+    state: directory
+    owner: octo
+    group: octo
+
 - name: create klipper config file
   copy:
     src: /usr/src/klipper/config/generic-replicape.cfg
     dest: /etc/klipper/printer.cfg
     owner: octo
     group: octo
-
-- name: install gcc-pru
-  apt:
-    name: gcc-pru
-    state: latest
-    update_cache: yes
 
 - name: install PRU start scripts
   copy:
@@ -77,29 +80,18 @@
 
 - name: copy systemd klipper_pru file
   copy:
-    src: "{{ role_path }}/files/klipper_pru.service
+    src: "{{ role_path }}/files/klipper_pru.service"
     dest: /lib/systemd/system/klipper_pru.service
 
 - name: enable systemd klipper_pru
   service:
     name: klipper_pru
-    state: enabled
+    enabled: yes
 
 - name: create udev rule file
   file:
     path: /etc/udev/rules.d/pru.rules
     state: touch
-
-- name: populate udev rules
-  lineinfile:
-    path: /etc/udev/rules.d/pru.rules
-    line: 'KERNEL=="rpmsg_pru30", GROUP="tty", MODE="0660"'
-    state: present
-
-- name: stop octoprint
-  service:
-    name: octoprint
-    state: stopped
 
 - name: place Klipper-friendly config for octoprint in place
   copy:
@@ -107,8 +99,3 @@
     dest: /home/octo/.octoprint/config.yaml
     owner: octo
     group: octo
-
-- name: start octoprint
-  service:
-    name: octoprint
-    state: started
