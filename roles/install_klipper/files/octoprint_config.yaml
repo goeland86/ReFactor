@@ -1,307 +1,312 @@
 accessControl:
-    salt: pNbVSgrkZchidVXftJvg9JzDXC9aPT97
+  salt: pNbVSgrkZchidVXftJvg9JzDXC9aPT97
 api:
-    key: A16E678B4725409883770F6DD4DAA436
+  key: A16E678B4725409883770F6DD4DAA436
 appearance:
-    name: KAMIKAZE
+  name: KAMIKAZE
 controls:
--   children:
-    -   commands:
-        - M906 X%(current_x)s
-        - M909 X%(microstepping_x)s
-        input:
-        -   default: 500
-            name: Current X
-            parameter: current_x
-            slider:
-                max: 2500
-                min: 1
-                step: 1
-        -   default: 4
-            name: Microstepping X
-            parameter: microstepping_x
-            slider:
-                max: 7
-                min: 0
-                step: 1
-        layout: vertical
-        name: Set
-    -   commands:
-        - M906 Y%(current_y)s
-        - M909 Y%(microstepping_y)s
-        input:
-        -   default: 500
-            name: Current Y
-            parameter: current_y
-            slider:
-                max: 2500
-                min: 1
-                step: 1
-        -   default: 4
-            name: Microstepping Y
-            parameter: microstepping_y
-            slider:
-                max: 7
-                min: 0
-                step: 1
-        layout: vertical
-        name: Set
-    -   commands:
-        - M906 Z%(current_z)s
-        - M909 Z%(microstepping_z)s
-        input:
-        -   default: 500
-            name: Current Z
-            parameter: current_z
-            slider:
-                max: 2500
-                min: 1
-                step: 1
-        -   default: 4
-            name: Microstepping Z
-            parameter: microstepping_z
-            slider:
-                max: 7
-                min: 0
-                step: 1
-        layout: vertical
-        name: Set
-    -   commands:
-        - M906 E%(current_e)s
-        - M909 E%(microstepping_e)s
-        input:
-        -   default: 500
-            name: Current E
-            parameter: current_e
-            slider:
-                max: 2500
-                min: 1
-                step: 1
-        -   default: 4
-            name: Microstepping E
-            parameter: microstepping_e
-            slider:
-                max: 7
-                min: 0
-                step: 1
-        layout: vertical
-        name: Set
-    -   commands:
-        - M906 H%(current_h)s
-        - M909 H%(microstepping_h)s
-        input:
-        -   default: 500
-            name: Current H
-            parameter: current_h
-            slider:
-                max: 2500
-                min: 1
-                step: 1
-        -   default: 4
-            name: Microstepping H
-            parameter: microstepping_h
-            slider:
-                max: 7
-                min: 0
-                step: 1
-        layout: vertical
-        name: Set
+- children:
+  - commands:
+    - M906 X%(current_x)s
+    - M909 X%(microstepping_x)s
+    input:
+    - default: 500
+      name: Current X
+      parameter: current_x
+      slider:
+        max: 2500
+        min: 1
+        step: 1
+    - default: 4
+      name: Microstepping X
+      parameter: microstepping_x
+      slider:
+        max: 7
+        min: 0
+        step: 1
     layout: vertical
-    name: Stepper current and microstepping
--   children:
-    -   commands:
-        - M569 X%(direction_x)s
-        - M92  X%(steps_pr_mm_x)s
-        input:
-        -   default: 10
-            name: Steps pr mm X
-            parameter: steps_pr_mm_x
-        -   default: 1
-            name: Invert X
-            parameter: direction_x
-            slider:
-                max: 1
-                min: -1
-                step: 2
-        layout: vertical
-        name: Set
-    -   commands:
-        - M569 Y%(direction_y)s
-        - M92  Y%(steps_pr_mm_y)s
-        input:
-        -   default: 10
-            name: Steps pr mm Y
-            parameter: steps_pr_mm_y
-        -   default: 1
-            name: Invert Y
-            parameter: direction_y
-            slider:
-                max: 1
-                min: -1
-                step: 2
-        layout: vertical
-        name: Set
-    -   commands:
-        - M569 Z%(direction_z)s
-        - M92  Z%(steps_pr_mm_z)s
-        input:
-        -   default: 10
-            name: Steps pr mm Z
-            parameter: steps_pr_mm_z
-        -   default: 1
-            name: Invert Z
-            parameter: direction_z
-            slider:
-                max: 1
-                min: -1
-                step: 2
-        layout: vertical
-        name: Set
-    -   commands:
-        - M569 E%(direction_e)s
-        - M92  E%(steps_pr_mm_e)s
-        input:
-        -   default: 10
-            name: Steps pr mm E
-            parameter: steps_pr_mm_e
-        -   default: 1
-            name: Invert E
-            parameter: direction_e
-            slider:
-                max: 1
-                min: -1
-                step: 2
-        layout: vertical
-        name: Set
-    -   commands:
-        - M569 H%(direction_h)s
-        - M92  H%(steps_pr_mm_h)s
-        input:
-        -   default: 10
-            name: Steps pr mm H
-            parameter: steps_pr_mm_h
-        -   default: 1
-            name: Invert H
-            parameter: direction_h
-            slider:
-                max: 1
-                min: -1
-                step: 2
-        layout: vertical
-        name: Set
+    name: Set
+  - commands:
+    - M906 Y%(current_y)s
+    - M909 Y%(microstepping_y)s
+    input:
+    - default: 500
+      name: Current Y
+      parameter: current_y
+      slider:
+        max: 2500
+        min: 1
+        step: 1
+    - default: 4
+      name: Microstepping Y
+      parameter: microstepping_y
+      slider:
+        max: 7
+        min: 0
+        step: 1
     layout: vertical
-    name: Stepper steps pr mm and direction
+    name: Set
+  - commands:
+    - M906 Z%(current_z)s
+    - M909 Z%(microstepping_z)s
+    input:
+    - default: 500
+      name: Current Z
+      parameter: current_z
+      slider:
+        max: 2500
+        min: 1
+        step: 1
+    - default: 4
+      name: Microstepping Z
+      parameter: microstepping_z
+      slider:
+        max: 7
+        min: 0
+        step: 1
+    layout: vertical
+    name: Set
+  - commands:
+    - M906 E%(current_e)s
+    - M909 E%(microstepping_e)s
+    input:
+    - default: 500
+      name: Current E
+      parameter: current_e
+      slider:
+        max: 2500
+        min: 1
+        step: 1
+    - default: 4
+      name: Microstepping E
+      parameter: microstepping_e
+      slider:
+        max: 7
+        min: 0
+        step: 1
+    layout: vertical
+    name: Set
+  - commands:
+    - M906 H%(current_h)s
+    - M909 H%(microstepping_h)s
+    input:
+    - default: 500
+      name: Current H
+      parameter: current_h
+      slider:
+        max: 2500
+        min: 1
+        step: 1
+    - default: 4
+      name: Microstepping H
+      parameter: microstepping_h
+      slider:
+        max: 7
+        min: 0
+        step: 1
+    layout: vertical
+    name: Set
+  layout: vertical
+  name: Stepper current and microstepping
+- children:
+  - commands:
+    - M569 X%(direction_x)s
+    - M92  X%(steps_pr_mm_x)s
+    input:
+    - default: 10
+      name: Steps pr mm X
+      parameter: steps_pr_mm_x
+    - default: 1
+      name: Invert X
+      parameter: direction_x
+      slider:
+        max: 1
+        min: -1
+        step: 2
+    layout: vertical
+    name: Set
+  - commands:
+    - M569 Y%(direction_y)s
+    - M92  Y%(steps_pr_mm_y)s
+    input:
+    - default: 10
+      name: Steps pr mm Y
+      parameter: steps_pr_mm_y
+    - default: 1
+      name: Invert Y
+      parameter: direction_y
+      slider:
+        max: 1
+        min: -1
+        step: 2
+    layout: vertical
+    name: Set
+  - commands:
+    - M569 Z%(direction_z)s
+    - M92  Z%(steps_pr_mm_z)s
+    input:
+    - default: 10
+      name: Steps pr mm Z
+      parameter: steps_pr_mm_z
+    - default: 1
+      name: Invert Z
+      parameter: direction_z
+      slider:
+        max: 1
+        min: -1
+        step: 2
+    layout: vertical
+    name: Set
+  - commands:
+    - M569 E%(direction_e)s
+    - M92  E%(steps_pr_mm_e)s
+    input:
+    - default: 10
+      name: Steps pr mm E
+      parameter: steps_pr_mm_e
+    - default: 1
+      name: Invert E
+      parameter: direction_e
+      slider:
+        max: 1
+        min: -1
+        step: 2
+    layout: vertical
+    name: Set
+  - commands:
+    - M569 H%(direction_h)s
+    - M92  H%(steps_pr_mm_h)s
+    input:
+    - default: 10
+      name: Steps pr mm H
+      parameter: steps_pr_mm_h
+    - default: 1
+      name: Invert H
+      parameter: direction_h
+      slider:
+        max: 1
+        min: -1
+        step: 2
+    layout: vertical
+    name: Set
+  layout: vertical
+  name: Stepper steps pr mm and direction
 feature: {}
 folder:
-    uploads: /usr/share/models
+  uploads: /usr/share/models
 gcodeViewer: {}
 plugins:
-    announcements:
-        _config_version: 1
-        channels:
-            _blog:
-                read_until: 1574955000
-            _important:
-                read_until: 1521111600
-            _octopi:
-                read_until: 1573722900
-            _plugins:
-                read_until: 1574985600
-            _releases:
-                read_until: 1575299700
-    cura:
-        _config_version: null
-        cura_engine: /usr/bin/CuraEngine
-        debug_logging: false
-        default_profile: null
-    discovery:
-        upnpUuid: 05489750-db4d-4c17-8aa6-e9783bc31ef3
-    errortracking:
-        enabled: true
-        unique_id: 89d862ca-31ef-43bf-a46a-a73248343ca8
-    klipper:
-        _config_version: 2
-        configuration:
-            path: /etc/klipper/printer.cfg
-    softwareupdate:
-        _config_version: 7
-        checks:
-            Kamikaze:
-                checkout_folder: /usr/src/Kamikaze2
-                restart: echo "Kamikaze dummy restart"
-                type: git_commit
-                update_script: /usr/src/Kamikaze2/update-kamikaze.sh
-            Redeem:
-                checkout_folder: /usr/local/src/redeem
-                restart: echo "Redeem dummy restart"
-                type: git_commit
-                update_script: '{python} "/usr/local/src/redeem/update-redeem.py"
-                    --python="{python}" --sudo "{folder}" "{target}"'
-            Toggle:
-                checkout_folder: /usr/src/toggle
-                restart: echo "Toggle dummy restart"
-                type: git_commit
-                update_script: '{python} "/usr/src/toggle/update-toggle.py" --python="{python}"
-                    "{folder}" "{target}"'
-            octoprint:
-                branch: null
-                checkout_folder: /home/octo/OctoPrint
-                prerelease: true
-                prerelease_channel: rc/devel
-    tracking:
-        enabled: true
-        unique_id: fbffc87a-33d1-40a0-9809-d7baad84ee8f
+  announcements:
+    _config_version: 1
+    channels:
+      _blog:
+        read_until: 1574955000
+      _important:
+        read_until: 1521111600
+      _octopi:
+        read_until: 1573722900
+      _plugins:
+        read_until: 1574985600
+      _releases:
+        read_until: 1575299700
+  cura:
+    _config_version: null
+    cura_engine: /usr/bin/CuraEngine
+    debug_logging: false
+    default_profile: null
+  discovery:
+    upnpUuid: 05489750-db4d-4c17-8aa6-e9783bc31ef3
+  errortracking:
+    enabled: true
+    unique_id: 89d862ca-31ef-43bf-a46a-a73248343ca8
+  klipper:
+    _config_version: 2
+    configuration:
+      path: /etc/klipper/printer.cfg
+  softwareupdate:
+    _config_version: 7
+    check_providers:
+      filemanager: filemanager
+      klipper: klipper
+    checks:
+      Kamikaze:
+        checkout_folder: /usr/src/Kamikaze2
+        restart: echo "Kamikaze dummy restart"
+        type: git_commit
+        update_script: /usr/src/Kamikaze2/update-kamikaze.sh
+      Redeem:
+        checkout_folder: /usr/local/src/redeem
+        restart: echo "Redeem dummy restart"
+        type: git_commit
+        update_script: '{python} "/usr/local/src/redeem/update-redeem.py" --python="{python}"
+          --sudo "{folder}" "{target}"'
+      Toggle:
+        checkout_folder: /usr/src/toggle
+        restart: echo "Toggle dummy restart"
+        type: git_commit
+        update_script: '{python} "/usr/src/toggle/update-toggle.py" --python="{python}"
+          "{folder}" "{target}"'
+      octoprint:
+        branch: null
+        checkout_folder: /home/octo/OctoPrint
+        prerelease: true
+        prerelease_channel: rc/devel
+  tracking:
+    enabled: true
+    unique_id: fbffc87a-33d1-40a0-9809-d7baad84ee8f
 printerParameters: {}
+printerProfiles:
+  default: _default
 serial:
-    additionalPorts:
-    - /tmp/printer
-    autoconnect: true
-    baudrate: 115200
-    port: /tmp/printer
-    timeout: {}
+  additionalPorts:
+  - /tmp/printer
+  autoconnect: true
+  baudrate: 115200
+  port: /tmp/printer
+  timeout: {}
 server:
-    commands:
-        serverRestartCommand: sudo systemctl restart octoprint.service
-        systemRestartCommand: sudo reboot
-        systemShutdownCommand: sudo shutdown -h now
-    firstRun: false
-    onlineCheck:
-        enabled: true
-    pluginBlacklist:
-        enabled: true
-    secretKey: t5QPDeUzU3yVmNnzLQfXDgC666wUnk7g
-    seenWizards:
-        corewizard: 3
-        tracking: null
+  commands:
+    serverRestartCommand: sudo systemctl restart octoprint.service
+    systemRestartCommand: sudo reboot
+    systemShutdownCommand: sudo shutdown -h now
+  firstRun: true
+  onlineCheck:
+    enabled: true
+  pluginBlacklist:
+    enabled: true
+  secretKey: t5QPDeUzU3yVmNnzLQfXDgC666wUnk7g
+  seenWizards:
+    corewizard: 3
+    tracking: null
 system:
-    actions:
-    -   action: restart_redeem
-        command: sudo systemctl restart redeem.service
-        name: Restart Redeem
-    -   action: restart_toggle
-        command: sudo systemctl restart toggle.service
-        name: Restart Toggle
-    -   action: restart mjpg
-        command: sudo systemctl restart mjpg.service
-        name: Restart Mjpg
+  actions:
+  - action: restart_redeem
+    command: sudo systemctl restart redeem.service
+    name: Restart Redeem
+  - action: restart_toggle
+    command: sudo systemctl restart toggle.service
+    name: Restart Toggle
+  - action: restart mjpg
+    command: sudo systemctl restart mjpg.service
+    name: Restart Mjpg
 temperature:
-    profiles:
-    -   bed: 100
-        chamber: null
-        extruder: 210
-        name: ABS
-    -   bed: 60
-        chamber: null
-        extruder: 180
-        name: PLA
+  profiles:
+  - bed: 100
+    chamber: null
+    extruder: 210
+    name: ABS
+  - bed: 60
+    chamber: null
+    extruder: 180
+    name: PLA
 terminalFilters:
--   name: Suppress temperature messages
-    regex: '(Send: (N\d+\s+)?M105)|(Recv:\s+(ok\s+)?.*\s(T\d*):\d+)'
--   name: Suppress SD status messages
-    regex: '(Send: (N\d+\s+)?M27)|(Recv: SD printing byte)|(Recv: Not SD printing)'
--   name: Suppress wait responses
-    regex: 'Recv: (wait)|(ok)$'
+- name: Suppress temperature messages
+  regex: '(Send: (N\d+\s+)?M105)|(Recv:\s+(ok\s+)?.*\s(T\d*):\d+)'
+- name: Suppress SD status messages
+  regex: '(Send: (N\d+\s+)?M27)|(Recv: SD printing byte)|(Recv: Not SD printing)'
+- name: Suppress wait responses
+  regex: 'Recv: (wait)|(ok)$'
 webcam:
-    ffmpeg: /usr/bin/avconv
-    snapshot: http://localhost:8080/?action=snapshot
-    stream: http://kamikaze.local:8080/?action=stream
+  ffmpeg: /usr/bin/avconv
+  snapshot: http://localhost:8080/?action=snapshot
+  stream: http://kamikaze.local:8080/?action=stream
