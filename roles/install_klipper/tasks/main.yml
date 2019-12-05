@@ -125,5 +125,7 @@
 - name: add octo user to remoteproc group
   user:
     append: yes
-    group: remoteproc
+    groups: 
+      - remoteproc
+      - tty
     name: octo

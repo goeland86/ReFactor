@@ -88,7 +88,6 @@ mcu_host_start()
     start-stop-daemon --start --quiet --exec $KLIPPER_HOST_MCU \
                       --background --pidfile $PIDFILE --make-pidfile \
                       -- $KLIPPER_HOST_ARGS
-    chown octo:octo /tmp/klipper_host_mcu
     log_end_msg $?
 }
 
