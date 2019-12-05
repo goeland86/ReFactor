@@ -43,22 +43,10 @@ plugins:
       klipper: klipper
     checks:
       Kamikaze:
-        checkout_folder: /usr/src/Kamikaze2
-        restart: echo "Kamikaze dummy restart"
+        checkout_folder: /usr/src/Umikaze
+        restart: echo "Umikaze dummy restart"
         type: git_commit
         update_script: /usr/src/Kamikaze2/update-kamikaze.sh
-      Redeem:
-        checkout_folder: /usr/local/src/redeem
-        restart: echo "Redeem dummy restart"
-        type: git_commit
-        update_script: '{python} "/usr/local/src/redeem/update-redeem.py" --python="{python}"
-          --sudo "{folder}" "{target}"'
-      Toggle:
-        checkout_folder: /usr/src/toggle
-        restart: echo "Toggle dummy restart"
-        type: git_commit
-        update_script: '{python} "/usr/src/toggle/update-toggle.py" --python="{python}"
-          "{folder}" "{target}"'
       octoprint:
         branch: null
         checkout_folder: /home/octo/OctoPrint
@@ -93,9 +81,6 @@ server:
     tracking: null
 system:
   actions:
-  - action: restart_redeem
-    command: sudo systemctl restart redeem.service
-    name: Restart Redeem
   - action: restart_toggle
     command: sudo systemctl restart toggle.service
     name: Restart Toggle
