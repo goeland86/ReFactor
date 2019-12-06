@@ -47,6 +47,7 @@
     dest: /home/octo/.octoprint/config.yaml
     owner: octo
     group: octo
+    force: no
 
 - name: Use pip to install OctoPrint
   pip:
@@ -59,7 +60,7 @@
     - OctoPrint
     - https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip
 
-- name: Create upload folder
+- name: Have the upload folder ready
   file:
     path: /usr/share/models
     state: directory
@@ -73,7 +74,7 @@
     line: octoprint 5000/tcp
     state: present
 
-- name: setup sudoers.d/octo file
+- name: make sure the sudoers.d/octo file exists
   file:
     path: /etc/sudoers.d/octo
     owner: root
