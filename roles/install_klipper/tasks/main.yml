@@ -10,16 +10,29 @@
     insertafter: 'enable_uboot_overlays=1'
     path: /boot/uEnv.txt
 
-- name: disable uboot overlays
+- name: disable uboot emmc overlay
   replace:
-    regex: '#{{ item }}'
-    after: '{{ item }}'
+    regex: '#disable_uboot_overlay_emmc'
+    after: 'disable_uboot_overlay_emmc'
     path: /boot/uEnv.txt
-  with_items:
-    - disable_uboot_overlay_emmc
-    - disable_uboot_overlay_video
-    - disable_uboot_overlay_audio
-    - disable_uboot_overlay_wireless
+
+- name: disable uboot video overlay
+  replace:
+    regex: '#disable_uboot_overlay_video'
+    after: 'disable_uboot_overlay_video'
+    path: /boot/uEnv.txt
+
+- name: disable uboot audio overlay
+  replace:
+    regex: '#disable_uboot_overlay_audio'
+    after: 'disable_uboot_overlay_audio'
+    path: /boot/uEnv.txt
+
+- name: disable uboot wireless overlay
+  replace:
+    regex: '#disable_uboot_overlay_wireless'
+    after: 'disable_uboot_overlay_wireless'
+    path: /boot/uEnv.txt
 
 - name: set pru loading overlay
   replace: 
