@@ -50,19 +50,6 @@
     state: absent
     autoremove: yes
 
-- name: disable rproc overlay
-  lineinfile:
-    path: /boot/uEnv.txt
-    line: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC'
-    state: absent
-
-- name: enable uio overlay
-  lineinfile:
-    path: /boot/uEnv.txt
-    line: 'uboot_overlay_pru=/lib/firmware/AM335X-PRU-UIO'
-    state: present
-    insertbefore: uboot
-
 - name: update RCN scripts
   command:
     chdir: /opt/scripts
@@ -70,7 +57,7 @@
 
 - name: update kernel using RCN scripts
   shell:
-    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_19 --ti-kernel'
+    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
 
 - name: install debconf-utils and curl
   apt:

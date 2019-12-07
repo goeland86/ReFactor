@@ -1,44 +1,23 @@
 ---
+- name: get installed kernel version
+  shell: ls /lib/modules
+  register: kernel_version
+
 - name: set kernel version to 4.14
   shell:
     cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
+  when: kernel_module.stdout is !search('4.14')
 
-- name: enable replicape overlay loading
-  lineinfile:
-    line: 'uboot_overlay_addr0=/lib/firmware/BB-BONE-REPLICAP-0B3A.dtbo'
-    state: present
-    insertafter: 'enable_uboot_overlays=1'
-    path: /boot/uEnv.txt
+- name: install proper uEnv.txt
+  copy:
+    src: '{{ role_path }}/files/uEnv.txt'
+    dest: /boot/uEnv.txt
 
-- name: disable uboot emmc overlay
+- name: set installed kernel version in uEnv.txt
   replace:
-    regex: '#disable_uboot_overlay_emmc'
-    replace: 'disable_uboot_overlay_emmc'
     path: /boot/uEnv.txt
-
-- name: disable uboot video overlay
-  replace:
-    regex: '#disable_uboot_overlay_video'
-    replace: 'disable_uboot_overlay_video'
-    path: /boot/uEnv.txt
-
-- name: disable uboot audio overlay
-  replace:
-    regex: '#disable_uboot_overlay_audio'
-    replace: 'disable_uboot_overlay_audio'
-    path: /boot/uEnv.txt
-
-- name: disable uboot wireless overlay
-  replace:
-    regex: '#disable_uboot_overlay_wireless'
-    replace: 'disable_uboot_overlay_wireless'
-    path: /boot/uEnv.txt
-
-- name: set pru loading overlay
-  replace: 
-    regex: '(uboot_overlay_pru=).*'
-    replace: '\1/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo'
-    path: /boot/uEnv.txt
+    regexp: '(uname=).*'
+    replace: '\1{{ kernel_version }}'
 
 - name: clone klipper from the repository
   git: 
