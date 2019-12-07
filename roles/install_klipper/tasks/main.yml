@@ -6,7 +6,7 @@
 - name: set kernel version to 4.14
   shell:
     cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
-  when: kernel_module.stdout is !search('4.14')
+  when: '"4.14" not in kernel_version.stdout'
 
 - name: install proper uEnv.txt
   copy:
