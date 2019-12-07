@@ -70,7 +70,7 @@
 
 - name: update kernel using RCN scripts
   shell:
-    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_19 --ti-kernel'
+    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
 
 - name: install debconf-utils and curl
   apt:
