@@ -4,6 +4,7 @@
   vars:
     - version: Klipperkaze 1.0.0
   roles:
+    - linux_preparation
     - install_dummy_logger
     - install_octoprint
     - install_klipper
