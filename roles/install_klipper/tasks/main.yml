@@ -12,25 +12,25 @@
 
 - name: disable uboot emmc overlay
   replace:
-    regex: '#disable_uboot_overlay_emmc'
+    regex: '\#disable_uboot_overlay_emmc'
     after: 'disable_uboot_overlay_emmc'
     path: /boot/uEnv.txt
 
 - name: disable uboot video overlay
   replace:
-    regex: '#disable_uboot_overlay_video'
+    regex: '\#disable_uboot_overlay_video'
     after: 'disable_uboot_overlay_video'
     path: /boot/uEnv.txt
 
 - name: disable uboot audio overlay
   replace:
-    regex: '#disable_uboot_overlay_audio'
+    regex: '\#disable_uboot_overlay_audio'
     after: 'disable_uboot_overlay_audio'
     path: /boot/uEnv.txt
 
 - name: disable uboot wireless overlay
   replace:
-    regex: '#disable_uboot_overlay_wireless'
+    regex: '\#disable_uboot_overlay_wireless'
     after: 'disable_uboot_overlay_wireless'
     path: /boot/uEnv.txt
 
