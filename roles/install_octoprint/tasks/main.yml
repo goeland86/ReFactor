@@ -1,4 +1,8 @@
 ---
+- name: make sure iptables folder exists
+  file:
+    path: /etc/iptables
+    state: directory
 - name: copy port forwarding rules
   copy:
     src: '{{ role_path }}/files/rules.v4'
@@ -56,6 +60,7 @@
     virtualenv_python: python2.7
     state: latest
     name: '{{ item }}'
+  become_user: octo
   with_items:
     - OctoPrint
     - https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip

@@ -1,4 +1,9 @@
 ---
+- name: add octo user to remoteproc group
+  user:
+    append: yes
+    group: remoteproc
+
 - name: get installed kernel version
   shell: ls /lib/modules
   register: kernel_version
