@@ -64,6 +64,7 @@
   with_items:
     - OctoPrint
     - https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip
+    - https://github.com/Salandora/OctoPrint-SystemCommandEditor/archive/master.zip
 
 - name: Have the upload folder ready
   file:
