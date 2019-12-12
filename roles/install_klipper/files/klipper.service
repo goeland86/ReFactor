@@ -5,6 +5,7 @@ After=multi-user.target
 
 [Service]
 Type=Simple
+Requires=klipper_pru.service
 Restart=always
 RemainAfterExit=yes
 SuccessExitStatus=5 6
