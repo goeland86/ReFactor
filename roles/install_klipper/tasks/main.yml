@@ -154,6 +154,4 @@
       %octo ALL=NOPASSWD: /bin/systemctl restart klipper
       %octo ALL=NOPASSWD: /bin/systemctl stop klipper
       %octo ALL=NOPASSWD: /bin/systemctl start klipper
-      %octo ALL=NOPASSWD: /bin/systemctl restart klipper_pru
-      %octo ALL=NOPASSWD: /bin/systemctl stop klipper_pru
-      %octo ALL=NOPASSWD: /bin/systemctl start klipper_pru
+
