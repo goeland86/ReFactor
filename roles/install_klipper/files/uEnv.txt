@@ -32,7 +32,7 @@ enable_uboot_cape_universal=1
 #uboot_fdt_buffer=0x60000
 ###U-Boot Overlays###
 
-cmdline=coherent_pool=1M net.ifnames=0 rng_core.default_quality=100 cape_universal=enable quiet
+cmdline=coherent_pool=1M net.ifnames=0 rng_core.default_quality=100 cape_universal=enable quiet omap_wdt.nowayout=0
 
 #In the event of edid real failures, uncomment this next line:
 #cmdline=coherent_pool=1M net.ifnames=0 rng_core.default_quality=100 cape_universal=enable quiet video=HDMI-A-1:1024x768@60e

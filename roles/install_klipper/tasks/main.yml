@@ -1,4 +1,11 @@
 ---
+- name: add octo user to remoteproc group
+  user:
+    append: yes
+    groups: 
+      - remoteproc
+      - tty
+
 - name: get installed kernel version
   shell: ls /lib/modules
   register: kernel_version
@@ -138,3 +145,13 @@
       - remoteproc
       - tty
     name: octo
+
+- name: give octo user the klipper service permissions
+  blockinfile:
+    path: /etc/sudoers.d/octo
+    state: present
+    block: |
+      %octo ALL=NOPASSWD: /bin/systemctl restart klipper
+      %octo ALL=NOPASSWD: /bin/systemctl stop klipper
+      %octo ALL=NOPASSWD: /bin/systemctl start klipper
+
