@@ -1,4 +1,8 @@
 ---
+- name: make sure iptables folder exists
+  file:
+    path: /etc/iptables
+    state: directory
 - name: copy port forwarding rules
   copy:
     src: '{{ role_path }}/files/rules.v4'
