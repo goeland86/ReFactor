@@ -1,6 +1,7 @@
 ---
 - name: add octo user to remoteproc group
   user:
+    name: octo
     append: yes
     groups: 
       - remoteproc
