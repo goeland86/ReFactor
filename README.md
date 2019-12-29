@@ -2,7 +2,7 @@
 Simplified Thing-Printer board image generation toolset, based on Debian or Ubuntu images from RCN for beaglebone.
 
 The starting point for ReFactor is the Ubuntu console image, details are in the wiki here:
-https://github.com/intelligent-agent/ReFactor/wiki
+http://wiki.thing-printer.com/index.php?title=ReFactor
 
 ReFactor is a build-tool to install a printer's Firmware (at the moment Klipper), a printer control interface (OctoPrint or DWC), a touch-screen interface (Toggle w/ OctoPrint, DWC's tbd) and a few miscellaneous items (Cura 1.5, webcam streamer, network file share for gcode file uploads, etc.). 
 
