@@ -1,10 +1,23 @@
-# Umikaze
-Simplified Umikaze image generation, based on Ubuntu
+# ReFactor
+Simplified Thing-Printer board image generation toolset, based on Debian or Ubuntu images from RCN for beaglebone.
 
-The starting point for Umikaze is the Ubuntu console image, details are in the wiki here:
-https://github.com/intelligent-agent/Umikaze/wiki
+The starting point for ReFactor is the Ubuntu console image, details are in the wiki here:
+https://github.com/intelligent-agent/ReFactor/wiki
+
+ReFactor is a build-tool to install a printer's Firmware (at the moment Klipper), a printer control interface (OctoPrint or DWC), a touch-screen interface (Toggle w/ OctoPrint, DWC's tbd) and a few miscellaneous items (Cura 1.5, webcam streamer, network file share for gcode file uploads, etc.). 
+
+It sets a default password for access as root on new images (root:kamikaze), but leaves the root account alone otherwise.
+SSH is meant to be active and allow root login.
+
+The images generated are focused on being a boot-strapped firmware for Thing-Printer control boards, such as Replicape and Recore. However PRs to make ReFactor an image generation tool for a wider range of single-board controllers is completely welcome. Ideally each board would have its own Ansible playbook at the root of the folder with a descriptive name, like
+    replicape-klipper-octoprint-image.yml
+    replicape-redeem-dwc-install.yml
+The idea being that the image playbooks are run in a sandboxed environment and generate an image file ready to be flashed, while the install playbooks are meant to be executed on an already running debian-based controller.
 
 ## Previous versions
+
+Umikaze 2.1.1 was built on Ubuntu 18.04.1 (LTS) and incorporated OctoPrint, Redeem and Toggle.
+To learn more about Umikaze, go to https://github.com/intelligent-agent/Umikaze/wiki
 
 The starting point for Kamikaze 2.0.0 is the Debian IoT image found here: 
 https://debian.beagleboard.org/images/
