@@ -1,0 +1,16 @@
+---
+- name: install apt dependencies
+  apt:
+    pkg:
+      - swig
+      - python-scipy
+      - python-numpy
+      - pythom-smbus
+      - ti-pru-cgt-installer
+    state: latest
+
+- name: check for pru-software-support-package
+  file:
+    path: /usr/src/pru-software-support-package
+    state: directory
+  notify: fetch pru support package

@@ -1,0 +1,7 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    - version: "Kamiklipper 1.0.0"
+  roles:
+    - install_toggle

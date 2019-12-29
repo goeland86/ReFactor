@@ -1,0 +1,22 @@
+[Unit]
+Documentation=man:systemd-sysv-generator(8)
+SourcePath=/etc/init.d/klipper_pru
+Description=LSB: Klipper_PRU daemon
+After=multi-user.target
+
+[Service]
+Type=forking
+Restart=always
+TimeoutSec=5min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+RemainAfterExit=yes
+SuccessExitStatus=5 6
+ExecStart=/etc/init.d/klipper_pru start
+ExecStop=/etc/init.d/klipper_pru stop
+ExecReload=/etc/init.d/klipper_pru reload
+Group=tty
+
+[Install]
+WantedBy=multi-user.target

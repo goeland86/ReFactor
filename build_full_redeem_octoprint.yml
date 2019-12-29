@@ -1,0 +1,15 @@
+---
+- hosts: local
+  connection: local
+  vars:
+    - version: Kamikaze 2.2.2
+  roles:
+    - install_dummy_logger
+    - install_redeem
+    - install_octoprint
+    - install_octoprint_redeem_plugins
+    - install_slic3r
+    - install_smbshare
+    - install_toggle
+    - install_uboot
+    - install_usbreset

@@ -1,0 +1,118 @@
+---
+- name: make sure iptables folder exists
+  file:
+    path: /etc/iptables
+    state: directory
+- name: copy port forwarding rules
+  copy:
+    src: '{{ role_path }}/files/rules.v4'
+    dest: /etc/iptables/rules.v4
+    owner: root
+    group: root
+    mode: 644
+
+- name: create octo user
+  user: 
+    name: octo
+    groups: admin,adm,dialout,i2c,kmem,spi,cdrom,floppy,audio,dip,video,netdev,plugdev,users,systemd-journal,tisdk,weston-launch,xenomai
+    state: present
+    shell: /bin/bash
+
+- name: create home octoprint folder
+  file:
+    path: /home/octo/.octoprint
+    state: directory
+    owner: octo
+    group: octo
+
+- name: give octo permissions to python folders for updates
+  file:
+    path: '{{ item }}'
+    group: octo
+    owner: octo
+    mode: 0755
+    recurse: yes
+    state: directory
+  with_items:
+    - '{{ octoprint_home }}'
+    - /usr/local/lib/python2.7
+    - /usr/local/bin
+
+- name: Make octoprint config folder
+  file:
+    path: /home/octo/.octoprint
+    state: directory
+    owner: octo
+    group: octo
+
+- name: Insert octoprint config
+  copy:
+    src: "{{ role_path }}/files/config.yaml"
+    dest: /home/octo/.octoprint/config.yaml
+    owner: octo
+    group: octo
+    force: no
+
+- name: Use pip to install OctoPrint
+  pip:
+    chdir: '{{ octoprint_home }}'
+    virtualenv: '{{ octoprint_home }}/venv'
+    virtualenv_python: python2.7
+    state: latest
+    name: '{{ item }}'
+  become_user: octo
+  with_items:
+    - OctoPrint
+    - https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip
+    - https://github.com/Salandora/OctoPrint-SystemCommandEditor/archive/master.zip
+
+- name: Have the upload folder ready
+  file:
+    path: /usr/share/models
+    state: directory
+    owner: octo
+    group: octo
+    mode: 0777
+
+- name: annotate OctoPrint port in services
+  lineinfile:
+    path: /etc/services
+    line: octoprint 5000/tcp
+    state: present
+
+- name: make sure the sudoers.d/octo file exists
+  file:
+    path: /etc/sudoers.d/octo
+    owner: root
+    group: root
+    state: touch
+
+- name: grant octo user sudo privileges for some commands
+  blockinfile:
+    path: /etc/sudoers.d/octo
+    block: |
+      %octo ALL=NOPASSWD: /bin/systemctl restart octoprint.service
+      %octo ALL=NOPASSWD: /sbin/reboot
+      %octo ALL=NOPASSWD: /sbin/shutdown -h now
+      %octo ALL=NOPASSWD: /sbin/poweroff
+
+- name: install service file for OctoPrint
+  copy:
+    src: '{{ role_path }}/files/octoprint.service'
+    dest: /lib/systemd/system/octoprint.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: enable octoprint service
+  service:
+    name: octoprint
+    enabled: yes
+
+- name: allow octo user access to Umikaze repo folder
+  file:
+    path: /usr/src/Umikaze
+    owner: octo
+    group: octo
+    state: directory
+    recurse: yes

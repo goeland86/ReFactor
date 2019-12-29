@@ -1,0 +1,16 @@
+---
+- name: clone octoprint_redeem repo
+  git:
+    repo: https://github.com/intelligent-agent/octoprint_redeem
+    dest: /usr/src/octoprint_redeem
+    depth: 1
+
+- name: install the octoprint_redeem plugin
+  command:
+    cmd: 'source /home/octo/OctoPrint/venv/bin/activate ; cd /usr/src/octoprint_redeem && python setup.py clean install'
+
+- name: install the sudoers entry for redeem
+  lineinfile:
+    regex: 'redeem'
+    line: '%octo ALL=NOPASSWD: /usr/bin/make -C /usr/local/src/redeem install'
+    path: /etc/sudoers.d/octo

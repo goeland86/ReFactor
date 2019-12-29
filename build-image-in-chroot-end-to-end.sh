@@ -12,6 +12,7 @@ fi
 
 TARGETIMAGE=kamikaze-rootfs.img
 MOUNTPOINT=$(mktemp -d /tmp/umikaze-root.XXXXXX)
+UMIKAZE_HOME="/usr/src/Umikaze"
 
 BASEIMAGE=`basename ${BASEIMAGE_URL}`
 
@@ -64,7 +65,7 @@ if [ -f "customize.sh" ]; then
 fi
 
 set +e # allow this to fail - we'll check the return code
-chroot ${MOUNTPOINT} /bin/su -c "cd ${UMIKAZE_HOME} && ./prep_ubuntu.sh && ./make-kamikaze.sh"
+chroot ${MOUNTPOINT} /bin/su -c "cd ${UMIKAZE_HOME} && ./prep_ubuntu.sh && ansible-playbook build_full_klipper_octoprint.yml"
 status=$?
 set -e
 

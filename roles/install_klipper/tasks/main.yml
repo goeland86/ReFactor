@@ -1,0 +1,158 @@
+---
+- name: add octo user to remoteproc group
+  user:
+    name: octo
+    append: yes
+    groups: 
+      - remoteproc
+      - tty
+
+- name: get installed kernel version
+  shell: ls /lib/modules
+  register: kernel_version
+
+- name: set kernel version to 4.14
+  shell:
+    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
+  when: '"4.14" not in kernel_version.stdout'
+
+- name: install proper uEnv.txt
+  copy:
+    src: '{{ role_path }}/files/uEnv.txt'
+    dest: /boot/uEnv.txt
+
+- name: set installed kernel version in uEnv.txt
+  replace:
+    path: /boot/uEnv.txt
+    regexp: '(uname=).*'
+    replace: '\1{{ kernel_version }}'
+
+- name: clone klipper from the repository
+  git: 
+    repo: https://github.com/KevinOConnor/klipper
+    dest: /usr/src/klipper
+    update: yes
+    clone: yes
+
+- name: adjust ownership of klipper source
+  file:
+    path: /usr/src/klipper
+    owner: octo
+    group: octo
+    recurse: yes
+
+- name: install system klipper dependencies
+  apt:
+    pkg:
+      - python-virtualenv
+      - virtualenv
+      - python-dev
+      - libffi-dev
+      - build-essential
+      - libncurses-dev
+      - libusb-dev
+      - stm32flash
+      - libnewlib-arm-none-eabi
+      - gcc-arm-none-eabi
+      - binutils-arm-none-eabi
+      - gcc-pru
+    state: latest
+    update_cache: yes
+
+- name: install pip klipper dependencies
+  pip:
+    virtualenv: /usr/local/klipper/
+    virtualenv_python: python2.7
+    requirements: /usr/src/klipper/scripts/klippy-requirements.txt
+
+- name: compile binary blobs for klippy
+  shell:
+    cmd: "cd /usr/src/klipper ; cp {{ item }} .config ; make flash"
+  with_items:
+    - "{{ role_path }}/files/pru_config"
+    - "{{ role_path }}/files/linux_config"
+
+- name: copy klipper service
+  copy:
+    src: "{{ role_path }}/files/klipper.service"
+    dest: /lib/systemd/system/klipper.service
+
+- name: enable klipper service
+  service:
+    name: klipper
+    enabled: yes
+
+- name: make klipper config directory
+  file:
+    path: /etc/klipper
+    state: directory
+    owner: octo
+    group: octo
+
+- name: create klipper config file
+  copy:
+    src: /usr/src/klipper/config/generic-replicape.cfg
+    dest: /etc/klipper/printer.cfg
+    owner: octo
+    group: octo
+
+- name: install PRU start scripts
+  copy:
+    src: "{{ role_path }}/files/klipper_pru"
+    dest: /etc/init.d/klipper_pru
+    mode: 0755
+
+- name: update services
+  shell:
+    cmd: "update-rc.d klipper_pru defaults"
+
+- name: copy systemd klipper_pru file
+  copy:
+    src: "{{ role_path }}/files/klipper_pru.service"
+    dest: /lib/systemd/system/klipper_pru.service
+
+- name: enable systemd klipper_pru
+  service:
+    name: klipper_pru.service
+    enabled: yes
+
+- name: create udev rule file
+  file:
+    path: /etc/udev/rules.d/pru.rules
+    state: touch
+
+- name: place Klipper-friendly config for octoprint in place
+  copy:
+    src: "{{ role_path }}/files/octoprint_config.yaml"
+    dest: /home/octo/.octoprint/config.yaml
+    owner: octo
+    group: octo
+
+- name: replace UIO with rproc kernel overlays
+  shell: 
+    cmd: "sed -i 's\\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\' /boot/uEnv.txt"
+
+- name: enable rproc overlay
+  lineinfile:
+    line: uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo
+    insertbefore: enable_uboot_cape_universal=1
+    state: present
+    path: /boot/uEnv.txt
+
+- name: add octo user to remoteproc group
+  user:
+    append: yes
+    groups: 
+      - remoteproc
+      - tty
+    name: octo
+
+- name: give octo user the klipper service permissions
+  blockinfile:
+    path: /etc/sudoers.d/octo
+    state: present
+    block: |
+      %octo ALL=NOPASSWD: /bin/systemctl restart klipper
+      %octo ALL=NOPASSWD: /bin/systemctl stop klipper
+      %octo ALL=NOPASSWD: /bin/systemctl start klipper
+

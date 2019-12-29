@@ -1,0 +1,307 @@
+---
+- name: create local apt conf
+  file: 
+    path: /etc/apt/apt.conf.d/99local
+    owner: root
+    group: root
+    state: touch
+    
+- name: disable install recommends
+  lineinfile:
+    path: /etc/apt/apt.conf.d/99local
+    line: 'APT::Install-Recommends "false";'
+    state: present
+    
+- name: disable install suggestions
+  lineinfile:
+    path: /etc/apt/apt.conf.d/99local
+    line: 'APT::Install-Suggests "false";'
+    state: present
+
+    
+- name: remove grub
+  apt:
+    name: grub-efi-arm
+    state: absent
+    
+- name: remove login info
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/issue.net
+    - /etc/issue
+    
+- name: upgrade packages
+  apt:
+    upgrade: dist
+    
+- name: remove unneeded packages
+  apt:
+    pkg:
+    - linux-image-*
+    - linux-headers-*
+    - apache2
+    - apache2-bin
+    - apache2-data
+    - apache2-utils
+    - hostapd
+    - libgtk3-common
+    state: absent
+    autoremove: yes
+
+- name: update RCN scripts
+  command:
+    chdir: /opt/scripts
+    cmd: 'git pull'
+
+- name: update kernel using RCN scripts
+  shell:
+    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
+
+- name: install debconf-utils and curl
+  apt:
+    pkg: 
+      - debconf-utils
+      - curl
+    state: present
+
+- name: configure ipv4
+  command:
+    cmd: 'echo "iptables-persistent     iptables-persistent/autosave_v4 boolean true" | debconf-set-selections'
+
+- name: configure ipv6
+  command:
+    cmd: 'echo "iptables-persistent     iptables-persistent/autosave_v6 boolean true" | debconf-set-selections'
+
+- name: add thing printer key
+  shell:
+    cmd: "curl http://kamikaze.thing-printer.com/ubuntu/public.gpg | apt-key add -"
+    warn: false
+
+- name: add thing printer debian repository
+  apt_repository:
+    repo: deb [arch=armhf] http://kamikaze.thing-printer.com/ubuntu/ xenial main
+    state: present
+
+- name: update package list
+  apt:
+    update_cache: yes
+
+- name: install packages
+  apt:
+    pkg:
+    - unzip
+    - iptables
+    - iptables-persistent
+    - python-pip
+    - python3-pip
+    - python-dev
+    - libyaml-dev
+    - libavahi-compat-libdnssd1
+    - libnss-mdns
+    - screen
+    - byobu
+    - htop
+    - unzip
+    - cpufrequtils
+    - f2fs-tools
+    - parted
+    - python-parted
+    - network-manager
+    - pkg-config
+    - python3-dev
+    - network-manager
+    - libcairo2-dev
+    - libgirepository1.0-dev
+    - python3-gi-cairo
+    - libcairo2-dev
+    - pkg-config
+    - python3-dev
+    - gir1.2-gtk-3.0
+    state: present
+    autoremove: yes
+    autoclean: yes
+
+- name: upgrade pip3
+  pip:
+    executable: pip3
+    name: pip
+    extra_args: --upgrade
+
+- name: remove python-pip
+  apt:
+    name: python-pip
+    state: absent
+
+- name: install python-pip
+  apt:
+    pkg: 
+      - python-pip
+      - python-virtualenv
+    state: latest
+    
+- name: install pip libs
+  pip:
+    executable: pip
+    extra_args: --upgrade
+    name:
+      - setuptools 
+      - wheel
+      - virtualenv 
+
+- name: install pip3 libs
+  pip:
+    executable: pip3
+    extra_args: --upgrade
+    name: 
+      - setuptools
+      - wheel
+      - virtualenv
+
+- name: enable netfilter
+  service:
+    name: netfilter-persistent
+    enabled: yes
+
+- name: enable root login via ssh
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    line: 'PermitRootLogin yes'
+    state: present
+
+- name: disable the power button
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    line: 'HandlePowerKey=ignore'
+    state: present
+
+- name: disable wireless power management
+  file:
+    path: /etc/pm/sleep.d/wireless
+    state: touch
+
+- name: update dhcp
+  lineinfile:
+    path: /etc/NetworkManager/NetworkManager.conf
+    line: 'dhcp=internal'
+    insertafter: '[main]'
+    state: present
+
+- name: setup network interfaces file
+  blockinfile:
+    path: /etc/network/interfaces
+    create: yes
+    block: |
+      # This file describes the network interfaces available on your system
+      # and how to activate them. For more information, see interfaces(5).
+
+      # The loopback network interface
+      auto lo
+      iface lo inet loopback
+
+      # The primary network interface
+      auto eth0
+      iface eth0 inet dhcp
+      # Example to keep MAC address between reboots
+      #hwaddress ether DE:AD:BE:EF:CA:FE
+
+      # To setup wifi use nmtui to add or edit connections instead
+
+      # Ethernet/RNDIS gadget (g_ether)
+      # Used by: /opt/scripts/boot/autoconfigure_usb0.sh
+
+      auto usb0
+      iface usb0 inet static
+      address 192.168.7.2
+      netmask 255.255.255.252
+      network 192.168.7.0
+      gateway 192.168.7.1
+      
+- name: remove unneeded files
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/apache2/
+    - /root/.c9
+    - /usr/lib/node_modules
+    - /usr/local/lib/node_modules
+    - /var/lib/cloud9
+    - /var/cache/doc*
+
+- name: create dogtag
+  file:
+    path: /etc/kamikaze-release
+    state: touch
+
+- name: get date
+  command: 'date'
+  register: build_date
+
+- name: write dogtag
+  lineinfile:
+    line: '{{ version }} {{ build_date }}'
+    state: present
+    path: /etc/kamikaze-release
+
+- name: touch LCD screen rules
+  file:
+    path: /etc/udev/rules.d/80-lcd-screen.rules
+    state: touch
+    
+- name: write LCD screen rules
+  lineinfile:
+    path: /etc/udev/rules.d/80-lcd-screen.rules
+    line: '{{ item }}'
+    state: present
+  with_items:
+    - "SYSFS{idVendor}==\"0eef\", SYSFS{idProduct}==\"0001\", KERNEL==\"event*\",SYMLINK+=\"input/touchscreen_eGalaxy3\""
+    - "KERNEL==\"uinput\", GROUP=\"wheel\", MODE:=\"0660\""
+
+- name: remove hosts entry
+  lineinfile:
+    path: /etc/hostname
+    line: arm
+    state: absent
+
+- name: set hostname
+  lineinfile:
+    path: /etc/hostname
+    line: kamikaze
+    state: present
+
+- name: set host entry
+  lineinfile:
+    path: /etc/hosts
+    line: '127.0.1.1 Kamikaze Kamikaze.local'
+    state: present
+
+- name: set root password
+  shell:
+    cmd: "echo 'root:kamikaze' | chpasswd"
+
+- name: force user to change password on first login
+  shell:
+    cmd: "chage -d 0 root"
+
+- name: create issue and issue.net file
+  file:
+    path: '{{ item }}'
+    state: touch
+  with_items:
+   - /etc/issue
+   - /etc/issue.net
+
+- name: write issue and issue.net
+  blockinfile:
+    path: '{{ item }}'
+    state: present
+    block: |
+      "{{ version }}
+      Built from an rcn-ee.net console image.
+
+      Check that nothing is printing before any intensive operation!"
+  with_items:
+    - /etc/issue.net
+    - /etc/issue

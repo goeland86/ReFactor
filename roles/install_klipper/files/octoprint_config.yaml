@@ -1,0 +1,110 @@
+accessControl:
+  salt: pNbVSgrkZchidVXftJvg9JzDXC9aPT97
+api:
+  key: A16E678B4725409883770F6DD4DAA436
+appearance:
+  name: Kamiklipper
+feature: {}
+folder:
+  uploads: /usr/share/models
+gcodeViewer: {}
+plugins:
+  announcements:
+    _config_version: 1
+    channels:
+      _blog:
+        read_until: 1574955000
+      _important:
+        read_until: 1521111600
+      _octopi:
+        read_until: 1573722900
+      _plugins:
+        read_until: 1574985600
+      _releases:
+        read_until: 1575299700
+  cura:
+    _config_version: null
+    cura_engine: /usr/bin/CuraEngine
+    debug_logging: false
+    default_profile: null
+  discovery:
+    upnpUuid: 05489750-db4d-4c17-8aa6-e9783bc31ef3
+  errortracking:
+    enabled: true
+    unique_id: 89d862ca-31ef-43bf-a46a-a73248343ca8
+  klipper:
+    _config_version: 2
+    configuration:
+      path: /etc/klipper/printer.cfg
+  softwareupdate:
+    _config_version: 7
+    check_providers:
+      filemanager: filemanager
+      klipper: klipper
+    checks:
+      Kamikaze:
+        checkout_folder: /usr/src/Umikaze
+        restart: echo "Umikaze dummy restart"
+        type: git_commit
+        update_script: /usr/src/Kamikaze2/update-kamikaze.sh
+      octoprint:
+        branch: null
+        checkout_folder: /home/octo/OctoPrint
+        prerelease: true
+        prerelease_channel: rc/devel
+  tracking:
+    enabled: true
+    unique_id: fbffc87a-33d1-40a0-9809-d7baad84ee8f
+printerParameters: {}
+printerProfiles:
+  default: _default
+serial:
+  additionalPorts:
+  - /tmp/printer
+  autoconnect: true
+  baudrate: 115200
+  port: /tmp/printer
+  timeout: {}
+server:
+  commands:
+    serverRestartCommand: sudo systemctl restart octoprint.service
+    systemRestartCommand: sudo reboot
+    systemShutdownCommand: sudo shutdown -h now
+  firstRun: true
+  onlineCheck:
+    enabled: true
+  pluginBlacklist:
+    enabled: true
+  secretKey: t5QPDeUzU3yVmNnzLQfXDgC666wUnk7g
+  seenWizards:
+    corewizard: 3
+    tracking: null
+system:
+  actions:
+  - action: restart_toggle
+    command: sudo systemctl restart toggle.service
+    name: Restart Toggle
+  - action: restart mjpg
+    command: sudo systemctl restart mjpg.service
+    name: Restart Mjpg
+temperature:
+  profiles:
+  - bed: 100
+    chamber: null
+    extruder: 210
+    name: ABS
+  - bed: 60
+    chamber: null
+    extruder: 180
+    name: PLA
+terminalFilters:
+- name: Suppress temperature messages
+  regex: '(Send: (N\d+\s+)?M105)|(Recv:\s+(ok\s+)?.*\s(T\d*):\d+)'
+- name: Suppress SD status messages
+  regex: '(Send: (N\d+\s+)?M27)|(Recv: SD printing byte)|(Recv: Not SD printing)'
+- name: Suppress wait responses
+  regex: 'Recv: (wait)|(ok)$'
+webcam:
+  ffmpeg: /usr/bin/avconv
+  snapshot: http://localhost:8080/?action=snapshot
+  stream: http://kamikaze.local:8080/?action=stream

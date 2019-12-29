@@ -1,0 +1,4 @@
+---
+- name: install usb reset
+  shell:
+    cmd: 'cc {{ role_path }}/files/usbreset.c -o {{ role_path }}/files/usbreset && chmod +x {{role_path}}/files/usbreset && mv {{ role_path }}/files/usbreset /usr/local/bin/'
