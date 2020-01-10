@@ -1,0 +1,33 @@
+# TETHER_ENABLED: Whether or not to run the /usr/bin/bb-wl18xx-tether daemon; set to no to disable.
+TETHER_ENABLED=no
+
+# USE_CONNMAN_TETHER: Whether or not to just use connman tether inteface; set to no to disable.
+USE_CONNMAN_TETHER=no
+
+# USE_WL18XX_IP_PREFIX: default IP block of SoftAP0 interface
+USE_WL18XX_IP_PREFIX="192.168.8"
+
+# USE_INTERNAL_WL18XX_MAC_ADDRESS: use internal mac address; set to no to disable.
+USE_INTERNAL_WL18XX_MAC_ADDRESS=yes
+
+# USE_WL18XX_MAC_ADDRESS: use custom mac address, for when work wifi starts sending deauthentication packet spam.
+#USE_WL18XX_MAC_ADDRESS="EC:11:27:B:14:97"
+
+# USE_WL18XX_POWER_MANAGMENT: (sudo iwconfig wlan0 power [on/off]). on = boot default, off is more reliable for accessing idle systems over time
+USE_WL18XX_POWER_MANAGMENT=off
+
+# USE_PERSONAL_SSID: set custom ssid
+USE_PERSONAL_SSID="BeagleBone"
+
+# USE_PERSONAL_PASSWORD: set ssid password
+USE_PERSONAL_PASSWORD="BeagleBone"
+
+# USE_GENERATED_DNSMASQ: use generated version of /etc/dnsmasq.d/SoftAp0; set to no so user can modify /etc/dnsmasq.d/SoftAp0
+USE_GENERATED_DNSMASQ=yes
+
+# USE_GENERATED_HOSTAPD: use generated version of /etc/hostapd.conf; set to no so user can modify /etc/hostapd.conf
+USE_GENERATED_HOSTAPD=yes
+
+# USE_APPENDED_SSID: appends mac address after SSID (aka -WXYZ, BeagleBone-WXYZ)
+USE_APPENDED_SSID=yes
+
