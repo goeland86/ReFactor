@@ -10,6 +10,6 @@
     - install_klipper
     - install_octoprint_klipper_plugins
     - install_smbshare
-#    - install_toggle
+    - install_toggle
     - install_uboot
     - install_usbreset
