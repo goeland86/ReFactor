@@ -57,6 +57,14 @@
     virtualenv_python: python3.6
     requirements: '{{ toggle_home }}/src/toggle/requirements.txt'
 
+- name: install pip3 dependencies
+  pip:
+    virtualenv: '{{ toggle_home }}'
+    virtualenv_python: python3.6
+    name:
+     - gobject 
+     - PyGObject
+
 - name: clone pyconnman
   git:
     repo: https://github.com/liamw9534/pyconnman
