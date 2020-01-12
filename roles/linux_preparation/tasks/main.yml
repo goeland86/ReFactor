@@ -305,3 +305,9 @@
   with_items:
     - /etc/issue.net
     - /etc/issue
+
+- name: remove wifi tether for BBBW
+  copy:
+    src: "{ role_path }/files/bb-wl18xx"
+    dest: /etc/default/bb-wl18xx
+    force: yes

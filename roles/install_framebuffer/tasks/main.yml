@@ -39,14 +39,3 @@
     path: /etc/profile
     line: 'force_color_prompt=no'
     state: absent
-
-#- name: create bb-boot file
-#  file:
-#    path: /etc/default/bb-boot
-#    state: touch
-
-#- name: disable usb image file
-#  lineinefile:
-#    path: /etc/default/bb-boot
-#    line: 'USB_IMAGE_FILE_DISABLED=yes'
-#    state: present
