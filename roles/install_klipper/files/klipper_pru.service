@@ -16,7 +16,7 @@ SuccessExitStatus=5 6
 ExecStart=/etc/init.d/klipper_pru start
 ExecStop=/etc/init.d/klipper_pru stop
 ExecReload=/etc/init.d/klipper_pru reload
-Group=tty
+User=debian
 
 [Install]
 WantedBy=multi-user.target
