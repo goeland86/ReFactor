@@ -10,7 +10,8 @@
 
 - name: clone klipper from the repository
   git: 
-    repo: https://github.com/KevinOConnor/klipper
+    repo: https://github.com/BlackStump/klipper
+    version: Replicape-systemd-update
     dest: /usr/src/klipper
     update: yes
     clone: yes
@@ -40,62 +41,69 @@
     state: latest
     update_cache: yes
 
-- name: install pip klipper dependencies
-  pip:
-    virtualenv: /usr/local/klipper/
-    virtualenv_python: python2.7
-    requirements: /usr/src/klipper/scripts/klippy-requirements.txt
-
-- name: compile binary blobs for klippy
+- name: install Klipper within the install scripts
   shell:
-    cmd: "cd /usr/src/klipper ; cp {{ item }} .config ; make flash"
-  with_items:
-    - "{{ role_path }}/files/pru_config"
-    - "{{ role_path }}/files/linux_config"
+    cmd: USER=debian /usr/src/klipper/scripts/install-debian-bbb.sh
+    args: chdir /usr/src/klipper
+      
+#- name: install pip klipper dependencies
+#  pip:
+#    virtualenv: /usr/local/klipper/
+#    virtualenv_python: python2.7
+#    requirements: /usr/src/klipper/scripts/klippy-requirements.txt
 
-- name: copy klipper service
-  copy:
-    src: "{{ role_path }}/files/klipper.service"
-    dest: /lib/systemd/system/klipper.service
 
-- name: enable klipper service
-  service:
-    name: klipper
-    enabled: yes
+#- name: compile binary blobs for klippy
+#  shell:
+#    cmd: "cd /usr/src/klipper ; cp {{ item }} .config ; make flash"
+#  with_items:
+#    - "{{ role_path }}/files/pru_config"
+#    - "{{ role_path }}/files/linux_config"
 
-- name: make klipper config directory
-  file:
-    path: /etc/klipper
-    state: directory
-    owner: debian
-    group: debian
+#- name: copy klipper service
+#  copy:
+#    src: "{{ role_path }}/files/klipper.service"
+#    dest: /lib/systemd/system/klipper.service
 
-- name: create klipper config file
-  copy:
-    src: /usr/src/klipper/config/generic-replicape.cfg
-    dest: /etc/klipper/printer.cfg
-    owner: debian
-    group: debian
+#- name: enable klipper service
+#  service:
+#    name: klipper
+#    enabled: yes
 
-- name: install PRU start scripts
-  copy:
-    src: "{{ role_path }}/files/klipper_pru"
-    dest: /etc/init.d/klipper_pru
-    mode: 0755
+#- name: make klipper config directory
+#  file:
+#    path: /etc/klipper
+#    state: directory
+#    owner: debian
+#    group: debian
 
-- name: update services
-  shell:
-    cmd: "update-rc.d klipper_pru defaults"
+#- name: create klipper config file
+#  copy:
+#    src: /usr/src/klipper/config/generic-replicape.cfg
+#    dest: /etc/klipper/printer.cfg
+#    owner: debian
+#    group: debian
 
-- name: copy systemd klipper_pru file
-  copy:
-    src: "{{ role_path }}/files/klipper_pru.service"
-    dest: /lib/systemd/system/klipper_pru.service
 
-- name: enable systemd klipper_pru
-  service:
-    name: klipper_pru.service
-    enabled: yes
+#- name: install PRU start scripts
+#  copy:
+#    src: "{{ role_path }}/files/klipper_pru"
+#    dest: /etc/init.d/klipper_pru
+#    mode: 0755
+
+#- name: update services
+#  shell:
+#    cmd: "update-rc.d klipper_pru defaults"
+
+#- name: copy systemd klipper_pru file
+#  copy:
+#    src: "{{ role_path }}/files/klipper_pru.service"
+#    dest: /lib/systemd/system/klipper_pru.service
+
+#- name: enable systemd klipper_pru
+#  service:
+#    name: klipper_pru.service
+#    enabled: yes
 
 - name: create udev rule file
   file:
