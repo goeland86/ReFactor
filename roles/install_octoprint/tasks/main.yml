@@ -11,25 +11,18 @@
     group: root
     mode: 644
 
-- name: create octo user
-  user: 
-    name: octo
-    groups: admin,adm,dialout,i2c,kmem,spi,cdrom,floppy,audio,dip,video,netdev,plugdev,users,systemd-journal,tisdk,weston-launch,xenomai
-    state: present
-    shell: /bin/bash
-
 - name: create home octoprint folder
   file:
-    path: /home/octo/.octoprint
+    path: /home/debian/.octoprint
     state: directory
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
 
-- name: give octo permissions to python folders for updates
+- name: give debian permissions to python folders for updates
   file:
     path: '{{ item }}'
-    group: octo
-    owner: octo
+    group: debian
+    owner: debian
     mode: 0755
     recurse: yes
     state: directory
@@ -42,15 +35,15 @@
   file:
     path: /home/octo/.octoprint
     state: directory
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
 
 - name: Insert octoprint config
   copy:
     src: "{{ role_path }}/files/config.yaml"
     dest: /home/octo/.octoprint/config.yaml
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
     force: no
 
 - name: Use pip to install OctoPrint
@@ -59,19 +52,33 @@
     virtualenv: '{{ octoprint_home }}/venv'
     virtualenv_python: python2.7
     state: latest
-    name: '{{ item }}'
-  become_user: octo
-  with_items:
-    - OctoPrint
-    - https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip
-    - https://github.com/Salandora/OctoPrint-SystemCommandEditor/archive/master.zip
+    name: https://github.com/foosel/OctoPrint/archive/1.4.0.zip
+  become_user: debian
+
+
+- name: Use pip to install Octoprint-filemanager
+  pip:
+    chdir: '{{ octoprint_home }}'
+    virtualenv: '{{ octoprint_home }}/venv'
+    state: latest
+    name: https://github.com/Salandora/OctoPrint-FileManager/archive/master.zip
+  become_user: debian
+
+- name: Use pip to install Octoprint-SystemCommandEditor
+  pip:
+    chdir: '{{ octoprint_home }}'
+    virtualenv: '{{ octoprint_home }}/venv'
+    state: latest
+    name: https://github.com/Salandora/OctoPrint-SystemCommandEditor/archive/master.zip
+  become_user: debian
+
 
 - name: Have the upload folder ready
   file:
     path: /usr/share/models
     state: directory
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
     mode: 0777
 
 - name: annotate OctoPrint port in services
@@ -80,21 +87,21 @@
     line: octoprint 5000/tcp
     state: present
 
-- name: make sure the sudoers.d/octo file exists
+- name: make sure the sudoers.d/debian file exists
   file:
-    path: /etc/sudoers.d/octo
+    path: /etc/sudoers.d/debian
     owner: root
     group: root
     state: touch
 
-- name: grant octo user sudo privileges for some commands
+- name: grant debian user sudo privileges for some commands
   blockinfile:
-    path: /etc/sudoers.d/octo
+    path: /etc/sudoers.d/debian
     block: |
-      %octo ALL=NOPASSWD: /bin/systemctl restart octoprint.service
-      %octo ALL=NOPASSWD: /sbin/reboot
-      %octo ALL=NOPASSWD: /sbin/shutdown -h now
-      %octo ALL=NOPASSWD: /sbin/poweroff
+      %debian ALL=NOPASSWD: /bin/systemctl restart octoprint.service
+      %debian ALL=NOPASSWD: /sbin/reboot
+      %debian ALL=NOPASSWD: /sbin/shutdown -h now
+      %debian ALL=NOPASSWD: /sbin/poweroff
 
 - name: install service file for OctoPrint
   copy:
@@ -109,10 +116,10 @@
     name: octoprint
     enabled: yes
 
-- name: allow octo user access to Umikaze repo folder
+- name: allow debian user access to Umikaze repo folder
   file:
     path: /usr/src/Umikaze
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
     state: directory
     recurse: yes

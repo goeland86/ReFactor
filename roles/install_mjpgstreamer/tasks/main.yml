@@ -3,7 +3,7 @@
   apt:
     pkg:
       - cmake
-      - libjpeg62-dev
+      - libjpeg-dev
       - ffmpeg
     state: latest
 
@@ -14,7 +14,7 @@
 
 - name: remove raspicam from camera list
   lineinfile:
-    path: /usr/src/mjpg-streamer/mjpg-streamer-experimental
+    path: /usr/src/mjpg-streamer/mjpg-streamer-experimental/CMakeLists.txt
     regex: input_raspicam
     line: '#add_subdirectory(plugins/input_raspicam)'
 
@@ -29,10 +29,10 @@
     line: 'KERNEL=="video0", TAG+="systemd"'
     state: present
 
-- name: add octo sudo permission to restart the service
+- name: add debian sudo permission to restart the service
   lineinfile:
-    path: /etc/sudoers.d/octo
-    line: '%octo ALL=NOPASSWD: /bin/systemctl restart mjpg.service'
+    path: /etc/sudoers.d/debian
+    line: '%debian ALL=NOPASSWD: /bin/systemctl restart mjpg.service'
     state: present
 
 - name: deploy service file

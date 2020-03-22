@@ -1,12 +1,4 @@
 ---
-- name: add octo user to remoteproc group
-  user:
-    name: octo
-    append: yes
-    groups: 
-      - remoteproc
-      - tty
-
 - name: get installed kernel version
   shell: ls /lib/modules
   register: kernel_version
@@ -15,17 +7,6 @@
   shell:
     cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
   when: '"4.14" not in kernel_version.stdout'
-
-- name: install proper uEnv.txt
-  copy:
-    src: '{{ role_path }}/files/uEnv.txt'
-    dest: /boot/uEnv.txt
-
-- name: set installed kernel version in uEnv.txt
-  replace:
-    path: /boot/uEnv.txt
-    regexp: '(uname=).*'
-    replace: '\1{{ kernel_version }}'
 
 - name: clone klipper from the repository
   git: 
@@ -37,8 +18,8 @@
 - name: adjust ownership of klipper source
   file:
     path: /usr/src/klipper
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
     recurse: yes
 
 - name: install system klipper dependencies
@@ -86,15 +67,15 @@
   file:
     path: /etc/klipper
     state: directory
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
 
 - name: create klipper config file
   copy:
     src: /usr/src/klipper/config/generic-replicape.cfg
     dest: /etc/klipper/printer.cfg
-    owner: octo
-    group: octo
+    owner: debian
+    group: debian
 
 - name: install PRU start scripts
   copy:
@@ -124,9 +105,9 @@
 - name: place Klipper-friendly config for octoprint in place
   copy:
     src: "{{ role_path }}/files/octoprint_config.yaml"
-    dest: /home/octo/.octoprint/config.yaml
-    owner: octo
-    group: octo
+    dest: /home/debian/.octoprint/config.yaml
+    owner: debian
+    group: debian
 
 - name: replace UIO with rproc kernel overlays
   shell: 
@@ -139,20 +120,12 @@
     state: present
     path: /boot/uEnv.txt
 
-- name: add octo user to remoteproc group
-  user:
-    append: yes
-    groups: 
-      - remoteproc
-      - tty
-    name: octo
-
-- name: give octo user the klipper service permissions
+- name: give debian user the klipper service permissions
   blockinfile:
-    path: /etc/sudoers.d/octo
+    path: /etc/sudoers.d/debian
     state: present
     block: |
-      %octo ALL=NOPASSWD: /bin/systemctl restart klipper
-      %octo ALL=NOPASSWD: /bin/systemctl stop klipper
-      %octo ALL=NOPASSWD: /bin/systemctl start klipper
+      %debian ALL=NOPASSWD: /bin/systemctl restart klipper
+      %debian ALL=NOPASSWD: /bin/systemctl stop klipper
+      %debian ALL=NOPASSWD: /bin/systemctl start klipper
 

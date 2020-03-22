@@ -2,14 +2,15 @@
 - hosts: localhost
   connection: local
   vars:
-    - version: Klipperkaze 1.0.0
+    - version: "ReFactor 1.0 (beta)"
   roles:
-    - linux_preparation
-    - install_dummy_logger
+#    - linux_preparation
+#    - install_dummy_logger
     - install_octoprint
     - install_klipper
     - install_octoprint_klipper_plugins
-    - install_smbshare
-    - install_toggle
-    - install_uboot
-    - install_usbreset
+    - install_mjpgstreamer
+#    - install_smbshare
+#    - install_toggle
+#    - install_uboot
+#    - install_usbreset

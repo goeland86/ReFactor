@@ -97,28 +97,15 @@
     - python-pip
     - python3-pip
     - python-dev
-    - libyaml-dev
     - libavahi-compat-libdnssd1
     - libnss-mdns
-    - screen
     - byobu
     - htop
     - unzip
     - cpufrequtils
-    - f2fs-tools
-    - parted
-    - python-parted
-    - network-manager
     - pkg-config
     - python3-dev
-    - network-manager
-    - libcairo2-dev
-    - libgirepository1.0-dev
-    - python3-gi-cairo
-    - libcairo2-dev
     - pkg-config
-    - python3-dev
-    - gir1.2-gtk-3.0
     state: present
     autoremove: yes
     autoclean: yes
@@ -138,7 +125,6 @@
   apt:
     pkg: 
       - python-pip
-      - python-virtualenv
     state: latest
     
 - name: install pip libs
@@ -176,33 +162,33 @@
     line: 'HandlePowerKey=ignore'
     state: present
 
-- name: disable wireless power management
-  file:
-    path: /etc/pm/sleep.d/wireless
-    state: touch
+#- name: disable wireless power management
+#  file:
+#    path: /etc/pm/sleep.d/wireless
+#    state: touch
 
-- name: update dhcp
-  lineinfile:
-    path: /etc/NetworkManager/NetworkManager.conf
-    line: 'dhcp=internal'
-    insertafter: '[main]'
-    state: present
+#- name: update dhcp
+#  lineinfile:
+#    path: /etc/NetworkManager/NetworkManager.conf
+#    line: 'dhcp=internal'
+#    insertafter: '[main]'
+#    state: present
 
-- name: setup network interfaces file
-  blockinfile:
-    path: /etc/network/interfaces
-    create: yes
-    block: |
+#- name: setup network interfaces file
+#  blockinfile:
+#    path: /etc/network/interfaces
+#    create: yes
+#    block: |
       # This file describes the network interfaces available on your system
       # and how to activate them. For more information, see interfaces(5).
 
       # The loopback network interface
-      auto lo
-      iface lo inet loopback
+#      auto lo
+#      iface lo inet loopback
 
       # The primary network interface
-      auto eth0
-      iface eth0 inet dhcp
+#      auto eth0
+#      iface eth0 inet dhcp
       # Example to keep MAC address between reboots
       #hwaddress ether DE:AD:BE:EF:CA:FE
 
@@ -211,12 +197,12 @@
       # Ethernet/RNDIS gadget (g_ether)
       # Used by: /opt/scripts/boot/autoconfigure_usb0.sh
 
-      auto usb0
-      iface usb0 inet static
-      address 192.168.7.2
-      netmask 255.255.255.252
-      network 192.168.7.0
-      gateway 192.168.7.1
+ #     auto usb0
+ #     iface usb0 inet static
+ #     address 192.168.7.2
+#      netmask 255.255.255.252
+#      network 192.168.7.0
+#      gateway 192.168.7.1
       
 - name: remove unneeded files
   file:
@@ -308,6 +294,6 @@
 
 - name: remove wifi tether for BBBW
   copy:
-    src: "{ role_path }/files/bb-wl18xx"
+    src: "{{ role_path }}/files/bb-wl18xx"
     dest: /etc/default/bb-wl18xx
     force: yes
