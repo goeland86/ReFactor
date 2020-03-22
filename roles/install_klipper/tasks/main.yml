@@ -43,7 +43,7 @@
 
 - name: install Klipper within the install scripts
   shell:
-    cmd: USER=debian /usr/src/klipper/scripts/install-debian-bbb.sh
+    cmd: "export USER=debian; /usr/src/klipper/scripts/install-debian-bbb.sh"
     args: chdir /usr/src/klipper
       
 #- name: install pip klipper dependencies
@@ -53,12 +53,12 @@
 #    requirements: /usr/src/klipper/scripts/klippy-requirements.txt
 
 
-#- name: compile binary blobs for klippy
-#  shell:
-#    cmd: "cd /usr/src/klipper ; cp {{ item }} .config ; make flash"
-#  with_items:
-#    - "{{ role_path }}/files/pru_config"
-#    - "{{ role_path }}/files/linux_config"
+- name: compile binary blobs for klippy
+  shell:
+    cmd: "cd /usr/src/klipper ; cp {{ item }} .config ; make flash"
+  with_items:
+    - "{{ role_path }}/files/pru_config"
+    - "{{ role_path }}/files/linux_config"
 
 #- name: copy klipper service
 #  copy:
