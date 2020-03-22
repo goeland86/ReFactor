@@ -13,7 +13,7 @@ uboot_overlay_addr0=/lib/firmware/BB-BONE-REPLICAP-0B3A.dtbo
 ###Disable auto loading of virtual capes (emmc/video/wireless/adc)
 #disable_uboot_overlay_emmc=1
 #disable_uboot_overlay_video=1
-#disable_uboot_overlay_audio=1
+disable_uboot_overlay_audio=1
 #disable_uboot_overlay_wireless=1
 #disable_uboot_overlay_adc=1
 ###

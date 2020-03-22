@@ -3,7 +3,7 @@ Description=OctoPrint
 
 [Service]
 Type=simple
-ExecStart=/home/octo/OctoPrint/venv/bin/octoprint serve
+ExecStart=/home/debian/OctoPrint/venv/bin/octoprint serve
 Restart=always
 RestartSec=60
 User=octo

@@ -27,13 +27,13 @@
     recurse: yes
     state: directory
   with_items:
-    - '{{ octoprint_home }}'
+    - '{{ octoprint_home }}/..'
     - /usr/local/lib/python2.7
     - /usr/local/bin
 
 - name: Make octoprint config folder
   file:
-    path: /home/octo/.octoprint
+    path: "{{ octoprint_home}}/../.octoprint"
     state: directory
     owner: debian
     group: debian
@@ -41,7 +41,7 @@
 - name: Insert octoprint config
   copy:
     src: "{{ role_path }}/files/config.yaml"
-    dest: /home/octo/.octoprint/config.yaml
+    dest: "{{ octoprint_home }}/../.octoprint/config.yaml"
     owner: debian
     group: debian
     force: no

@@ -24,37 +24,21 @@ plugins:
         update_script: '{python} "/usr/src/toggle/update-toggle.py" --python="{python}" "{folder}" "{target}"'
         restart: 'echo "Toggle dummy restart"'
       octoprint:
-        checkout_folder: /home/octo/OctoPrint
+        checkout_folder: /home/debian/OctoPrint
         prerelease: false
         type: github_release
       Kamikaze:
-        checkout_folder: /usr/src/Kamikaze2
+        checkout_folder: /usr/src/Uamikaze
         type: git_commit
-        update_script: '/usr/src/Kamikaze2/update-kamikaze.sh'
+        update_script: '/usr/src/Umikaze/update-kamikaze.sh'
         restart: 'echo "Kamikaze dummy restart"'
 printerParameters: {}
-serial:
-  additionalPorts:
-  - /dev/octoprint_1
-  baudrate: 115200
-  port: /dev/octoprint_1
-  timeout: {}
 server:
   commands:
     serverRestartCommand: sudo systemctl restart octoprint.service
     systemRestartCommand: sudo reboot
     systemShutdownCommand: sudo shutdown -h now
 system:
-  actions:
-  - action: restart_redeem
-    command: sudo systemctl restart redeem.service
-    name: Restart Redeem
-  - action: restart_toggle
-    command: sudo systemctl restart toggle.service
-    name: Restart Toggle
-  - action: restart mjpg
-    command: sudo systemctl restart mjpg.service
-    name: Restart Mjpg
 terminalFilters:
   - name: Suppress temperature messages
     regex: '(Send: (N\d+\s+)?M105)|(Recv:\s+(ok\s+)?.*\s(T\d*):\d+)'
@@ -64,7 +48,7 @@ terminalFilters:
     regex: 'Recv: (wait)|(ok)$'
 temperature: {}
 webcam:
-  stream: http://kamikaze.local:8080/?action=stream
+  stream: http://arm.local:8080/?action=stream
   snapshot: http://localhost:8080/?action=snapshot
   ffmpeg: /usr/bin/avconv
 controls:
