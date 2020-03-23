@@ -41,6 +41,19 @@
     state: latest
     update_cache: yes
 
+- name: give debian user the klipper service permissions
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: %sudo ALL=NOPASSWD: ALL
+
+- name: remove old line from sudoers
+  lineinfile:
+    path: /etc/sudoers
+    state: absent
+    line: %sudo ALL=(ALL:ALL)
+
+
 - name: install Klipper within the install scripts
   shell: "export USER=debian; /usr/src/klipper/scripts/install-debian-bbb.sh"
   args: 
@@ -117,11 +130,3 @@
     insertbefore: enable_uboot_cape_universal=1
     state: present
     path: /boot/uEnv.txt
-
-- name: give debian user the klipper service permissions
-  blockinfile:
-    path: /etc/sudoers.d/debian
-    state: present
-    block: |
-      %debian ALL=NOPASSWD: ALL
-
