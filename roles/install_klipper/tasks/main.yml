@@ -43,7 +43,8 @@
 
 - name: install Klipper within the install scripts
   shell: "export USER=debian; /usr/src/klipper/scripts/install-debian-bbb.sh"
-    args: chdir /usr/src/klipper
+    args: 
+      chdir: /usr/src/klipper
       
 #- name: install pip klipper dependencies
 #  pip:
