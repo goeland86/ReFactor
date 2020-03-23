@@ -35,7 +35,7 @@ plugins:
   klipper:
     _config_version: 2
     configuration:
-      path: /etc/klipper/printer.cfg
+      path: /home/debian/printer.cfg
   softwareupdate:
     _config_version: 7
     check_providers:
