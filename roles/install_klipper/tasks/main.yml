@@ -45,6 +45,8 @@
   shell: "export USER=debian; /usr/src/klipper/scripts/install-debian-bbb.sh"
   args: 
     chdir: /usr/src/klipper
+  become: true
+  become_user: debian
       
 #- name: install pip klipper dependencies
 #  pip:
