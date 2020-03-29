@@ -2,7 +2,7 @@
 - hosts: localhost
   connection: local
   vars:
-    - version: "ReFactor 1.0 (beta)"
+    - version: "ReFactor 1.0-beta3"
   roles:
 #    - linux_preparation
 #    - install_dummy_logger

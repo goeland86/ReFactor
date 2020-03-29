@@ -19,11 +19,6 @@
     state: present
 
     
-- name: remove grub
-  apt:
-    name: grub-efi-arm
-    state: absent
-    
 - name: remove login info
   file:
     path: "{{ item }}"
@@ -55,33 +50,11 @@
     chdir: /opt/scripts
     cmd: 'git pull'
 
-- name: update kernel using RCN scripts
-  shell:
-    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
-
 - name: install debconf-utils and curl
   apt:
     pkg: 
       - debconf-utils
       - curl
-    state: present
-
-- name: configure ipv4
-  command:
-    cmd: 'echo "iptables-persistent     iptables-persistent/autosave_v4 boolean true" | debconf-set-selections'
-
-- name: configure ipv6
-  command:
-    cmd: 'echo "iptables-persistent     iptables-persistent/autosave_v6 boolean true" | debconf-set-selections'
-
-- name: add thing printer key
-  shell:
-    cmd: "curl http://kamikaze.thing-printer.com/ubuntu/public.gpg | apt-key add -"
-    warn: false
-
-- name: add thing printer debian repository
-  apt_repository:
-    repo: deb [arch=armhf] http://kamikaze.thing-printer.com/ubuntu/ xenial main
     state: present
 
 - name: update package list
@@ -109,41 +82,6 @@
     state: present
     autoremove: yes
     autoclean: yes
-
-- name: upgrade pip3
-  pip:
-    executable: pip3
-    name: pip
-    extra_args: --upgrade
-
-- name: remove python-pip
-  apt:
-    name: python-pip
-    state: absent
-
-- name: install python-pip
-  apt:
-    pkg: 
-      - python-pip
-    state: latest
-    
-- name: install pip libs
-  pip:
-    executable: pip
-    extra_args: --upgrade
-    name:
-      - setuptools 
-      - wheel
-      - virtualenv 
-
-- name: install pip3 libs
-  pip:
-    executable: pip3
-    extra_args: --upgrade
-    name: 
-      - setuptools
-      - wheel
-      - virtualenv
 
 - name: enable netfilter
   service:
@@ -218,7 +156,7 @@
 
 - name: create dogtag
   file:
-    path: /etc/kamikaze-release
+    path: /etc/dogtag
     state: touch
 
 - name: get date
@@ -229,21 +167,8 @@
   lineinfile:
     line: '{{ version }} {{ build_date }}'
     state: present
-    path: /etc/kamikaze-release
+    path: /etc/dogtag
 
-- name: touch LCD screen rules
-  file:
-    path: /etc/udev/rules.d/80-lcd-screen.rules
-    state: touch
-    
-- name: write LCD screen rules
-  lineinfile:
-    path: /etc/udev/rules.d/80-lcd-screen.rules
-    line: '{{ item }}'
-    state: present
-  with_items:
-    - "SYSFS{idVendor}==\"0eef\", SYSFS{idProduct}==\"0001\", KERNEL==\"event*\",SYMLINK+=\"input/touchscreen_eGalaxy3\""
-    - "KERNEL==\"uinput\", GROUP=\"wheel\", MODE:=\"0660\""
 
 - name: remove hosts entry
   lineinfile:
@@ -254,13 +179,13 @@
 - name: set hostname
   lineinfile:
     path: /etc/hostname
-    line: kamikaze
+    line: refactor
     state: present
 
 - name: set host entry
   lineinfile:
     path: /etc/hosts
-    line: '127.0.1.1 Kamikaze Kamikaze.local'
+    line: '127.0.1.1 refactor refactor.local'
     state: present
 
 - name: set root password
@@ -291,9 +216,3 @@
   with_items:
     - /etc/issue.net
     - /etc/issue
-
-- name: remove wifi tether for BBBW
-  copy:
-    src: "{{ role_path }}/files/bb-wl18xx"
-    dest: /etc/default/bb-wl18xx
-    force: yes

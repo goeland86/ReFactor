@@ -50,8 +50,9 @@
   pip:
     chdir: '{{ octoprint_home }}'
     virtualenv: '{{ octoprint_home }}/venv'
+    virtualenv_python: python2.7
     state: latest
-    name: https://github.com/foosel/OctoPrint/archive/1.4.0.zip
+    name: git+https://github.com/foosel/OctoPrint.git
   become_user: debian
 
 

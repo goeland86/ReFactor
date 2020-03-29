@@ -1,4 +1,4 @@
 # This specifies the base Ubuntu system
-BASEIMAGE_DATE="2019-05-10"
-BASEIMAGE_UBUNTU_VERSION="9.9"
+BASEIMAGE_DATE="2020-03-12"
+BASEIMAGE_UBUNTU_VERSION="10.3"
 BASEIMAGE_URL=https://rcn-ee.com/rootfs/${BASEIMAGE_DATE}/microsd/bone-debian-${BASEIMAGE_UBUNTU_VERSION}-console-armhf-${BASEIMAGE_DATE}-2gb.img.xz
