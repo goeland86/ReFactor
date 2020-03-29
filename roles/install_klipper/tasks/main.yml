@@ -24,10 +24,7 @@
     recurse: yes
 
 - name: remove the avrdude dependency
-  lineinfile:
-    path: /usr/src/klipper/scripts/install-debian.sh
-    line: 'PKGLIST="${PKGLIST} avrdude gcc-avr binutils-avr avr-libc"'
-    state: absent
+  shell: sed -i 's/PKGLIST="${PKGLIST} avrdude gcc-avr binutils-avr avr-libc"/#PKGLIST="${PKGLIST} avrdude gcc-avr binutils-avr avr-libc"/g' /usr/src/klipper/scripts/install-debian.sh
 
 - name: install system klipper dependencies
   apt:
