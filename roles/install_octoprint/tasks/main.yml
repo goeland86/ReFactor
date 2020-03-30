@@ -6,18 +6,18 @@
       - apache2
     state: absent
 
-- name: make sure iptables folder exists
-  file:
-    path: /etc/iptables
-    state: directory
+#- name: make sure iptables folder exists
+#  file:
+#    path: /etc/iptables
+#    state: directory
 
-- name: copy port forwarding rules
-  copy:
-    src: '{{ role_path }}/files/rules.v4'
-    dest: /etc/iptables/rules.v4
-    owner: root
-    group: root
-    mode: 644
+#- name: copy port forwarding rules
+#  copy:
+#    src: '{{ role_path }}/files/rules.v4'
+#    dest: /etc/iptables/rules.v4
+#    owner: root
+#    group: root
+#    mode: 644
 
 - name: create home octoprint folder
   file:
