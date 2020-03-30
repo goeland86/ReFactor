@@ -1,8 +1,16 @@
 ---
+- name: remove nginx / apache
+  apt:
+    name:
+      - nginx
+      - apache2
+    state: absent
+
 - name: make sure iptables folder exists
   file:
     path: /etc/iptables
     state: directory
+
 - name: copy port forwarding rules
   copy:
     src: '{{ role_path }}/files/rules.v4'
@@ -50,7 +58,7 @@
   pip:
     chdir: '{{ octoprint_home }}'
     virtualenv: '{{ octoprint_home }}/venv'
-    virtualenv_python: python3.7
+    virtualenv_python: python2.7
     state: latest
     name: git+https://github.com/foosel/OctoPrint.git
   become_user: debian

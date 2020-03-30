@@ -12,15 +12,20 @@
   git: 
     repo: https://github.com/BlackStump/klipper
     version: Replicape-systemd-update
-    dest: /usr/src/klipper
+    dest: '{{ klipper_home }}'
     update: yes
     clone: yes
 
 - name: remove the avrdude dependency in install-debian
-  shell: cat /usr/src/klipper/scripts/install-debian.sh | grep -v avr > /usr/src/klipper/scripts/install-debian-2.sh && mv /usr/src/klipper/scripts/install-debian-2.sh /usr/src/klipper/scripts/install-debian.sh
+  shell: "cat {{ klipper_home }}/scripts/install-debian.sh | grep -v avr > {{ klipper_home }}/scripts/install-debian-2.sh && mv {{ klipper_home }}/scripts/install-debian-2.sh {{ klipper_home }}/scripts/install-debian.sh"
 
 - name: remove the avrdude dependency in install-debian-bbb.sh
-  shell: cat /usr/src/klipper/scripts/install-debian-bbb.sh | grep -v avr > /usr/src/klipper/scripts/install-debian-bbb-2.sh && mv /usr/src/klipper/scripts/install-debian-bbb-2.sh /usr/src/klipper/scripts/install-debian-bbb.sh && chmod +x /usr/src/klipper/scripts/install-debian-bbb.sh
+  shell: "cat {{ klipper_home }}/scripts/install-debian-bbb.sh | grep -v avr > {{ klipper_home }}/scripts/install-debian-bbb-2.sh && mv {{ klipper_home }}/scripts/install-debian-bbb-2.sh {{ klipper_home }}/scripts/install-debian-bbb.sh && chmod +x {{ klipper_home }}/scripts/install-debian-bbb.sh"
+
+- name: add debian user to tty group
+  user:
+    groups: tty
+    append: yes
 
 - name: install pru gcc
   apt:
@@ -29,7 +34,7 @@
 
 - name: adjust ownership of klipper source
   file:
-    path: /usr/src/klipper
+    path: "{{ klipper_home }}"
     owner: debian
     group: debian
     recurse: yes
@@ -47,63 +52,26 @@
     line: "%sudo *"
 
 - name: install Klipper within the install scripts
-  shell: "export USER=debian; /usr/src/klipper/scripts/install-debian-bbb.sh"
+  shell: "export USER=debian; {{ klipper_home }}/scripts/install-debian-bbb.sh"
   args: 
-    chdir: /usr/src/klipper
+    chdir: "{{ klipper_home }}"
   become: true
   become_user: debian
       
-#- name: install pip klipper dependencies
-#  pip:
-#    virtualenv: /usr/local/klipper/
-#    virtualenv_python: python2.7
-#    requirements: /usr/src/klipper/scripts/klippy-requirements.txt
-
-
 - name: compile binary blobs for klippy
   shell:
-    cmd: "cd /usr/src/klipper ; cp {{ item }} .config ; make flash"
+    cmd: "cd {{ klipper_home }} ; cp {{ item }} .config ; make flash"
   with_items:
     - "{{ role_path }}/files/pru_config"
     - "{{ role_path }}/files/linux_config"
 
-#- name: copy klipper service
-#  copy:
-#    src: "{{ role_path }}/files/klipper.service"
-#    dest: /lib/systemd/system/klipper.service
-
-#- name: enable klipper service
-#  service:
-#    name: klipper
-#    enabled: yes
-
 - name: create klipper config file
   copy:
-    src: /usr/src/klipper/config/generic-replicape.cfg
+    src: "{{ klipper_home }}/config/generic-replicape.cfg"
     dest: /home/debian/printer.cfg
     owner: debian
     group: debian
 
-
-#- name: install PRU start scripts
-#  copy:
-#    src: "{{ role_path }}/files/klipper_pru"
-#    dest: /etc/init.d/klipper_pru
-#    mode: 0755
-
-#- name: update services
-#  shell:
-#    cmd: "update-rc.d klipper_pru defaults"
-
-#- name: copy systemd klipper_pru file
-#  copy:
-#    src: "{{ role_path }}/files/klipper_pru.service"
-#    dest: /lib/systemd/system/klipper_pru.service
-
-#- name: enable systemd klipper_pru
-#  service:
-#    name: klipper_pru.service
-#    enabled: yes
 
 - name: place Klipper-friendly config for octoprint in place
   copy:
