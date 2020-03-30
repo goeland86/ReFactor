@@ -16,33 +16,23 @@
     update: yes
     clone: yes
 
+- name: remove the avrdude dependency in install-debian
+  shell: cat /usr/src/klipper/scripts/install-debian.sh | grep -v avr > /usr/src/klipper/scripts/install-debian-2.sh && mv /usr/src/klipper/scripts/install-debian-2.sh /usr/src/klipper/scripts/install-debian.sh
+
+- name: remove the avrdude dependency in install-debian-bbb.sh
+  shell: cat /usr/src/klipper/scripts/install-debian-bbb.sh | grep -v avr > /usr/src/klipper/scripts/install-debian-bbb-2.sh && mv /usr/src/klipper/scripts/install-debian-bbb-2.sh /usr/src/klipper/scripts/install-debian-bbb.sh && chmod +x /usr/src/klipper/scripts/install-debian-bbb.sh
+
+- name: install pru gcc
+  apt:
+    name: gcc-pru
+    state: latest
+
 - name: adjust ownership of klipper source
   file:
     path: /usr/src/klipper
     owner: debian
     group: debian
     recurse: yes
-
-- name: remove the avrdude dependency
-  shell: sed -i 's/PKGLIST="${PKGLIST} avrdude gcc-avr binutils-avr avr-libc"/#PKGLIST="${PKGLIST} avrdude gcc-avr binutils-avr avr-libc"/g' /usr/src/klipper/scripts/install-debian.sh
-
-- name: install system klipper dependencies
-  apt:
-    pkg:
-      - python-virtualenv
-      - virtualenv
-      - python-dev
-      - libffi-dev
-      - build-essential
-      - libncurses-dev
-      - libusb-dev
-      - stm32flash
-      - libnewlib-arm-none-eabi
-      - gcc-arm-none-eabi
-      - binutils-arm-none-eabi
-      - gcc-pru
-    state: latest
-    update_cache: yes
 
 - name: give debian user the klipper service permissions
   lineinfile:
@@ -55,7 +45,6 @@
     path: /etc/sudoers
     state: absent
     line: "%sudo *"
-
 
 - name: install Klipper within the install scripts
   shell: "export USER=debian; /usr/src/klipper/scripts/install-debian-bbb.sh"
