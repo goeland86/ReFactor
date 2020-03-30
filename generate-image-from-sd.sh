@@ -37,7 +37,7 @@ echo "Removing UUID references and uncommenting flasher option from /boot/uEnv.t
 MOUNTPOINT=$(mktemp -d /tmp/umikaze-sd.XXXXXX)
 mount $PARTITION ${MOUNTPOINT}
 sed -ie '/^uuid=/d' ${MOUNTPOINT}/boot/uEnv.txt
-sed -ie 's/#cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh$/cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh/' ${MOUNTPOINT}/boot/uEnv.txt
+#sed -ie 's/#cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh$/cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh/' ${MOUNTPOINT}/boot/uEnv.txt
 echo "Removing WPA wifi access file just in case"
 rm -rf ${MOUNTPOINT}/root/wpa.conf
 echo "Clearing bash history"
