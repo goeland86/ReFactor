@@ -24,6 +24,7 @@
 
 - name: add debian user to tty group
   user:
+    name: debian
     groups: tty
     append: yes
 
