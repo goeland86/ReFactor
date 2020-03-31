@@ -1,24 +1,4 @@
 ---
-- name: create local apt conf
-  file: 
-    path: /etc/apt/apt.conf.d/99local
-    owner: root
-    group: root
-    state: touch
-    
-- name: disable install recommends
-  lineinfile:
-    path: /etc/apt/apt.conf.d/99local
-    line: 'APT::Install-Recommends "false";'
-    state: present
-    
-- name: disable install suggestions
-  lineinfile:
-    path: /etc/apt/apt.conf.d/99local
-    line: 'APT::Install-Suggests "false";'
-    state: present
-
-    
 - name: remove login info
   file:
     path: "{{ item }}"
@@ -83,27 +63,11 @@
     autoremove: yes
     autoclean: yes
 
-- name: enable netfilter
-  service:
-    name: netfilter-persistent
-    enabled: yes
-
 - name: enable root login via ssh
   lineinfile:
     path: /etc/ssh/sshd_config
     line: 'PermitRootLogin yes'
     state: present
-
-- name: disable the power button
-  lineinfile:
-    path: /etc/systemd/logind.conf
-    line: 'HandlePowerKey=ignore'
-    state: present
-
-#- name: disable wireless power management
-#  file:
-#    path: /etc/pm/sleep.d/wireless
-#    state: touch
 
 #- name: update dhcp
 #  lineinfile:
@@ -112,21 +76,21 @@
 #    insertafter: '[main]'
 #    state: present
 
-#- name: setup network interfaces file
-#  blockinfile:
-#    path: /etc/network/interfaces
-#    create: yes
-#    block: |
+- name: setup network interfaces file
+  blockinfile:
+    path: /etc/network/interfaces
+    create: yes
+    block: |
       # This file describes the network interfaces available on your system
       # and how to activate them. For more information, see interfaces(5).
 
       # The loopback network interface
-#      auto lo
-#      iface lo inet loopback
+      auto lo
+      iface lo inet loopback
 
       # The primary network interface
-#      auto eth0
-#      iface eth0 inet dhcp
+      auto eth0
+      iface eth0 inet dhcp
       # Example to keep MAC address between reboots
       #hwaddress ether DE:AD:BE:EF:CA:FE
 
@@ -135,12 +99,12 @@
       # Ethernet/RNDIS gadget (g_ether)
       # Used by: /opt/scripts/boot/autoconfigure_usb0.sh
 
- #     auto usb0
- #     iface usb0 inet static
- #     address 192.168.7.2
-#      netmask 255.255.255.252
-#      network 192.168.7.0
-#      gateway 192.168.7.1
+      auto usb0
+      iface usb0 inet static
+      address 192.168.7.2
+      netmask 255.255.255.252
+      network 192.168.7.0
+      gateway 192.168.7.1
       
 - name: remove unneeded files
   file:
@@ -156,7 +120,7 @@
 
 - name: create dogtag
   file:
-    path: /etc/dogtag
+    path: '/etc/{{ dogtag }}'
     state: touch
 
 - name: get date
@@ -167,7 +131,7 @@
   lineinfile:
     line: '{{ version }} {{ build_date }}'
     state: present
-    path: /etc/dogtag
+    path: '/etc/{{ dogtag }}'
 
 
 - name: remove hosts entry
@@ -216,3 +180,8 @@
   with_items:
     - /etc/issue.net
     - /etc/issue
+
+- name: enable ssh
+  service:
+    name: ssh
+    enabled: yes

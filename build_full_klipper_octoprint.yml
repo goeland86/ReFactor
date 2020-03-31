@@ -2,9 +2,9 @@
 - hosts: localhost
   connection: local
   vars:
-    - version: "ReFactor 1.0-beta3"
+    - version: "ReFactor 1.0.0-beta3"
   roles:
-#    - linux_preparation
+    - linux_preparation
 #    - install_dummy_logger
     - install_octoprint
     - install_klipper
