@@ -46,11 +46,11 @@
     state: present
     line: "debian ALL=NOPASSWD: ALL"
 
-- name: remove old line from sudoers
+- name: remove sudoers group authorization
   lineinfile:
     path: /etc/sudoers
+    line: "%sudo   ALL=(ALL:ALL) ALL"
     state: absent
-    line: "%sudo *"
 
 - name: install Klipper within the install scripts
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-beaglebone.sh"
