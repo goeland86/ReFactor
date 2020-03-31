@@ -53,7 +53,7 @@
     line: "%sudo *"
 
 - name: install Klipper within the install scripts
-  shell: "export USER=debian; {{ klipper_home }}/scripts/install-debian-bbb.sh"
+  shell: "export USER=debian; {{ klipper_home }}/scripts/install-beaglebone.sh"
   args: 
     chdir: "{{ klipper_home }}"
   become: true

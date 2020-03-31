@@ -14,8 +14,6 @@
 - name: remove unneeded packages
   apt:
     pkg:
-    - linux-image-*
-    - linux-headers-*
     - apache2
     - apache2-bin
     - apache2-data
@@ -76,21 +74,21 @@
 #    insertafter: '[main]'
 #    state: present
 
-- name: setup network interfaces file
-  blockinfile:
-    path: /etc/network/interfaces
-    create: yes
-    block: |
+#- name: setup network interfaces file
+#  blockinfile:
+#    path: /etc/network/interfaces
+#    create: yes
+#    block: |
       # This file describes the network interfaces available on your system
       # and how to activate them. For more information, see interfaces(5).
 
       # The loopback network interface
-      auto lo
-      iface lo inet loopback
+#      auto lo
+#      iface lo inet loopback
 
       # The primary network interface
-      auto eth0
-      iface eth0 inet dhcp
+#      auto eth0
+#      iface eth0 inet dhcp
       # Example to keep MAC address between reboots
       #hwaddress ether DE:AD:BE:EF:CA:FE
 
@@ -99,12 +97,12 @@
       # Ethernet/RNDIS gadget (g_ether)
       # Used by: /opt/scripts/boot/autoconfigure_usb0.sh
 
-      auto usb0
-      iface usb0 inet static
-      address 192.168.7.2
-      netmask 255.255.255.252
-      network 192.168.7.0
-      gateway 192.168.7.1
+#      auto usb0
+#      iface usb0 inet static
+#      address 192.168.7.2
+#      netmask 255.255.255.252
+#      network 192.168.7.0
+#      gateway 192.168.7.1
       
 - name: remove unneeded files
   file:
@@ -139,18 +137,6 @@
     path: /etc/hostname
     line: arm
     state: absent
-
-- name: set hostname
-  lineinfile:
-    path: /etc/hostname
-    line: refactor
-    state: present
-
-- name: set host entry
-  lineinfile:
-    path: /etc/hosts
-    line: '127.0.1.1 refactor refactor.local'
-    state: present
 
 - name: set root password
   shell:
