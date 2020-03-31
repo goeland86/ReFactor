@@ -123,11 +123,11 @@
 
 - name: get date
   command: 'date'
-  register: build_date.stdout
+  register: build_date
 
 - name: write dogtag
   lineinfile:
-    line: '{{ version }} {{ build_date }}'
+    line: '{{ version }} {{ build_date.stdout }}'
     state: present
     path: '/etc/{{ dogtag }}'
 
@@ -170,4 +170,9 @@
 - name: enable ssh
   service:
     name: ssh
+    enabled: yes
+
+- name: enable connman
+  service:
+    name: connman
     enabled: yes
