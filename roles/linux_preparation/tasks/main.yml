@@ -123,7 +123,7 @@
 
 - name: get date
   command: 'date'
-  register: build_date
+  register: build_date.stdout
 
 - name: write dogtag
   lineinfile:
