@@ -7,6 +7,7 @@ ExecStart=/home/debian/OctoPrint/venv/bin/octoprint serve
 Restart=always
 RestartSec=60
 User=debian
+Nice=2
 
 [Install]
 WantedBy=multi-user.target
