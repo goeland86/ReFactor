@@ -14,12 +14,11 @@
 - name: remove unneeded packages
   apt:
     pkg:
-    - apache2
-    - apache2-bin
-    - apache2-data
-    - apache2-utils
+    - nginx
     - hostapd
     - libgtk3-common
+    - grub
+    - javascript-common
     state: absent
     autoremove: yes
 
@@ -33,6 +32,7 @@
     pkg: 
       - debconf-utils
       - curl
+      - firmware-realtek
     state: present
 
 - name: update package list

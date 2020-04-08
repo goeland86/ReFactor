@@ -1,16 +1,10 @@
+#Systemd service  file for klipper group services
 [Unit]
-Documentation=man:systemd-sysv-generator(8)
-Description=Klipper thread application
-After=multi-user.target
-
-[Service]
-Type=Simple
-Requires=klipper_pru.service
-Restart=always
-RemainAfterExit=yes
-SuccessExitStatus=5 6
-ExecStart=/usr/local/klipper/bin/python /usr/src/klipper/klippy/klippy.py /etc/klipper/printer.cfg -l /home/debian/.octoprint/logs/klippy.log
-User=debian
+Description=Klipper target services
+Documentation=man:systemd.special(7)n
+DefaultDependencies=no
+Requires=multi-user.target
+Conflicts=shutdown.target
 
 [Install]
 WantedBy=multi-user.target

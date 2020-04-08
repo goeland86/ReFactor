@@ -1,0 +1,8 @@
+#Systemd path file for klipper-pru
+[Unit]
+Description=klipper pru PATH
+PartOf=klipper_pru.service
+
+[Path]
+PathExists=/sys/class/remoteproc/remoteproc2/state
+PathExists=/sys/class/remoteproc/remoteproc1/state

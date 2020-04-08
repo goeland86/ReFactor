@@ -1,0 +1,16 @@
+#Systemd service file for OctoPrint
+[Unit]
+Description=OctoPrint
+PartOf=klipper.service
+After=klippy.service
+Requires= klipper_host_mcu.service klipper_pru.service klippy.service
+
+[Service]
+Type=simple
+ExecStart=/home/debian/OctoPrint/venv/bin/octoprint serve
+Restart=always
+RestartSec=60
+User=debian
+
+[Install]
+WantedBy=klipper.service
