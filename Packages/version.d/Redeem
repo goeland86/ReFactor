@@ -1,5 +1,0 @@
-# This specifies the appropriate version of Redeem
-REDEEM_REPOSITORY="https://github.com/intelligent-agent/redeem"
-REDEEM_BRANCH="master"
-REDEEM_BRANCH_SINCE="2019-08-01"
-REDEEM_ENVIRONMENT="/usr/local/Redeem-${REDEEM_BRANCH}"

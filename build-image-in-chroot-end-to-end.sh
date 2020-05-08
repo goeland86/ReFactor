@@ -2,7 +2,14 @@
 set -x
 set -e
 
-for f in `ls Packages/version.d/*`
+if [$# -ne 1]; then
+	echo "We need to know which platform we're building for."
+	echo "Should be one of: [replicape, recore, raspi(1-3), raspi4]"
+fi
+
+TARGET_PLATFORM=$1
+
+for f in $(ls BaseLinux/${TARGET_PLATFORM}/*)
   do
     source $f
   done
@@ -10,18 +17,16 @@ if [ -f "customize.sh" ] ; then
   source customize.sh
 fi
 
-TARGETIMAGE=kamikaze-rootfs.img
+TARGETIMAGE=refactor-${TARGET_PLATFORM}-rootfs.img
 MOUNTPOINT=$(mktemp -d /tmp/umikaze-root.XXXXXX)
-UMIKAZE_HOME="/usr/src/Umikaze"
-
-BASEIMAGE=`basename ${BASEIMAGE_URL}`
+REFACTOR_HOME="/usr/src/ReFactor"
 
 if [ ! -f $BASEIMAGE ]; then
-    wget $BASEIMAGE_URL
+    wget $BASEIMAGE_URL -O $BASEIMAGE
 fi
 
 rm -f $TARGETIMAGE
-xz -c -d $BASEIMAGE >> $TARGETIMAGE
+decompress || $(echo "check your Linux platform file is correct!"; exit) # defined in the BaseLinux/{platform}/Linux file
 truncate -s 4G $TARGETIMAGE
 DEVICE=`losetup -P -f --show $TARGETIMAGE`
 
@@ -51,11 +56,11 @@ cp /etc/resolv.conf ${MOUNTPOINT}/etc/resolv.conf
 
 # don't git clone here - if someone did a commit since this script started, Unexpected Things will happen
 # instead, do a deep copy so the image has a git repo as well
-mkdir -p ${MOUNTPOINT}${UMIKAZE_HOME}
+mkdir -p ${MOUNTPOINT}${REFACTOR_HOME}
 
 shopt -s dotglob # include hidden files/directories so we get .git
 shopt -s extglob # allow excluding so we can hide the img files
-cp -r `pwd`/!(*.img*) ${MOUNTPOINT}${UMIKAZE_HOME}
+cp -r `pwd`/!(*.img*) ${MOUNTPOINT}${REFACTOR_HOME}
 shopt -u extglob
 shopt -u dotglob
 
@@ -65,7 +70,7 @@ if [ -f "customize.sh" ]; then
 fi
 
 set +e # allow this to fail - we'll check the return code
-chroot ${MOUNTPOINT} /bin/su -c "cd ${UMIKAZE_HOME} && ./prep_ubuntu.sh && ansible-playbook build_full_klipper_octoprint.yml"
+chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook build_full_klipper_octoprint.yml"
 status=$?
 set -e
 

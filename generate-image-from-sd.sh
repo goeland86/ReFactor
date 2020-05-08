@@ -34,7 +34,7 @@ echo "Partition: $PARTITION"
 
 # This makes it so the image will boot on other BB not just the one it was built on
 echo "Removing UUID references and uncommenting flasher option from /boot/uEnv.txt"
-MOUNTPOINT=$(mktemp -d /tmp/umikaze-sd.XXXXXX)
+MOUNTPOINT=$(mktemp -d /tmp/Refactor-sd.XXXXXX)
 mount $PARTITION ${MOUNTPOINT}
 sed -ie '/^uuid=/d' ${MOUNTPOINT}/boot/uEnv.txt
 #sed -ie 's/#cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh$/cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh/' ${MOUNTPOINT}/boot/uEnv.txt
@@ -136,5 +136,5 @@ dd if=$DEVICE bs=1MB count=${ddcount} | xz -T 0 > Refactor-${UmikamiVersion}.img
 echo
 
 # Talkie talkie
-echo "Image file generated on USB drive as Umikaze-${UmikamiVersion}.img.xz"
+echo "Image file generated on USB drive as Refactor-${UmikamiVersion}.img.xz"
 echo "USB drive and MicroSD card can be removed safely now."
