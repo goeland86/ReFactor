@@ -1,11 +1,14 @@
 #!/bin/bash
+
+if [ $# -ne 1 ]; then
+	echo "We need to know which platform we're building for."
+	echo "Should be one of: [replicape, recore, raspi(1-3), raspi4]"
+	exit
+fi
+
 set -x
 set -e
 
-if [$# -ne 1]; then
-	echo "We need to know which platform we're building for."
-	echo "Should be one of: [replicape, recore, raspi(1-3), raspi4]"
-fi
 
 TARGET_PLATFORM=$1
 
@@ -27,7 +30,10 @@ fi
 
 rm -f $TARGETIMAGE
 decompress || $(echo "check your Linux platform file is correct!"; exit) # defined in the BaseLinux/{platform}/Linux file
+#if [ $TARGET_PLATFORM == 'replicape' ]; then
 truncate -s 4G $TARGETIMAGE
+#fi
+
 DEVICE=`losetup -P -f --show $TARGETIMAGE`
 
 cat << EOF | fdisk ${DEVICE}
