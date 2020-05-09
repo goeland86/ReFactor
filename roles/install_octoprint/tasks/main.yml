@@ -6,6 +6,16 @@
       - apache2
     state: absent
 
+- name: ensure the debian user exists
+  user:
+    name: debian
+    comment: Default user for OctoPrint
+    shell: /bin/bash
+    groups: tty,dialout
+    append: yes
+    expires: -1
+    home: /home/debian
+
 #- name: make sure iptables folder exists
 #  file:
 #    path: /etc/iptables
