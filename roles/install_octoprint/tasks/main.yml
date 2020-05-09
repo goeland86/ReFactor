@@ -7,10 +7,9 @@
     state: absent
 
 - name: verify python2-virtualenv is present
-  apt:
-    name:
-      - python-virtualenv
-    state: present
+  pip:
+    name: virtualenv
+    executable: pip
 
 - name: ensure the debian user exists
   user:
