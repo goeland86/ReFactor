@@ -6,6 +6,12 @@
       - apache2
     state: absent
 
+- name: verify python2-virtualenv is present
+  apt:
+    name:
+      - python2-virtualenv
+    state: present
+
 - name: ensure the debian user exists
   user:
     name: debian
