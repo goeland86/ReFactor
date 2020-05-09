@@ -1,8 +1,20 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ]; then
 	echo "We need to know which platform we're building for."
 	echo "Should be one of: {replicape, recore, raspihf, raspi64}"
+	echo "Usage: build-image-in-chroot-end-to-end.sh platform [system-build-script]
+	exit
+fi
+
+if [ $# -eq 2 ]; then
+	SYSTEM_ANSIBLE=$2
+else
+	SYSTEM_ANSIBLE=SYSTEM_klipper_octoprint-DEFAULT.yml
+fi
+
+if [ ! -f ${SYSTEM_ANSIBLE} ]; then
+	echo "Could not find the system build playbook ${SYSTEM_ANSIBLE}. Cannot continue."
 	exit
 fi
 
@@ -76,7 +88,7 @@ if [ -f "customize.sh" ]; then
 fi
 
 set +e # allow this to fail - we'll check the return code
-chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook SYSTEM_klipper_octoprint-DEFAULT.yml -T 180"
+chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook SYSTEM_ANSIBLE -T 180"
 status=$?
 set -e
 
