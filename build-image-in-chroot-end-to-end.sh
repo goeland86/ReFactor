@@ -76,7 +76,7 @@ if [ -f "customize.sh" ]; then
 fi
 
 set +e # allow this to fail - we'll check the return code
-chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook build_full_klipper_octoprint.yml"
+chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook SYSTEM_klipper_octoprint-DEFAULT.yml"
 status=$?
 set -e
 
