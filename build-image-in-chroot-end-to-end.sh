@@ -88,7 +88,14 @@ if [ -f "customize.sh" ]; then
 fi
 
 set +e # allow this to fail - we'll check the return code
-chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook ${SYSTEM_ANSIBLE} -T 180"
+cat << EOF | chroot ${MOUNTPOINT} su -c date
+1234
+kamikaze
+kamikaze
+EOF
+chroot ${MOUNTPOINT} su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook ${SYSTEM_ANSIBLE} -T 180"
+
+
 status=$?
 set -e
 
