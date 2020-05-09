@@ -2,7 +2,7 @@
 
 if [ $# -ne 1 ]; then
 	echo "We need to know which platform we're building for."
-	echo "Should be one of: [replicape, recore, raspi(1-3), raspi4]"
+	echo "Should be one of: {replicape, recore, raspihf, raspi64}"
 	exit
 fi
 
@@ -76,7 +76,7 @@ if [ -f "customize.sh" ]; then
 fi
 
 set +e # allow this to fail - we'll check the return code
-chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook SYSTEM_klipper_octoprint-DEFAULT.yml"
+chroot ${MOUNTPOINT} /bin/su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook SYSTEM_klipper_octoprint-DEFAULT.yml -T 180"
 status=$?
 set -e
 

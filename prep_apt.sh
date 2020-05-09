@@ -11,4 +11,6 @@ apt-get -y autoremove
 apt-get update
 apt-get -y install ansible git python3-pip python3-venv python-pip python-virtualenv python-apt python3-apt
 
+sed -i 's/gather_timeout=10/gather_timeout=20/g' /etc/ansible/ansible.cfg
+
 echo "Now the system is ready to use the ansible playbooks to build images."

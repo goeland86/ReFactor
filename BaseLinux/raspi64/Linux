@@ -1,0 +1,10 @@
+# This specifies the base Ubuntu system
+BASEIMAGE_URL=https://downloads.raspberrypi.org/raspbian_lite_latest
+BASEIMAGE=raspbian_lite.zip
+
+function decompress {
+	mkdir -p ./raspbianhf-image
+	unzip BASEIMAGE
+	mv ./raspbian-image/*.img $TARGETIMAGE
+	rm -r ./raspbian-image
+}
