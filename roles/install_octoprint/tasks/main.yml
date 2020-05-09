@@ -9,7 +9,7 @@
 - name: verify python2-virtualenv is present
   apt:
     name:
-      - python2-virtualenv
+      - python-virtualenv
     state: present
 
 - name: ensure the debian user exists
