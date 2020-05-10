@@ -139,3 +139,4 @@
   service:
     name: connman
     enabled: yes
+  when: platform == 'replicape'
