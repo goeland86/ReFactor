@@ -3,11 +3,11 @@
   get_url:
     url: https://rcn-ee.com/repos/bootloader/am335x_evm/MLO-am335x_evm-v2018.09-r8
     dest: /opt/backup/uboot/MLO
-  when '[[ platform ]]' == 'replicape'
+  when: platform == 'replicape'
 
 - name: Replicape - download uboot binary
   get_url:
     url: https://rcn-ee.com/repos/bootloader/am335x_evm/u-boot-am335x_evm-v2018.09-r8.img
     dest: /opt/backup/uboot/u-boot.img
-  when '[[ platform ]]' == 'replicape'
+  when: platform == 'replicape'
 

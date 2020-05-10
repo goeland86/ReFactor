@@ -17,7 +17,7 @@
     path: /usr/src/mjpg-streamer/mjpg-streamer-experimental/CMakeLists.txt
     regex: input_raspicam
     line: '#add_subdirectory(plugins/input_raspicam)'
-  when: ('platform' != 'pi' and 'platform' != 'pi64')
+  when: (platform != 'pi' and 'platform' != 'pi64')
 
 - name: add video udev rule file
   file:
