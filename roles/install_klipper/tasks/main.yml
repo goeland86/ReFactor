@@ -3,7 +3,7 @@
   shell: ls /lib/modules
   register: kernel_version
 
-- name: set kernel version to 4.14
+- name: Replicape - set kernel version to 4.14
   shell:
     cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
   when: '"4.14" not in kernel_version.stdout'
@@ -16,10 +16,10 @@
     update: yes
     clone: yes
 
-- name: remove the avrdude dependency in install-debian
+- name: Replicape - remove the avrdude dependency in install-debian
   shell: "cat {{ klipper_home }}/scripts/install-debian.sh | grep -v avr > {{ klipper_home }}/scripts/install-debian-2.sh && mv {{ klipper_home }}/scripts/install-debian-2.sh {{ klipper_home }}/scripts/install-debian.sh"
 
-- name: remove the avrdude dependency in install-debian-bbb.sh
+- name: Replicape - remove the avrdude dependency in install-debian-bbb.sh
   shell: "cat {{ klipper_home }}/scripts/install-debian-bbb.sh | grep -v avr > {{ klipper_home }}/scripts/install-debian-bbb-2.sh && mv {{ klipper_home }}/scripts/install-debian-bbb-2.sh {{ klipper_home }}/scripts/install-debian-bbb.sh && chmod +x {{ klipper_home }}/scripts/install-debian-bbb.sh"
 
 - name: add debian user to tty group
@@ -28,7 +28,7 @@
     groups: tty
     append: yes
 
-- name: install pru gcc
+- name: Replicape - install pru gcc
   apt:
     name: gcc-pru
     state: latest
@@ -59,14 +59,14 @@
   become: true
   become_user: debian
       
-- name: compile binary blobs for klippy
+- name: Replicape - compile binary blobs for klippy
   shell:
     cmd: "cd {{ klipper_home }} ; cp {{ item }} .config ; make flash"
   with_items:
     - "{{ role_path }}/files/pru_config"
     - "{{ role_path }}/files/linux_config"
 
-- name: create klipper config file
+- name: Replicape - create klipper config file
   copy:
     src: "{{ klipper_home }}/config/generic-replicape.cfg"
     dest: /home/debian/printer.cfg
@@ -81,7 +81,7 @@
     owner: debian
     group: debian
 
-- name: place Klipper-service files in place
+- name: Replicape - place Klipper-service files in place
   copy:
     src: "{{ role_path }}/files/{{ item }}"
     dest: /etc/systemd/system/
@@ -97,11 +97,11 @@
     - klipper_pru.service
     - klipper.service
 
-- name: replace UIO with rproc kernel overlays
+- name: Replicape - replace UIO with rproc kernel overlays
   shell: 
     cmd: "sed -i 's\\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\' /boot/uEnv.txt"
 
-- name: enable rproc overlay
+- name: Replicape - enable rproc overlay
   lineinfile:
     line: uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo
     insertbefore: enable_uboot_cape_universal=1
