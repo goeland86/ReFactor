@@ -22,7 +22,6 @@
     expires: -1
     home: /home/debian
 
-
 # iptables -t nat -A PREROUTING -i eth0 -p tcp --dport $srcPortNumber -j REDIRECT --to-port $dstPortNumber
 - name: create IPtables port forward
   iptables:
