@@ -93,7 +93,7 @@ cat << EOF | chroot ${MOUNTPOINT} su -c passwd
 kamikaze
 kamikaze
 EOF
-chroot ${MOUNTPOINT} su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook ${SYSTEM_ANSIBLE} -T 180 --extra-vars ${ANSIBLE_PLATFORM_VARS}"
+chroot ${MOUNTPOINT} su -c "cd ${REFACTOR_HOME} && ./prep_apt.sh && ansible-playbook ${SYSTEM_ANSIBLE} -T 180 --extra-vars '${ANSIBLE_PLATFORM_VARS}'"
 
 
 status=$?
