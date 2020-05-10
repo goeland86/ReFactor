@@ -8,9 +8,11 @@
       - pythom-smbus
       - ti-pru-cgt-installer
     state: latest
+  when: ansible_facts['platform'] == 'replicape'
 
 - name: check for pru-software-support-package
   file:
     path: /usr/src/pru-software-support-package
     state: directory
   notify: fetch pru support package
+  when: ansible_facts['platform'] == 'replicape'

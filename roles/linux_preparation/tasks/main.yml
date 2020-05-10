@@ -22,10 +22,11 @@
     state: absent
     autoremove: yes
 
-- name: update RCN scripts
+- name: Replicape - update RCN scripts
   command:
     chdir: /opt/scripts
     cmd: 'git pull'
+  when: ansible_facts['platform'] == 'replicape'
 
 - name: install debconf-utils and curl
   apt:
@@ -66,43 +67,6 @@
     path: /etc/ssh/sshd_config
     line: 'PermitRootLogin yes'
     state: present
-
-#- name: update dhcp
-#  lineinfile:
-#    path: /etc/NetworkManager/NetworkManager.conf
-#    line: 'dhcp=internal'
-#    insertafter: '[main]'
-#    state: present
-
-#- name: setup network interfaces file
-#  blockinfile:
-#    path: /etc/network/interfaces
-#    create: yes
-#    block: |
-      # This file describes the network interfaces available on your system
-      # and how to activate them. For more information, see interfaces(5).
-
-      # The loopback network interface
-#      auto lo
-#      iface lo inet loopback
-
-      # The primary network interface
-#      auto eth0
-#      iface eth0 inet dhcp
-      # Example to keep MAC address between reboots
-      #hwaddress ether DE:AD:BE:EF:CA:FE
-
-      # To setup wifi use nmtui to add or edit connections instead
-
-      # Ethernet/RNDIS gadget (g_ether)
-      # Used by: /opt/scripts/boot/autoconfigure_usb0.sh
-
-#      auto usb0
-#      iface usb0 inet static
-#      address 192.168.7.2
-#      netmask 255.255.255.252
-#      network 192.168.7.0
-#      gateway 192.168.7.1
       
 - name: remove unneeded files
   file:
@@ -130,7 +94,6 @@
     line: '{{ version }} {{ build_date.stdout }}'
     state: present
     path: '/etc/{{ dogtag }}'
-
 
 - name: remove hosts entry
   lineinfile:
@@ -160,9 +123,9 @@
     state: present
     block: |
       "{{ version }}
-      Built from an rcn-ee.net console image.
 
-      Check that nothing is printing before any intensive operation!"
+      Check that nothing is printing before any intensive operation!
+      "
   with_items:
     - /etc/issue.net
     - /etc/issue

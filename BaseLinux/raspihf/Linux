@@ -2,6 +2,8 @@
 BASEIMAGE_URL=https://downloads.raspberrypi.org/raspbian_lite_latest
 BASEIMAGE=raspbian_lite.zip
 
+ANSIBLE_PLATFORM_VARS='{"platform":"pi", "packaging":"apt"}'
+
 function decompress {
 	mkdir -p ./raspbianhf-image
 	unzip BASEIMAGE
