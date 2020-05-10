@@ -26,7 +26,7 @@
   command:
     chdir: /opt/scripts
     cmd: 'git pull'
-  when: ansible_facts['platform'] == 'replicape'
+  when: 'platform' == 'replicape'
 
 - name: install debconf-utils and curl
   apt:
