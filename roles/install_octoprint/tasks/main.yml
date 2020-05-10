@@ -5,7 +5,7 @@
       - nginx
       - apache2
     state: absent
-  when: 'platform' == 'replicape'
+  when '[[ platform ]]' == 'replicape'
 
 - name: verify python2-virtualenv is present
   pip:

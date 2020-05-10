@@ -2,7 +2,7 @@
 - name: install Beaglebone sgx drivers
   command:
     cmd: 'apt-get install -y {{ role_path }}/files/sgx-libgbm.deb {{ role_path }}/files/sgx-ti335x-userspace-1.14.3699939_1.1.deb'
-  when: 'platform' == 'replicape'
+  when '[[ platform ]]' == 'replicape'
 
 - name: copy powervr.ini file
   copy:
@@ -10,13 +10,13 @@
     dest: /etc/powervr.ini
     mode: 755
     owner: root
-  when: 'platform' == 'replicape'
+  when '[[ platform ]]' == 'replicape'
   
 - name: enable sgx-startup
   service:
     name: sgx-startup
     enabled: yes
-  when: 'platform' == 'replicape'
+  when '[[ platform ]]' == 'replicape'
 
 - name: create console-setup
   file:
@@ -24,7 +24,7 @@
     owner: root
     group: root
     state: touch
-  when: 'platform' == 'replicape'
+  when '[[ platform ]]' == 'replicape'
 
 - name: set font in console-setup
   lineinfile:

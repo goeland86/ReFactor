@@ -6,7 +6,7 @@
   with_items:
     - '{{ role_path }}/files/umikaze-files'
     - '{{ role_path }}/files/partition.py'
-  when: 'platform' == 'replicape'
+  when '[[ platform ]]' == 'replicape'
 
 - name: uncomment flasher script in uEnv.txt
   replace:

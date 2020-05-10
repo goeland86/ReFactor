@@ -3,9 +3,9 @@
   git:
     repo: https://github.com/mmone/OctoprintKlipperPlugin/
     dest: /usr/src/octoprint_klipper
-  when: 'firmware' == 'klipper'
+  when '[[ firmware ]]' == 'klipper'
 
 - name: install octoprint klipper plugin in Octoprint virtual env
   shell:
     cmd: 'cd /usr/src/octoprint_klipper ; {{ octoprint_home }}/venv/bin/python setup.py clean install'
-  when: 'firmware' == 'klipper'
+  when '[[ firmware ]]' == 'klipper'
