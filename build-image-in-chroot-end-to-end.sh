@@ -61,7 +61,7 @@ w
 
 EOF
 
-e2fsck -f ${DEVICE}p1
+e2fsck -f -p ${DEVICE}p1
 resize2fs ${DEVICE}p1
 
 mount ${DEVICE}p1 ${MOUNTPOINT}
