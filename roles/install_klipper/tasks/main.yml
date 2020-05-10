@@ -77,24 +77,24 @@
 
 - name: Replicape - install Klipper with the install scripts
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-beaglebone.sh"
-    args: 
-      chdir: "{{ klipper_home }}"
+  args: 
+    chdir: "{{ klipper_home }}"
   become: true
   become_user: debian
   when: platform == 'replicape'
 
 - name: Recore - install Klipper with install scripts      
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-ubuntu-18.04.sh"
-    args: 
-      chdir: "{{ klipper_home }}"
+  args: 
+    chdir: "{{ klipper_home }}"
   become: true
   become_user: debian
   when: platform == 'recore'
 
 - name: Pi/Pi64 - install Klipper with install scripts      
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-octopi.sh"
-    args: 
-      chdir: "{{ klipper_home }}"
+  args: 
+    chdir: "{{ klipper_home }}"
   become: true
   become_user: debian
   when: platform == 'pi' or platform == 'pi64'
