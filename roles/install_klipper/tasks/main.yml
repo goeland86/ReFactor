@@ -75,10 +75,10 @@
     line: "%sudo   ALL=(ALL:ALL) ALL"
     state: absent
 
-- name: Replicape - install Klipper within the install scripts
+- name: Replicape - install Klipper with the install scripts
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-beaglebone.sh"
-  args: 
-    chdir: "{{ klipper_home }}"
+    args: 
+      chdir: "{{ klipper_home }}"
   become: true
   become_user: debian
   when: platform == 'replicape'
