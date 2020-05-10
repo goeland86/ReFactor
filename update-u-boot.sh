@@ -10,7 +10,7 @@ if [ ! "${DEVICE}" ] ; then
   exit 1
 fi
 
-source Packages/version.d/U-Boot
+source BaseLinux/replicape/U-Boot
 
 echo "Flashing U-Boot onto $DEVICE"
 
