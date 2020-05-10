@@ -9,6 +9,4 @@
     - install_klipper
     - install_octoprint_klipper_plugins
     - install_mjpgstreamer
-    - install_smbshare
-    - install_usbreset
     - linux_preparation
