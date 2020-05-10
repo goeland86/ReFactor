@@ -2,15 +2,11 @@
 - hosts: localhost
   connection: local
   vars:
-    - version: "ReFactor 1.0.0-beta3"
+    - version: "ReFactor 1.0.0-beta4"
+    - firmware: klipper
   roles:
-#    - install_dummy_logger
     - install_octoprint
     - install_klipper
     - install_octoprint_klipper_plugins
     - install_mjpgstreamer
-#    - install_smbshare
-#    - install_toggle
-#    - install_uboot
-#    - install_usbreset
     - linux_preparation

@@ -2,7 +2,8 @@
 - hosts: local
   connection: local
   vars:
-    - version: Kamikaze 2.2.2
+    - version: "ReFactor 1.0.0-beta4"
+    - firmware: redeem
   roles:
     - install_dummy_logger
     - install_redeem

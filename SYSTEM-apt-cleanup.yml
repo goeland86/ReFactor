@@ -2,6 +2,6 @@
 - hosts: localhost
   connection: local
   vars:
-    - version: Klipperkaze 1.0.0
+    - version: "ReFactor 1.0.0-beta4"
   roles:
     - linux_preparation

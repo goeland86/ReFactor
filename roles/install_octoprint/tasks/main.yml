@@ -5,6 +5,7 @@
       - nginx
       - apache2
     state: absent
+  when: platform == 'replicape'
 
 - name: verify python2-virtualenv is present
   pip:
@@ -21,18 +22,17 @@
     expires: -1
     home: /home/debian
 
-#- name: make sure iptables folder exists
-#  file:
-#    path: /etc/iptables
-#    state: directory
-
-#- name: copy port forwarding rules
-#  copy:
-#    src: '{{ role_path }}/files/rules.v4'
-#    dest: /etc/iptables/rules.v4
-#    owner: root
-#    group: root
-#    mode: 644
+# iptables -t nat -A PREROUTING -i eth0 -p tcp --dport $srcPortNumber -j REDIRECT --to-port $dstPortNumber
+- name: create IPtables port forward
+  iptables:
+    table: nat
+    chain: PREROUTING
+    protocol: tcp
+    match: tcp
+    jump: REDIRECT
+    destination_port: 80
+    to_ports: 5000
+    comment: Redirect web traffic on port 80 to octoprint
 
 - name: create home octoprint folder
   file:
