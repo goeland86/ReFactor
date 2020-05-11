@@ -117,3 +117,7 @@ else
 fi
 
 losetup -d $DEVICE
+
+if [ ! $status -eq 0]; then
+  exit $status
+fi
