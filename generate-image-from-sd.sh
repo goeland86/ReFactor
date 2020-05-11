@@ -28,6 +28,7 @@ echo
 
 DEVICE=$1
 PARTITION=${DEVICE}p1
+TARGET_PLATFORM=$2
 
 echo "Device: $DEVICE"
 echo "Partition: $PARTITION"
@@ -113,7 +114,7 @@ echo
 # Run one last defrag and zero of the free space before backing it up
 echo "Final defrag and zeroing partition free space."
 mount $PARTITION ${MOUNTPOINT}
-UmikamiVersion=$(cat ${MOUNTPOINT}/etc/dogtag | awk '{printf $2}')
+ImageVersion=$(cat ${MOUNTPOINT}/etc/dogtag | awk -F' ' '{printf $2}')
 e4defrag -c ${MOUNTPOINT} > /dev/null
 # ignore the failure on this line - it runs until it's out of space
 dd if=/dev/zero of=${MOUNTPOINT}/zero_fill || true
@@ -132,9 +133,9 @@ echo "Generating image file now."
 blocksize=$(fdisk -l $DEVICE | grep Units: | awk '{printf $8}')
 count=$(fdisk -l -o Device,End $DEVICE | grep $PARTITION | awk '{printf $2}')
 ddcount=$((count*blocksize/1000000+1))
-dd if=$DEVICE bs=1MB count=${ddcount} | xz -T 0 > Refactor-${UmikamiVersion}.img.xz
+dd if=$DEVICE bs=1MB count=${ddcount} | xz -T 0 > Refactor-${TARGET_PLATFORM}-${ImageVersion}.img.xz
 echo
 
 # Talkie talkie
-echo "Image file generated on USB drive as Refactor-${UmikamiVersion}.img.xz"
+echo "Image file generated on USB drive as Refactor-${ImageVersion}.img.xz"
 echo "USB drive and MicroSD card can be removed safely now."
