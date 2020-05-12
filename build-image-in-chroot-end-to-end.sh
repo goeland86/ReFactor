@@ -61,7 +61,7 @@ w
 
 EOF
 
-e2fsck -f ${DEVICE}p1
+e2fsck -f -p ${DEVICE}p1
 resize2fs ${DEVICE}p1
 
 mount ${DEVICE}p1 ${MOUNTPOINT}
@@ -108,12 +108,16 @@ rmdir ${MOUNTPOINT}
 
 if [ $status -eq 0 ]; then
     echo "Looks like the image was prepared successfully - packing it up"
-    ./update-u-boot.sh $DEVICE
-    ./generate-image-from-sd.sh $DEVICE
+    if [ ${TARGET_PLATFORM} -eq 'replicape' ]; then
+      ./update-u-boot.sh $DEVICE
+    fi
+    ./generate-image-from-sd.sh $DEVICE $TARGET_PLATFORM
 else
     echo "image generation seems to have failed - cleaning up"
 fi
 
-
-
 losetup -d $DEVICE
+
+if [ ! $status -eq 0 ]; then
+  exit $status
+fi
