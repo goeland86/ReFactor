@@ -108,7 +108,9 @@ rmdir ${MOUNTPOINT}
 
 if [ $status -eq 0 ]; then
     echo "Looks like the image was prepared successfully - packing it up"
-    ./update-u-boot.sh $DEVICE
+    if [ ${TARGET_PLATFORM} -eq 'replicape' ]; then
+        ./update-u-boot.sh $DEVICE
+    fi
     ./generate-image-from-sd.sh $DEVICE
 else
     echo "image generation seems to have failed - cleaning up"
