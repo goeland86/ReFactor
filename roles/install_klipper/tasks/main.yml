@@ -28,6 +28,7 @@
 
 - name: pi - clone klipper from the repository
   git:
+    #repo: https://github.com/intelligent-agent/klipper
     repo: https://github.com/intelligent-agent/klipper
     version: master
     dest: '{{ klipper_home }}'
