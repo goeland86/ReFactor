@@ -84,6 +84,16 @@
   become_user: debian
   when: platform == 'replicape'
 
+- name: Recore - install build packages
+  apt:
+    name:
+      - build-essential
+      - python-libxml2
+      - python-cffi
+      - libc6-dev
+      - python-dev
+  when: platform == 'recore'
+
 - name: Recore - install Klipper with install scripts      
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-octopi.sh"
   args: 
