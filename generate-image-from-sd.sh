@@ -34,12 +34,12 @@ echo "Device: $DEVICE"
 echo "Partition: $PARTITION"
 
 # This makes it so the image will boot on other BB not just the one it was built on
-if [ ${TARGET_PLATFORM} == 'replicape' ]; then
-    echo "Removing UUID references and uncommenting flasher option from /boot/uEnv.txt"
     MOUNTPOINT=$(mktemp -d /tmp/Refactor-sd.XXXXXX)
     mount $PARTITION ${MOUNTPOINT}
+if [ ${TARGET_PLATFORM} == 'replicape' ]; then
+    echo "Removing UUID references and uncommenting flasher option from /boot/uEnv.txt"
     sed -ie '/^uuid=/d' ${MOUNTPOINT}/boot/uEnv.txt
-#sed -ie 's/#cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh$/cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh/' ${MOUNTPOINT}/boot/uEnv.txt
+    #sed -ie 's/#cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh$/cmdline=init=\/opt\/scripts\/tools\/eMMC\/init-eMMC-flasher-v3.sh/' ${MOUNTPOINT}/boot/uEnv.txt
 fi
 
 echo "Removing WPA wifi access file just in case"
@@ -50,7 +50,7 @@ rm -rf ${MOUNTPOINT}/home/ubuntu/.bash_history
 echo
 
 # Likely not needed but for the sake of making the image smaller we defrag first
-echo "Defragmenting partition."
+echo "Defragmenting partition mounted at ${MOUNTPOINT}."
 e4defrag -c ${MOUNTPOINT} > /dev/null
 umount ${MOUNTPOINT}
 echo
