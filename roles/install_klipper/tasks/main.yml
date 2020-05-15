@@ -28,6 +28,7 @@
 
 - name: pi - clone klipper from the repository
   git:
+    #repo: https://github.com/intelligent-agent/klipper
     repo: https://github.com/intelligent-agent/klipper
     version: master
     dest: '{{ klipper_home }}'
@@ -41,7 +42,7 @@
 
 - name: Replicape - remove the avrdude dependency in install-debian-bbb.sh
   shell: "cat {{ klipper_home }}/scripts/install-debian-bbb.sh | grep -v avr > {{ klipper_home }}/scripts/install-debian-bbb-2.sh && mv {{ klipper_home }}/scripts/install-debian-bbb-2.sh {{ klipper_home }}/scripts/install-debian-bbb.sh && chmod +x {{ klipper_home }}/scripts/install-debian-bbb.sh"
-  when: platform == 'replicape'
+  when: platform == 'replicape' 
 
 - name: add debian user to tty group
   user:
@@ -55,6 +56,11 @@
     state: latest
   when: platform == 'replicape'
 
+- name: Install libgpiod-dev
+  apt:
+    name: libgpiod-dev
+    state: present
+  when: platform != 'replicape'
 
 - name: adjust ownership of klipper source
   file:
@@ -83,8 +89,18 @@
   become_user: debian
   when: platform == 'replicape'
 
+- name: Recore - install build packages
+  apt:
+    name:
+      - build-essential
+      - python-libxml2
+      - python-cffi
+      - libc6-dev
+      - python-dev
+  when: platform == 'recore'
+
 - name: Recore - install Klipper with install scripts      
-  shell: "export USER=debian; {{ klipper_home }}/scripts/install-ubuntu-18.04.sh"
+  shell: "export USER=debian; {{ klipper_home }}/scripts/install-octopi.sh"
   args: 
     chdir: "{{ klipper_home }}"
   become: true
@@ -106,13 +122,6 @@
     - "{{ role_path }}/files/pru_config"
     - "{{ role_path }}/files/replicape_linux_config"
   when: platform == 'replicape'
-
-- name: compile recore modules for klipper
-  shell:
-    cmd: "cd {{ klipper_home }} ; cp {{ item }} .config ; make flash"
-  with_items:
-    - "{{ role_path }}/files/recore_config"
-  when: platform == 'recore'
 
 - name: Replicape - create klipper config file
   copy:
@@ -166,12 +175,13 @@
     - octoprint.service
     - klippy.service
     - klipper.service
-  when: platform != 'replicape'
+  when: platform == 'recore' or platform == 'pi' or platform == 'pi64'
 
 
 - name: Replicape - replace UIO with rproc kernel overlays
   shell: 
     cmd: "sed -i 's\\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\' /boot/uEnv.txt"
+  when: platform == 'replicape'
 
 - name: Replicape - enable rproc overlay
   lineinfile:
@@ -179,3 +189,4 @@
     insertbefore: enable_uboot_cape_universal=1
     state: present
     path: /boot/uEnv.txt
+  when: platform == 'replicape'
