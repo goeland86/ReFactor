@@ -56,6 +56,11 @@
     state: latest
   when: platform == 'replicape'
 
+- name: Install libgpiod-dev
+  apt:
+    name: libgpiod-dev
+    state: present
+  when: platform != 'replicape'
 
 - name: adjust ownership of klipper source
   file:
