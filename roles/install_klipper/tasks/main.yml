@@ -118,13 +118,6 @@
     - "{{ role_path }}/files/replicape_linux_config"
   when: platform == 'replicape'
 
-- name: compile recore modules for klipper
-  shell:
-    cmd: "cd {{ klipper_home }} ; cp {{ item }} .config ; make flash"
-  with_items:
-    - "{{ role_path }}/files/recore_config"
-  when: platform == 'recore'
-
 - name: Replicape - create klipper config file
   copy:
     src: "{{ klipper_home }}/config/generic-replicape.cfg"
