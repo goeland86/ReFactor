@@ -140,3 +140,12 @@
     name: connman
     enabled: yes
   when: platform == 'replicape'
+
+- name: Recore - include device tree
+  copy:
+    src: '{{ role_path }}/files/{{ item }}'
+    dest: '/boot/dtb/allwinner/{{ item }}'
+  with_items:
+   - sun50i-a64-recore.dtb
+   - sun50i-a64-recore.dts
+  when: platform == 'recore'
