@@ -78,7 +78,7 @@ mkdir -p ${MOUNTPOINT}${REFACTOR_HOME}
 
 shopt -s dotglob # include hidden files/directories so we get .git
 shopt -s extglob # allow excluding so we can hide the img files
-cp -r `pwd`/!(*.img*) ${MOUNTPOINT}${REFACTOR_HOME}
+cp -r `pwd`/!(*.img*|*.7z) ${MOUNTPOINT}${REFACTOR_HOME}
 shopt -u extglob
 shopt -u dotglob
 
