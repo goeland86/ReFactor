@@ -8,29 +8,12 @@ CONFIG_LOW_LEVEL_OPTIONS=y
 # CONFIG_MACH_ATSAMD is not set
 # CONFIG_MACH_LPC176X is not set
 # CONFIG_MACH_STM32 is not set
-# CONFIG_MACH_STM32F0_HAL is not set
 CONFIG_MACH_PRU=y
 # CONFIG_MACH_LINUX is not set
 # CONFIG_MACH_SIMU is not set
 CONFIG_STEP_DELAY=2
 CONFIG_BOARD_DIRECTORY="pru"
-# CONFIG_MACH_atmega2560 is not set
-# CONFIG_MACH_atmega1280 is not set
-# CONFIG_MACH_at90usb1286 is not set
-# CONFIG_MACH_at90usb646 is not set
-# CONFIG_MACH_atmega32u4 is not set
-# CONFIG_MACH_atmega1284p is not set
-# CONFIG_MACH_atmega644p is not set
-# CONFIG_MACH_atmega328p is not set
-# CONFIG_MACH_atmega328 is not set
-# CONFIG_MACH_atmega168 is not set
-# CONFIG_AVR_FREQ_16000000 is not set
-# CONFIG_AVR_FREQ_8000000 is not set
 CONFIG_CLOCK_FREQ=200000000
-# CONFIG_AVR_SERIAL_UART0 is not set
-# CONFIG_AVR_SERIAL_UART1 is not set
-# CONFIG_AVR_SERIAL_UART2 is not set
-# CONFIG_AVR_SERIAL_UART3 is not set
 CONFIG_PRU_SELECT=y
 # CONFIG_CUSTOM_STEP_DELAY is not set
 CONFIG_INITIAL_PINS=""
