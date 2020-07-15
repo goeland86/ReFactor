@@ -63,6 +63,16 @@
     line: "%sudo   ALL=(ALL:ALL) ALL"
     state: absent
 
+- name: Replicape - remove references to avr tooling
+  lineinfile:
+    regex: avr
+    path: "{{ klipper_home }}/scripts/{{ item }}"
+    state: absent
+  with_items:
+    - install-debian.sh
+    - install-octopi.sh
+    - install-ubuntu-18.04.sh
+
 - name: Replicape - install Klipper with the install scripts
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-beaglebone.sh"
   args: 
