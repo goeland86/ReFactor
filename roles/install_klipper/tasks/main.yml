@@ -121,6 +121,7 @@
     dest: /home/debian/printer.cfg
     owner: debian
     group: debian
+    remote_src: yes
   when: platform == 'replicape'
 
 - name: create recore klipper config file
@@ -129,6 +130,7 @@
     dest: /home/debian/printer.cfg
     owner: debian
     group: debian
+    remote_src: yes
   when: platform == 'recore'
 
 
@@ -138,6 +140,7 @@
     dest: /home/debian/.octoprint/config.yaml
     owner: debian
     group: debian
+    remote_src: yes
 
 - name: Replicape - place Klipper-service files in place
   copy:
@@ -145,6 +148,7 @@
     dest: /etc/systemd/system/
     owner: debian
     group: debian
+    remote_src: yes
   with_items:
     - klipper_host_mcu.path
     - octoprint.service
@@ -162,11 +166,9 @@
     dest: /etc/systemd/system/
     owner: debian
     group: debian
+    remote_src: yes
   with_items:
-    - klipper_host_mcu.path
     - octoprint.service
-    - klippy.service
-    - klipper.service
   when: platform == 'recore' or platform == 'pi' or platform == 'pi64'
 
 
