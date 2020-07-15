@@ -142,24 +142,6 @@
     group: debian
     remote_src: yes
 
-- name: Replicape - place Klipper-service files in place
-  copy:
-    src: "{{ role_path }}/files/{{ item }}"
-    dest: /etc/systemd/system/
-    owner: debian
-    group: debian
-    remote_src: yes
-  with_items:
-    - klipper_host_mcu.path
-    - octoprint.service
-    - klippy.service
-    - klipper_host_mcu.path
-    - klipper_host_mcu.service
-    - klipper-pru.path
-    - klipper_pru.service
-    - klipper.service
-  when: platform == 'replicape'
-
 - name: place Klipper-service files in place
   copy:
     src: "{{ role_path }}/files/{{ item }}"
