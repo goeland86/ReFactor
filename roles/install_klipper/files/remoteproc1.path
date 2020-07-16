@@ -2,7 +2,7 @@
 Description=Remoteproc1 availability monitoring
 
 [Path]
-PathExists=/sys/class/remoteproc/remoteproc1/state
+PathExists=/dev/remoteproc/
 Unit=klipper_pru.service
 
 [Install]
