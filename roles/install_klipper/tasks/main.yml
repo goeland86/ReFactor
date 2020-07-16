@@ -8,15 +8,6 @@
     cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
   when: ('"4.14" not in kernel_version.stdout' and platform == 'replicape')
 
-- name: Replicape - clone klipper from the repository
-  git: 
-    repo: https://github.com/BlackStump/klipper
-    version: Replicape-systemd-update
-    dest: '{{ klipper_home }}'
-    update: yes
-    clone: yes
-  when: platform == 'replicape'
-
 - name: Recore - clone klipper from the repository
   git:
     repo: https://github.com/intelligent-agent/klipper
@@ -26,23 +17,14 @@
     clone: yes
   when: platform == 'recore'
 
-- name: pi - clone klipper from the repository
+- name: Replicape/Raspi - clone klipper from the master repository
   git:
-    #repo: https://github.com/intelligent-agent/klipper
-    repo: https://github.com/intelligent-agent/klipper
+    repo: https://github.com/KevinOConnor/klipper
     version: master
     dest: '{{ klipper_home }}'
     update: yes
     clone: yes
-  when: (platform == 'pi' or platform == 'pi64')
-
-- name: Replicape - remove the avrdude dependency in install-debian
-  shell: "cat {{ klipper_home }}/scripts/install-debian.sh | grep -v avr > {{ klipper_home }}/scripts/install-debian-2.sh && mv {{ klipper_home }}/scripts/install-debian-2.sh {{ klipper_home }}/scripts/install-debian.sh"
-  when: platform == 'replicape'
-
-- name: Replicape - remove the avrdude dependency in install-debian-bbb.sh
-  shell: "cat {{ klipper_home }}/scripts/install-debian-bbb.sh | grep -v avr > {{ klipper_home }}/scripts/install-debian-bbb-2.sh && mv {{ klipper_home }}/scripts/install-debian-bbb-2.sh {{ klipper_home }}/scripts/install-debian-bbb.sh && chmod +x {{ klipper_home }}/scripts/install-debian-bbb.sh"
-  when: platform == 'replicape' 
+  when: (platform == 'pi' or platform == 'pi64' or platform == 'replicape')
 
 - name: add debian user to tty group
   user:
@@ -80,6 +62,16 @@
     path: /etc/sudoers
     line: "%sudo   ALL=(ALL:ALL) ALL"
     state: absent
+
+- name: Replicape - remove references to avr tooling
+  lineinfile:
+    regex: avr
+    path: "{{ klipper_home }}/scripts/{{ item }}"
+    state: absent
+  with_items:
+    - install-debian.sh
+    - install-octopi.sh
+    - install-ubuntu-18.04.sh
 
 - name: Replicape - install Klipper with the install scripts
   shell: "export USER=debian; {{ klipper_home }}/scripts/install-beaglebone.sh"
@@ -129,6 +121,7 @@
     dest: /home/debian/printer.cfg
     owner: debian
     group: debian
+    remote_src: yes
   when: platform == 'replicape'
 
 - name: create recore klipper config file
@@ -137,6 +130,7 @@
     dest: /home/debian/printer.cfg
     owner: debian
     group: debian
+    remote_src: yes
   when: platform == 'recore'
 
 
@@ -146,23 +140,7 @@
     dest: /home/debian/.octoprint/config.yaml
     owner: debian
     group: debian
-
-- name: Replicape - place Klipper-service files in place
-  copy:
-    src: "{{ role_path }}/files/{{ item }}"
-    dest: /etc/systemd/system/
-    owner: debian
-    group: debian
-  with_items:
-    - klipper_host_mcu.path
-    - octoprint.service
-    - klippy.service
-    - klipper_host_mcu.path
-    - klipper_host_mcu.service
-    - klipper-pru.path
-    - klipper_pru.service
-    - klipper.service
-  when: platform == 'replicape'
+    remote_src: yes
 
 - name: place Klipper-service files in place
   copy:
@@ -170,12 +148,33 @@
     dest: /etc/systemd/system/
     owner: debian
     group: debian
+    remote_src: yes
   with_items:
-    - klipper_host_mcu.path
     - octoprint.service
-    - klippy.service
-    - klipper.service
   when: platform == 'recore' or platform == 'pi' or platform == 'pi64'
+
+- name: Replicape - move the init.d/klipper_pru file
+  shell: mv /etc/init.d/klipper_pru /etc/systemd/system/klipper_pru
+  when: platform == 'replicape'
+
+- name: Replicape - copy klipper_pru service related files
+  copy:
+    src: "{{ role_path }}/files/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    remote_src: yes
+  with_items:
+    - klipper.service
+    - klipper_pru.service
+    - remoteproc1.path
+  when: platform == 'replicape'
+
+- name: Replicape - enable PRU service on boot
+  systemd:
+    name: remoteproc1.path
+    enabled: yes
+    daemon_reload: yes
+  when: platform == 'replicape'
+
 
 
 - name: Replicape - replace UIO with rproc kernel overlays
