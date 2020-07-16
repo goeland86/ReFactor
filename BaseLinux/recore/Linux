@@ -7,6 +7,6 @@ ANSIBLE_PLATFORM_VARS='{"platform":"recore", "packaging":"apt"}'
 function decompress {
 	mkdir -p ./recore-image
 	7zr e $BASEIMAGE -o./recore-image/
-	mv ./recore-image/Armbian*.img $TARGETIMAGE
+	mv ./recore-image/armbian*.img $TARGETIMAGE
 	rm -r ./recore-image
 }
