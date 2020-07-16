@@ -153,6 +153,29 @@
     - octoprint.service
   when: platform == 'recore' or platform == 'pi' or platform == 'pi64'
 
+- name: Replicape - move the init.d/klipper_pru file
+  shell: mv /etc/init.d/klipper_pru /etc/systemd/system/klipper_pru
+  when: platform == 'replicape'
+
+- name: Replicape - copy klipper_pru service related files
+  copy:
+    src: "{{ role_path }}/files/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    remote_src: yes
+  with_items:
+    - klipper.service
+    - klipper_pru.service
+    - remoteproc1.path
+  when: platform == 'replicape'
+
+- name: Replicape - enable PRU service on boot
+  systemd:
+    name: remoteproc1.path
+    enabled: yes
+    daemon_reload: yes
+  when: platform == 'replicape'
+
+
 
 - name: Replicape - replace UIO with rproc kernel overlays
   shell: 

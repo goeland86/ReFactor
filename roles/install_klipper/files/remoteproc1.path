@@ -1,0 +1,9 @@
+[Unit]
+Description=Remoteproc1 availability monitoring
+
+[Path]
+PathExists=/sys/class/remoteproc/remoteproc1/state
+Unit=klipper_pru.service
+
+[Install]
+WantedBy=multi-user.target
