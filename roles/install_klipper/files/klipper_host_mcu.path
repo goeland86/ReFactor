@@ -1,7 +1,0 @@
-#Systemd path file for klipper_host_mcu.path
-[Unit]
-Description=klipper HOST MCU  PATH
-PartOf=klipper_host_mcu.service
-
-[Path]
-PathExists=/dev/rpmsg_pru30
