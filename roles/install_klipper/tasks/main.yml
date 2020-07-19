@@ -175,7 +175,12 @@
     daemon_reload: yes
   when: platform == 'replicape'
 
-
+- name: Replicape - disable power button causing a shutdown (Z1 endstop)
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    line: HandlePowerKey=ignore
+    insertAfter: #HandlePowerKey
+    state: present
 
 - name: Replicape - replace UIO with rproc kernel overlays
   shell: 
