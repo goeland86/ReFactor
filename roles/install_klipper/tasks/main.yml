@@ -179,7 +179,7 @@
   lineinfile:
     path: /etc/systemd/logind.conf
     line: HandlePowerKey=ignore
-    insertAfter: #HandlePowerKey
+    insertafter: #HandlePowerKey
     state: present
 
 - name: Replicape - replace UIO with rproc kernel overlays
