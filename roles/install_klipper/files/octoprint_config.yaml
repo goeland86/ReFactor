@@ -6,7 +6,7 @@ appearance:
   name: ReFactor
 feature: {}
 folder:
-  uploads: /usr/share/models
+  uploads: /home/debian/.octoprint/uploads
 gcodeViewer: {}
 plugins:
   announcements:
@@ -22,11 +22,6 @@ plugins:
         read_until: 1574985600
       _releases:
         read_until: 1575299700
-  cura:
-    _config_version: null
-    cura_engine: /usr/bin/CuraEngine
-    debug_logging: false
-    default_profile: null
   discovery:
     upnpUuid: 05489750-db4d-4c17-8aa6-e9783bc31ef3
   errortracking:
@@ -105,6 +100,6 @@ terminalFilters:
 - name: Suppress wait responses
   regex: 'Recv: (wait)|(ok)$'
 webcam:
-  ffmpeg: /usr/bin/avconv
+  ffmpeg: /usr/bin/ffmpeg
   snapshot: http://localhost:8080/?action=snapshot
   stream: http://kamikaze.local:8080/?action=stream
