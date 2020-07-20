@@ -2,7 +2,7 @@
 - hosts: localhost
   connection: local
   vars:
-    - version: "ReFactor 1.0.0-beta6"
+    - version: "ReFactor 1.0.0-RC1"
     - firmware: klipper
   roles:
     - install_octoprint

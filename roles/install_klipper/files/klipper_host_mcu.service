@@ -1,0 +1,18 @@
+#Systemd service file for klipper_host_mcu
+[Unit]
+Description=klipper linux host
+Documentation=man:systemd.special(7)
+PartOf=klipper.service
+After=klipper_pru.service
+Requires=klipper_pru.service
+Before=klippy.service
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/klipper_mcu -w
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=klipper.service
