@@ -135,11 +135,23 @@
     name: ssh
     enabled: yes
 
-- name: enable connman
+- name: Replicape - enable connman
   service:
     name: connman
-    enabled: yes
+    enabled: no
   when: platform == 'replicape'
+
+- name: Replicape - remove connman
+  apt:
+    name: connman
+    state: absent
+  when: platform == 'replicape'
+
+- name: Replicape - install NetworkManager
+  apt:
+    name: network-manager
+    state: latest
+ when: platform == 'replicape'    
 
 - name: Recore - include device tree
   copy:
