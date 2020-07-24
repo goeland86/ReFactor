@@ -151,7 +151,7 @@
   apt:
     name: network-manager
     state: latest
- when: platform == 'replicape'    
+  when: platform == 'replicape'    
 
 - name: Recore - include device tree
   copy:
