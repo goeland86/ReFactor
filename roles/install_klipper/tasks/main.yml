@@ -202,7 +202,7 @@
   git:
     repo: https://github.com/th33xitus/kiauh.git
     version: dev-2.0
-    dest: '{{ klipper_home }}/..'
+    dest: '{{ klipper_home }}/../kiauh'
     update: yes
     clone: yes
 
