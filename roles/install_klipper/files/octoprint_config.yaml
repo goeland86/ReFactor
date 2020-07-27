@@ -75,13 +75,15 @@ server:
     corewizard: 3
     tracking: null
 system:
-  actions:
-  - action: restart_toggle
-    command: sudo systemctl restart toggle.service
-    name: Restart Toggle
-  - action: restart mjpg
-    command: sudo systemctl restart mjpg.service
-    name: Restart Mjpg
+    actions:
+    -   action: restart klipper
+        command: sudo systemctl stop klipper && sudo systemctl restart klipper_pru
+            && sudo systemctl start klipper
+        confirm: Are you sure? This will interrupt any ongoing printing.
+        name: Restart Klipper
+    -   action: restart mjpg
+        command: sudo systemctl restart mjpg
+        name: Restart Mjpg
 temperature:
   profiles:
   - bed: 100
