@@ -135,23 +135,29 @@
     name: ssh
     enabled: yes
 
-- name: Replicape - enable connman
-  service:
-    name: connman
-    enabled: no
-  when: platform == 'replicape'
-
-- name: Replicape - remove connman
+- name: remove connman
   apt:
     name: connman
     state: absent
-  when: platform == 'replicape'
 
-- name: Replicape - install NetworkManager
+- name: create resolv.conf
+  file:
+    path: /etc/resolv.conf
+    state: touch
+    mode: 0644
+    owner: root
+    group: root
+
+- name: reset the resolv.conf file
+  lineinfile:
+    path: /etc/resolv.conf
+    line: nameserver 1.1.1.1
+    state: present
+
+- name: install NetworkManager
   apt:
     name: network-manager
     state: latest
-  when: platform == 'replicape'    
 
 - name: Recore - include device tree
   copy:
