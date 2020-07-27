@@ -151,7 +151,6 @@
     dest: /etc/systemd/system/
     owner: debian
     group: debian
-
     remote_src: yes
   with_items:
     - octoprint.service
@@ -198,3 +197,22 @@
     state: present
     path: /boot/uEnv.txt
   when: platform == 'replicape'
+
+- name: Install KIAUH
+  git:
+    repo: https://github.com/th33xitus/kiauh.git
+    version: dev-2.0
+    dest: '{{ klipper_home }}/..'
+    update: yes
+    clone: yes
+
+- name: Replicape - Update KIAUH to call the right install script
+  replace:
+    path: '{{ klipper_home }}/../kiauh/{{ item }}'
+    before: install-octopi.sh
+    after: install-beaglebone.sh    
+  with_items:
+    - update.sh
+    - install_klipper.sh
+  when: platform == 'replicape'
+
