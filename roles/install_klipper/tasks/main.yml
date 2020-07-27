@@ -208,7 +208,7 @@
 
 - name: Replicape - Update KIAUH to call the right install script
   replace:
-    path: '{{ klipper_home }}/../kiauh/{{ item }}'
+    path: '{{ klipper_home }}/../kiauh/scripts/{{ item }}'
     regexp: install-octopi\.sh
     after: install-beaglebone.sh    
   with_items:
