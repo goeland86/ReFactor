@@ -135,6 +135,14 @@
     force: no
   when: platform == 'recore'
 
+- name: determine if config is the default OctoPrint config or not
+  lineinfile:
+    path: /home/debian/.octoprint/config.yaml
+    line: 'firstRun: true'
+    state: present
+  check_mode: yes
+  register: replace_default_octoprint_config
+  failed_when: (conf is changed) or (conf is failed)
 
 - name: place Klipper-friendly config for octoprint in place
   copy:
@@ -144,6 +152,7 @@
     group: debian
     remote_src: yes
     force: no
+  when: replace_default_octoprint_config == 'True'
 
 - name: place Klipper-service files in place
   copy:
