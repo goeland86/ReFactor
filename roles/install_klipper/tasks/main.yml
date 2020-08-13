@@ -142,7 +142,6 @@
     state: present
   check_mode: yes
   register: replace_default_octoprint_config
-  failed_when: (conf is changed) or (conf is failed)
 
 - name: place Klipper-friendly config for octoprint in place
   copy:

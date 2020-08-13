@@ -28,11 +28,10 @@
     table: nat
     chain: PREROUTING
     protocol: tcp
-    match: tcp
     jump: REDIRECT
-    destination_port: 80
-    to_ports: 5000
-    comment: Redirect web traffic on port 80 to octoprint
+    destination_port: '80'
+    to_ports: '5000'
+  when: platform != 'recore'
 
 - name: create home octoprint folder
   file:
