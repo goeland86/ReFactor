@@ -135,6 +135,13 @@
     force: no
   when: platform == 'recore'
 
+- name: determine if config is the default OctoPrint config or not
+  lineinfile:
+    path: /home/debian/.octoprint/config.yaml
+    line: 'firstRun: true'
+    state: present
+  check_mode: yes
+  register: replace_default_octoprint_config
 
 - name: place Klipper-friendly config for octoprint in place
   copy:
@@ -144,6 +151,7 @@
     group: debian
     remote_src: yes
     force: no
+  when: replace_default_octoprint_config == 'True'
 
 - name: place Klipper-service files in place
   copy:
@@ -208,8 +216,8 @@
 
 - name: Replicape - Update KIAUH to call the right install script
   replace:
-    path: '{{ klipper_home }}/../kiauh/{{ item }}'
-    before: install-octopi.sh
+    path: '{{ klipper_home }}/../kiauh/scripts/{{ item }}'
+    regexp: install-octopi\.sh
     after: install-beaglebone.sh    
   with_items:
     - update.sh

@@ -5,11 +5,6 @@ folder:
   uploads: /usr/share/models
 gcodeViewer: {}
 plugins:
-  cura:
-    _config_version: null
-    cura_engine: /usr/bin/CuraEngine
-    debug_logging: false
-    default_profile: null
   softwareupdate:
     _config_version: 4
     checks:
@@ -18,27 +13,22 @@ plugins:
         type: git_commit
         update_script: '{python} "/usr/local/src/redeem/update-redeem.py" --python="{python}" --sudo "{folder}" "{target}"'
         restart: 'echo "Redeem dummy restart"'
-      Toggle:
-        checkout_folder: /usr/src/toggle
-        type: git_commit
-        update_script: '{python} "/usr/src/toggle/update-toggle.py" --python="{python}" "{folder}" "{target}"'
-        restart: 'echo "Toggle dummy restart"'
       octoprint:
         checkout_folder: /home/debian/OctoPrint
         prerelease: false
         type: github_release
       Kamikaze:
-        checkout_folder: /usr/src/Uamikaze
+        checkout_folder: /usr/src/Umikaze
         type: git_commit
         update_script: '/usr/src/Umikaze/update-kamikaze.sh'
         restart: 'echo "Kamikaze dummy restart"'
 printerParameters: {}
 server:
+  firstRun: true
   commands:
     serverRestartCommand: sudo systemctl restart octoprint.service
     systemRestartCommand: sudo reboot
     systemShutdownCommand: sudo shutdown -h now
-system:
 terminalFilters:
   - name: Suppress temperature messages
     regex: '(Send: (N\d+\s+)?M105)|(Recv:\s+(ok\s+)?.*\s(T\d*):\d+)'
