@@ -1,16 +1,30 @@
 ---
-- name: remove nginx / apache
+- name: copy the resolv.conf file
+  shell: cp /etc/resolv.conf /etc/resolv.conf.bak
+
+- name: remove nginx / apache / iptables
   apt:
     name:
       - nginx
       - apache2
+      - iptables
     state: absent
-  when: platform == 'replicape'
 
-- name: verify python2-virtualenv is present
+- name: reinstall resolv.conf
+  shell: mv /etc/resolv.conf.bak /etc/resolv.conf
+
+- name: Install python3.7
+  apt:
+    name:
+      - nftables
+      - python3.7
+      - python3-pip
+    state: present
+
+- name: verify python3-virtualenv is present
   pip:
     name: virtualenv
-    executable: pip
+    executable: pip3
 
 - name: ensure the debian user exists
   user:
@@ -22,16 +36,12 @@
     expires: -1
     home: /home/debian
 
-# iptables -t nat -A PREROUTING -i eth0 -p tcp --dport $srcPortNumber -j REDIRECT --to-port $dstPortNumber
-- name: create IPtables port forward
-  iptables:
-    table: nat
-    chain: PREROUTING
-    protocol: tcp
-    jump: REDIRECT
-    destination_port: '80'
-    to_ports: '5000'
-  when: platform != 'recore'
+# iptables -t nat -A PREROUTING -p tcp --dport $srcPortNumber -j REDIRECT --to-port $dstPortNumber
+
+- name: create iptables port forward
+  copy:
+    src: '{{ role_path }}/files/nftables.conf'
+    dest: '/etc/nftables.conf'
 
 - name: create home octoprint folder
   file:
@@ -50,7 +60,8 @@
     state: directory
   with_items:
     - '{{ octoprint_home }}/..'
-    - /usr/local/lib/python2.7
+    - /usr/local/lib/python3
+    - /usr/local/lib/python3.6
     - /usr/local/bin
 
 - name: Make octoprint config folder
@@ -73,7 +84,7 @@
   pip:
     chdir: '{{ octoprint_home }}'
     virtualenv: '{{ octoprint_home }}/venv'
-    virtualenv_python: python2.7
+    virtualenv_python: python3.7
     state: latest
     name: git+https://github.com/foosel/OctoPrint.git
   become_user: debian
