@@ -46,7 +46,7 @@
 - name: enable nftables
   service:
     name: nftables
-    state: enabled
+    enabled: yes
 
 - name: create home octoprint folder
   file:
