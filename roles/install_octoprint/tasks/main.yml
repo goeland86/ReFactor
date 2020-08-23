@@ -38,10 +38,15 @@
 
 # iptables -t nat -A PREROUTING -p tcp --dport $srcPortNumber -j REDIRECT --to-port $dstPortNumber
 
-- name: create iptables port forward
+- name: create nftables port forward
   copy:
     src: '{{ role_path }}/files/nftables.conf'
     dest: '/etc/nftables.conf'
+
+- name: enable nftables
+  service:
+    name: nftables
+    state: enabled
 
 - name: create home octoprint folder
   file:
