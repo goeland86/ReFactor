@@ -1,7 +1,7 @@
 ---
 - name: clone octoprint klipper plugin
   git:
-    repo: https://github.com/mmone/OctoprintKlipperPlugin/
+    repo: https://github.com/AliceGrey/OctoprintKlipperPlugin/archive/master.zip
     dest: /usr/src/octoprint_klipper
   when: firmware == 'klipper'
 
