@@ -95,11 +95,20 @@
     state: present
     path: '/etc/{{ dogtag }}'
 
-- name: remove hosts entry
+- name: remove hostname
+  file:
+    path: /etc/hostname
+    state: absent
+
+- name: create hostname
+  file:
+    path: /etc/hostname
+    state: touch
+
+- name: set hostname
   lineinfile:
     path: /etc/hostname
-    line: arm
-    state: absent
+    line: '{{ platform }}'
 
 - name: set root password
   shell:
