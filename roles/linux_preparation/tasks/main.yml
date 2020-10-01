@@ -6,6 +6,11 @@
   with_items:
     - /etc/issue.net
     - /etc/issue
+
+- name: Register ReFactor version
+  script: 
+    cmd: '{{ role_path }}/files/set_refactor_version.sh'
+  register: version
     
 - name: upgrade packages
   apt:
@@ -91,7 +96,7 @@
 
 - name: write dogtag
   lineinfile:
-    line: '{{ version }} {{ build_date.stdout }}'
+    line: '{{ version.stdout }} {{ build_date.stdout }}'
     state: present
     path: '/etc/{{ dogtag }}'
 
@@ -131,10 +136,10 @@
     path: '{{ item }}'
     state: present
     block: |
-      "{{ version }}
+      {{ version.stdout }}
 
       Check that nothing is printing before any intensive operation!
-      "
+      
   with_items:
     - /etc/issue.net
     - /etc/issue
