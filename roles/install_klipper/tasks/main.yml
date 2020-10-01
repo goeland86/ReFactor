@@ -40,9 +40,13 @@
 
 - name: Install libgpiod-dev
   apt:
-    name: libgpiod-dev
+    name: 
+      - libgpiod-dev
+      - libgpiod
+      - gpiod
     state: present
   when: platform != 'replicape'
+
 
 - name: adjust ownership of klipper source
   file:
@@ -155,14 +159,19 @@
 
 - name: place Klipper-service files in place
   copy:
-    src: "{{ role_path }}/files/{{ item }}"
+    src: "{{ role_path }}/files/octoprint.service"
     dest: /etc/systemd/system/
     owner: debian
     group: debian
-    remote_src: yes
-  with_items:
-    - octoprint.service
   when: platform == 'recore' or platform == 'pi' or platform == 'pi64'
+
+- name: place Klipper-service files in place
+  copy:
+    src: "{{ role_path }}/files/octoprint-replicape.service"
+    dest: /etc/systemd/system/
+    owner: debian
+    group: debian
+  when: platform == 'replicape'
 
 - name: Replicape - move the init.d/klipper_pru file
   shell: mv /etc/init.d/klipper_pru /etc/systemd/system/klipper_pru
