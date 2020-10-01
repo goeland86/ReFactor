@@ -9,7 +9,7 @@
 
 - name: Register ReFactor version
   script: 
-    cmd: '{{ role_path }}/files/set_refactor_version.sh'
+    cmd: '{{ role_path }}/files/get_refactor_version.sh'
   register: version
     
 - name: upgrade packages
