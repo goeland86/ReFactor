@@ -42,7 +42,6 @@
   apt:
     name: 
       - libgpiod-dev
-      - libgpiod
       - gpiod
     state: present
   when: platform != 'replicape'
