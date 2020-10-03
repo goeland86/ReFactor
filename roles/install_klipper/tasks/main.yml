@@ -166,7 +166,7 @@
 
 - name: place Klipper-service files in place
   copy:
-    src: "{{ role_path }}/files/octoprint-replicape.service"
+    src: "{{ role_path }}/files/octoprint_replicape.service"
     dest: /etc/systemd/system/
     owner: debian
     group: debian
