@@ -21,6 +21,7 @@
 
 - name: compile mjpg-streamer
   shell: make && make install
+  args:
     chdir: /usr/src/mjpg-streamer
     creates: /usr/bin/mjpg_streamer
 
