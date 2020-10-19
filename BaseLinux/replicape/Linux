@@ -1,5 +1,5 @@
 # This specifies the base Ubuntu system
-BASEIMAGE_DATE="2020-08-12"
+BASEIMAGE_DATE="2020-09-21"
 BASEIMAGE_UBUNTU_VERSION="10.5"
 
 	     #https://rcn-ee.com/rootfs/bb.org/testing/2020-08-12/buster-console/bone-debian-10.5-console-armhf-2020-08-12-1gb.img.xz
