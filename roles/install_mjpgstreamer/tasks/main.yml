@@ -22,7 +22,7 @@
 - name: compile mjpg-streamer
   shell: make && make install
   args:
-    chdir: /usr/src/mjpg-streamer
+    chdir: /usr/src/mjpg-streamer/mjpg-streamer-experimental/
     creates: /usr/bin/mjpg_streamer
 
 - name: add video udev rule file
