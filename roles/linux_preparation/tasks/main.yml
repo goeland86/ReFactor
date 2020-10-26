@@ -119,7 +119,11 @@
   shell:
     cmd: "echo 'root:kamikaze' | chpasswd"
 
-- name: force user to change password on first login
+- name: force user to change debian password on first login
+  shell:
+    cmd: "chage -d 0 debian"
+
+- name: force user to change root password on first login
   shell:
     cmd: "chage -d 0 root"
 

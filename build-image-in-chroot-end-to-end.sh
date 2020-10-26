@@ -61,7 +61,10 @@ w
 
 EOF
 
-e2fsck -f -p ${DEVICE}p1
+clean=$(e2fsck -f -p ${DEVICE}p1)
+if [ $clean != '0' ]; then
+	echo "had to clear out something on the FS..."
+fi
 resize2fs ${DEVICE}p1
 
 mount ${DEVICE}p1 ${MOUNTPOINT}
