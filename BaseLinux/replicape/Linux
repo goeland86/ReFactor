@@ -7,7 +7,6 @@ BASEIMAGE_URL=https://rcn-ee.com/rootfs/bb.org/testing/${BASEIMAGE_DATE}/buster-
 BASEIMAGE=`basename ${BASEIMAGE_URL}`
 
 
-
 ANSIBLE_PLATFORM_VARS='{"platform":"replicape", "packaging":"apt"}'
 
 function decompress {
