@@ -177,6 +177,7 @@
     name: network-manager
     state: latest
 
+
 - name: Recore - fetch dts device tree
   when: platform == 'recore'
   get_url:
