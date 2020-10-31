@@ -16,7 +16,7 @@
 - name: Install python3.7
   apt:
     name:
-      - nftables
+      - iptables
       - python3.7
       - python3-pip
     state: present
@@ -38,15 +38,9 @@
 
 # iptables -t nat -A PREROUTING -p tcp --dport $srcPortNumber -j REDIRECT --to-port $dstPortNumber
 
-- name: create nftables port forward
-  copy:
-    src: '{{ role_path }}/files/nftables.conf'
-    dest: '/etc/nftables.conf'
-
-- name: enable nftables
-  service:
-    name: nftables
-    enabled: yes
+- name: create iptables port forward with iptables-legacy
+  shell:
+    cmd: iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 5000
 
 - name: create home octoprint folder
   file:
@@ -156,10 +150,13 @@
     name: octoprint
     enabled: yes
 
-- name: allow debian user access to Umikaze repo folder
+- name: allow debian user access to relevant folders
   file:
-    path: /usr/src/Umikaze
+    path: "{{ item }}"
     owner: debian
     group: debian
     state: directory
     recurse: yes
+  with_items:
+    - /usr/src/Umikaze
+    - /home/debian
