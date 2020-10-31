@@ -31,6 +31,14 @@ The script then exports the `platform` ansible variable, and sources the `BaseLi
 
 **IMPORTANT NOTE**: Only the `SYSTEM-[...].yml` playbook files can work with the `build-image-in-chroot-end-to-end.sh` script. The `INSTALL-[...].yml` playbooks are provided as means for end-users to customize their running images. It is inadvisable to run a `SYSTEM-[...].yml` playbook on an already running system. And especially not during a print. That would cause a division by zero and make the printer disappear into its own micro black hole. Or release the magic smoke. Either way, not a good thing. You have been warned.
 
+# Contributing
+
+Any contribution you make should be in the form of a PR aimed at the `dev` branch of `intelligent-agent/Umikaze`. The `dev` branch will lead to the generation of a beta or release-candidate image for the community to test, and can be delayed for merge to `master` in case multiple changes arrive in a similar time frame, to release a new image with all new features combined.
+
+If you are trying to fix a bug, please prefix the `PR` with `[bug]`, and mention the Github Issue # in the PR description.
+
+In case you need help building an image to test your changes and do not have a build environment available, please submit your PR against `goeland86/ReFactor`, with a title prefixed with `[Dev]` to clearly identify that the features are still under active development.
+
 # Previous image versions
 
 Umikaze 2.1.1 was built on Ubuntu 18.04.1 (LTS) and incorporated OctoPrint, Redeem and Toggle.

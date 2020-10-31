@@ -194,5 +194,8 @@
 - name: cleanup
   when: platform == 'recore'
   file:
-    path: /boot/dtb/allwinner/sun50i-a64-recore-A3.dtb
+    path: "/boot/dtb/allwinner/sun50i-a64-recore-A3.{{ item }}"
     state: absent
+  with_items:
+    - dtb
+    - dts
