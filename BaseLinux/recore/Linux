@@ -1,9 +1,20 @@
 # This specifies the base Ubuntu system
 BASEIMAGE_URL=https://redirect.armbian.com/pine64/Buster_current
+<<<<<<< HEAD
 BASEIMAGE=armbian_pine64_current_$(date --iso-8601).img.xz
+=======
+BASEIMAGE=armbian_pine64_current_$(date --iso-8601).7z
+>>>>>>> 2ff1e2652dab89ea5db96b5d46a540fae07d6dd5
 
 ANSIBLE_PLATFORM_VARS='{"platform":"recore", "packaging":"apt"}'
 
 function decompress {
+<<<<<<< HEAD
 	xz -c -d $BASEIMAGE >> $TARGETIMAGE
+=======
+	mkdir -p ./recore-image
+	7zr e $BASEIMAGE -o./recore-image/
+	mv ./recore-image/armbian* $TARGETIMAGE
+	rm -r ./recore-image
+>>>>>>> 2ff1e2652dab89ea5db96b5d46a540fae07d6dd5
 }
