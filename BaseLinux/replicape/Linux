@@ -2,7 +2,7 @@
 BASEIMAGE_DATE="2020-09-21"
 BASEIMAGE_UBUNTU_VERSION="10.5"
 
-	     #https://rcn-ee.com/rootfs/bb.org/testing/2020-08-12/buster-console/bone-debian-10.5-console-armhf-2020-08-12-1gb.img.xz
+             #https://rcn-ee.com/rootfs/bb.org/testing/2020-08-12/buster-console/bone-debian-10.5-console-armhf-2020-08-12-1gb.img.xz
 BASEIMAGE_URL=https://rcn-ee.com/rootfs/bb.org/testing/${BASEIMAGE_DATE}/buster-console/bone-debian-${BASEIMAGE_UBUNTU_VERSION}-console-armhf-${BASEIMAGE_DATE}-1gb.img.xz
 BASEIMAGE=`basename ${BASEIMAGE_URL}`
 

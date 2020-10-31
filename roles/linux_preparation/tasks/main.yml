@@ -119,7 +119,11 @@
   shell:
     cmd: "echo 'root:kamikaze' | chpasswd"
 
-- name: force user to change password on first login
+- name: force user to change debian password on first login
+  shell:
+    cmd: "chage -d 0 debian"
+
+- name: force user to change root password on first login
   shell:
     cmd: "chage -d 0 root"
 
@@ -173,11 +177,26 @@
     name: network-manager
     state: latest
 
-- name: Recore - include device tree
-  copy:
-    src: '{{ role_path }}/files/{{ item }}'
-    dest: '/boot/dtb/allwinner/{{ item }}'
-  with_items:
-   - sun50i-a64-recore.dtb
-   - sun50i-a64-recore.dts
+
+- name: Recore - fetch dts device tree
   when: platform == 'recore'
+  get_url:
+    url: "https://github.com/intelligent-agent/Recore/raw/master/Device_tree/{{ item }}"
+    dest: "/boot/dtb/allwinner/{{ item }}"
+  with_items:
+    - sun50i-a64-recore-A3.dtb
+
+- name: Recore - rename dts device tree file
+  copy:
+    src: /boot/dtb/allwinner/sun50i-a64-recore-A3.dtb
+    dest: /boot/dtb/allwinner/sun50i-a64-recore.dtb
+  when: platform == 'recore'
+
+- name: cleanup
+  when: platform == 'recore'
+  file:
+    path: "/boot/dtb/allwinner/sun50i-a64-recore-A3.{{ item }}"
+    state: absent
+  with_items:
+    - dtb
+    - dts
