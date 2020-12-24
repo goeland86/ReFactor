@@ -1,0 +1,157 @@
+---
+- name: Replicape - get installed kernel version
+  shell: ls /lib/modules
+  register: kernel_version
+
+- name: Replicape - set kernel version to 4.14
+  shell:
+    cmd: 'FORCEMACHINE=TI_AM335x_BeagleBoneBlack /opt/scripts/tools/update_kernel.sh --lts-4_14 --ti-kernel'
+  when: ('"4.14" not in kernel_version.stdout')
+
+- name: Replicape - clone klipper from the master repository
+  git:
+    repo: https://github.com/KevinOConnor/klipper
+    version: master
+    dest: '{{ klipper_home }}'
+    update: yes
+    clone: yes
+
+- name: Replicape - add debian user to tty group
+  user:
+    name: debian
+    groups: tty
+    append: yes
+
+- name: Replicape - install pru gcc
+  apt:
+    name: gcc-pru
+    state: latest
+
+- name: Replicape - adjust ownership of klipper source
+  file:
+    path: "{{ klipper_home }}"
+    owner: debian
+    group: debian
+    recurse: yes
+
+- name: Replicape - give debian user the klipper service permissions
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "debian ALL=NOPASSWD: ALL"
+
+- name: Replicape - remove sudoers group authorization
+  lineinfile:
+    path: /etc/sudoers
+    line: "%sudo   ALL=(ALL:ALL) ALL"
+    state: absent
+
+- name: Replicape - remove references to avr tooling
+  lineinfile:
+    regex: avr
+    path: "{{ klipper_home }}/scripts/{{ item }}"
+    state: absent
+  with_items:
+    - install-debian.sh
+    - install-octopi.sh
+    - install-ubuntu-18.04.sh
+
+- name: Replicape - install Klipper with the install scripts
+  shell: "export USER=debian; {{ klipper_home }}/scripts/install-beaglebone.sh"
+  args:
+    chdir: "{{ klipper_home }}"
+  become: true
+  become_user: debian
+
+- name: Replicape - compile binary blobs for klippy
+  shell:
+    cmd: "cd {{ klipper_home }} ; cp {{ item }} .config ; make flash"
+  with_items:
+    - "{{ role_path }}/files/pru_config"
+    - "{{ role_path }}/files/replicape_linux_config"
+
+- name: Replicape - create klipper config file
+  copy:
+    src: "{{ klipper_home }}/config/generic-replicape.cfg"
+    dest: /home/debian/printer.cfg
+    owner: debian
+    group: debian
+    remote_src: yes
+    force: no
+
+- name: Replicape - determine if config is the default OctoPrint config or not
+  lineinfile:
+    path: /home/debian/.octoprint/config.yaml
+    line: 'firstRun: true'
+    state: present
+  check_mode: yes
+  register: replace_default_octoprint_config
+
+- name: Replicape - place Klipper-friendly config for octoprint in place
+  copy:
+    src: "{{ role_path }}/files/octoprint_config.yaml"
+    dest: /home/debian/.octoprint/config.yaml
+    owner: debian
+    group: debian
+    remote_src: yes
+    force: no
+
+- name: Replicape - place Klipper-service files in place
+  copy:
+    src: "{{ role_path }}/files/octoprint_replicape.service"
+    dest: /etc/systemd/system/
+    owner: debian
+    group: debian
+
+- name: Replicape - move the init.d/klipper_pru file
+  shell: mv /etc/init.d/klipper_pru /etc/systemd/system/klipper_pru
+
+- name: Replicape - copy klipper_pru service related files
+  copy:
+    src: "{{ role_path }}/files/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    remote_src: yes
+  with_items:
+    - klipper.service
+    - klipper_pru.service
+    - remoteproc1.path
+
+- name: Replicape - enable PRU service on boot
+  systemd:
+    name: remoteproc1.path
+    enabled: yes
+    daemon_reload: yes
+
+- name: Replicape - disable power button causing a shutdown (Z1 endstop)
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    line: HandlePowerKey=ignore
+    insertafter: #HandlePowerKey
+    state: present
+
+- name: Replicape - replace UIO with rproc kernel overlays
+  shell:
+    cmd: "sed -i 's\\#uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-19-TI-00A0.dtbo\\' /boot/uEnv.txt"
+
+- name: Replicape - enable rproc overlay
+  lineinfile:
+    line: uboot_overlay_pru=/lib/firmware/AM335X-PRU-RPROC-4-14-TI-00A0.dtbo
+    insertbefore: enable_uboot_cape_universal=1
+    state: present
+    path: /boot/uEnv.txt
+
+- name: Replicape - Install KIAUH
+  git:
+    repo: https://github.com/th33xitus/kiauh.git
+    dest: '{{ klipper_home }}/../kiauh'
+    update: yes
+    clone: yes
+
+- name: Replicape - Update KIAUH to call the right install script
+  replace:
+    path: '{{ klipper_home }}/../kiauh/scripts/{{ item }}'
+    regexp: install-octopi\.sh
+    after: install-beaglebone.sh
+  with_items:
+    - update.sh
+    - install_klipper.sh

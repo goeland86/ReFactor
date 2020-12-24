@@ -1,0 +1,79 @@
+---
+- name: Pi - clone klipper from the master repository
+  git:
+    repo: https://github.com/KevinOConnor/klipper
+    version: master
+    dest: '{{ klipper_home }}'
+    update: yes
+    clone: yes
+
+- name: Pi - add debian user to tty group
+  user:
+    name: debian
+    groups: tty
+    append: yes
+
+- name: Pi - Install libgpiod-dev
+  apt:
+    name:
+      - libgpiod-dev
+      - gpiod
+    state: present
+
+- name: Pi - adjust ownership of klipper source
+  file:
+    path: "{{ klipper_home }}"
+    owner: debian
+    group: debian
+    recurse: yes
+
+- name: Pi - give debian user the klipper service permissions
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "debian ALL=NOPASSWD: ALL"
+
+- name: Pi - remove sudoers group authorization
+  lineinfile:
+    path: /etc/sudoers
+    line: "%sudo   ALL=(ALL:ALL) ALL"
+    state: absent
+
+- name: Pi - install Klipper with install scripts
+  shell: "export USER=debian; {{ klipper_home }}/scripts/install-octopi.sh"
+  args:
+    chdir: "{{ klipper_home }}"
+  become: true
+  become_user: debian
+
+- name: Pi - determine if config is the default OctoPrint config or not
+  lineinfile:
+    path: /home/debian/.octoprint/config.yaml
+    line: 'firstRun: true'
+    state: present
+  check_mode: yes
+  register: replace_default_octoprint_config
+
+- name: Pi - place Klipper-friendly config for octoprint in place
+  copy:
+    src: "{{ role_path }}/files/octoprint_config.yaml"
+    dest: /home/debian/.octoprint/config.yaml
+    owner: debian
+    group: debian
+    remote_src: yes
+    force: no
+  when: replace_default_octoprint_config == 'True'
+
+- name: Pi - place Klipper-service files in place
+  copy:
+    src: "{{ role_path }}/files/octoprint.service"
+    dest: /etc/systemd/system/
+    owner: debian
+    group: debian
+
+- name: Pi - Install KIAUH
+  git:
+    repo: https://github.com/th33xitus/kiauh.git
+    dest: '{{ klipper_home }}/../kiauh'
+    update: yes
+    clone: yes

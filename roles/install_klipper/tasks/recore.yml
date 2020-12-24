@@ -1,0 +1,125 @@
+---
+- name: Recore - clone klipper from the repository
+  git:
+    repo: https://github.com/intelligent-agent/klipper
+    version: master
+    dest: '{{ klipper_home }}'
+    update: yes
+    clone: yes
+
+- name: Recore - add debian user to tty group
+  user:
+    append: yes
+    groups: tty
+    name: debian
+
+- name: Recore - Install libgpiod-dev
+  apt:
+    name:
+      - libgpiod-dev
+      - gpiod
+    state: present
+
+- name: Recore - adjust ownership of klipper source
+  file:
+    path: "{{ klipper_home }}"
+    owner: debian
+    group: debian
+    recurse: yes
+
+- name: Recore - give debian user the klipper service permissions
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "debian ALL=NOPASSWD: ALL"
+
+- name: Recore - remove sudoers group authorization
+  lineinfile:
+    path: /etc/sudoers
+    line: "%sudo   ALL=(ALL:ALL) ALL"
+    state: absent
+
+- name: Recore - install build packages
+  apt:
+    name:
+      - build-essential
+      - python-libxml2
+      - python-cffi
+      - libc6-dev
+      - python-dev
+
+- name: Recore - install Klipper with install scripts
+  shell: "export USER=debian; {{ klipper_home }}/scripts/install-recore-a3.sh"
+  args:
+    chdir: "{{ klipper_home }}"
+  become: true
+  become_user: debian
+  when: platform == 'recore'
+
+- name: Recore - Make out folder
+  file:
+    path: /home/debian/klipper/out/
+    state: directory
+    mode: '0755'
+    owner: debian
+    group: debian
+  when: platform == 'recore'
+
+- name: Recore - Install ar100 binary
+  copy:
+    src: "{{ role_path }}/files/ar100.bin"
+    dest: /home/debian/klipper/out/ar100.bin
+    owner: debian
+    group: debian
+  when: platform == 'recore'
+
+- name: Recore - create recore klipper config file
+  copy:
+    src: "{{ klipper_home }}/config/generic-recore.cfg"
+    dest: /home/debian/printer.cfg
+    owner: debian
+    group: debian
+    remote_src: yes
+    force: no
+  when: platform == 'recore'
+
+- name: Recore - determine if config is the default OctoPrint config or not
+  lineinfile:
+    path: /home/debian/.octoprint/config.yaml
+    line: 'firstRun: true'
+    state: present
+  check_mode: yes
+  register: replace_default_octoprint_config
+
+- name: Recore - place Klipper-friendly config for octoprint in place
+  copy:
+    src: "{{ role_path }}/files/octoprint_config.yaml"
+    dest: /home/debian/.octoprint/config.yaml
+    owner: debian
+    group: debian
+    remote_src: yes
+    force: no
+  when: replace_default_octoprint_config == 'True'
+
+- name: Recore - place Klipper-service files in place
+  copy:
+    src: "{{ role_path }}/files/octoprint.service"
+    dest: /etc/systemd/system/
+    owner: debian
+    group: debian
+
+- name: Recore - Install KIAUH
+  git:
+    repo: https://github.com/th33xitus/kiauh.git
+    dest: '{{ klipper_home }}/../kiauh'
+    update: yes
+    clone: yes
+
+- name: Recore - Update KIAUH to call the right install script
+  replace:
+    path: '{{ klipper_home }}/../kiauh/scripts/{{ item }}'
+    regexp: install-octopi\.sh
+    after: install-recore-a3.sh
+  with_items:
+    - update.sh
+    - install_klipper.sh
