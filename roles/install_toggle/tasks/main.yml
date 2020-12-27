@@ -1,132 +1,16 @@
 ---
-- name: install dependencies
-  apt:
-    pkg:
-      - gir1.2-clutter-1.0=1.26.0+dfsg-10.1
-      - gir1.2-cogl-1.0=1.22.2-2.1
-      - gir1.2-coglpango-1.0=1.22.2-2.1
-      - gir1.2-mash-0.3-0=0.3.0-1
-      - gir1.2-mx-2.0=1.99.4-1.1
-      - libcairo2-dev
-      - libclutter-1.0-0=1.26.0+dfsg-10.1
-      - libclutter-1.0-common=1.26.0+dfsg-10.1 
-      - libclutter-imcontext-0.1-0=0.1.4-3.1
-      - libclutter-imcontext-0.1-bin=0.1.4-3.1
-      - libcluttergesture-0.0.2-0=0.0.2.1-7.2
-      - libcogl-common=1.22.2-2.1
-      - libcogl-pango20=1.22.2-2.1
-      - libcogl-path20=1.22.2-2.1
-      - libcogl20=1.22.2-2.1
-      - libmash-0.3-0=0.3.0-1
-      - libmx-2.0-0=1.99.4-1.1
-      - libmx-bin=1.99.4-1.1
-      - libmx-common=1.99.4-1.1
-      - python3-networkmanager
-      - python3-cairo
-      - python3-gi-cairo
-      - python3-tornado
-      - python3-pip
-      - python3-venv
-      - python3-dbus
-      - libdbus-1-dev
-      - libglib2.0-dev
-    state: present
-    force: yes
+- name: Replicape - Install Toggle
+  include: replicape.yml
+  when: platform == 'replicape'
 
-- name: clone toggle from git
-  git:
-    repo: https://github.com/intelligent-agent/toggle
-    dest: '{{ toggle_home }}/src/toggle'
-    version: dev
-    depth: 1
+- name: Recore - Install Toggle
+  include: recore.yml
+  when: platform == 'recore'
 
-- name: copy toggle service file
-  copy:
-    src: '{{ role_path }}/files/toggle.service'
-    dest: /lib/systemd/system/toggle.service
+- name: Pi - Install Toggle
+  include pi.yml
+  when: platform == 'pi'
 
-- name: grant sudo to octo user for restarting toggle service
-  lineinfile:
-    path: /etc/sudoers.d/octo
-    line: '%octo ALL=NOPASSWD: /bin/systemctl restart toggle.service'
-    state: present
-
-- name: install pip3 dependencies
-  pip:
-    virtualenv: '{{ toggle_home }}'
-    virtualenv_python: python3.6
-    requirements: '{{ toggle_home }}/src/toggle/requirements.txt'
-
-- name: install pip3 dependencies
-  pip:
-    virtualenv: '{{ toggle_home }}'
-    virtualenv_python: python3.6
-    name:
-     - gobject 
-     - PyGObject
-
-- name: clone pyconnman
-  git:
-    repo: https://github.com/liamw9534/pyconnman
-    dest: '{{ toggle_home }}/src/pyconnman'
-    depth: 1
-
-- name: install pyconnman in venv
-  shell:
-    cmd: 'cd {{ toggle_home }}/src/pyconnman ; ../../bin/python setup.py clean install'
-
-- name: install toggle in venv
-  shell:
-    cmd: 'cd {{ toggle_home }}/src/toggle ; {{ toggle_home }}/bin/pip install -e . -r requirements.txt ; {{ toggle_home }}/bin/python setup.py clean install'
-
-- name: make config directory
-  file:
-    path: /etc/toggle
-    state: directory
-    owner: octo
-    group: octo
-
-- name: copy toggle configs
-  copy:
-    src: '{{ toggle_home }}/src/toggle/configs/'
-    dest: /etc/toggle
-    owner: octo
-    group: octo
-
-- name: touch the local.cfg file
-  file:
-    path: /etc/toggle/local.cfg
-    state: touch
-    owner: octo
-    group: octo
-
-- name: enable the toggle service
-  service:
-    name: toggle
-    enabled: yes
-
-- name: clone octoprint toggle plugin from git
-  git:
-    repo: https://github.com/intelligent-agent/octoprint_toggle
-    dest: /usr/src/octoprint_toggle
-
-- name: install octoprint toggle plugin in virtualenv
-  shell:
-    cmd: 'cd /usr/src/octoprint_toggle; {{ octoprint_home }}/venv/bin/python setup.py clean install'
-
-- name: install sudoers entry for toggle restart
-  lineinfile:
-    path: /etc/sudoers.d/octo
-    line: '%octo ALL=NOPASSWD: /usr/bin/make -C /usr/src/toggle install'
-    state: present
-
-- name: setup FB rotation in uEnv
-  replace:
-    regexp: "(cmdline=.*)"
-    replace: "\\1 fbcon=rotate:1"
-    path: /boot/uEnv.txt
-
-- name: enable toggle service
-  service:
-    name: toggle
-    enabled: yes
+- name: Pi64
+  include: pi.yml
+  when: platform == 'pi64'
