@@ -1,4 +1,11 @@
 ---
+- name: Add the Toggle build repo for apt packages
+  apt_repository:
+    repo: deb [arch=arm64] http://feeds.iagent.no/ubuntu xenial main
+    state: present
+    filename: thingprinter
+
+
 - name: Replicape - Install Toggle
   include: replicape.yml
   when: platform == 'replicape'
