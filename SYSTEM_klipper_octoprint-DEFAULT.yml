@@ -8,4 +8,6 @@
     - install_klipper
     - install_octoprint_klipper_plugins
     - install_mjpgstreamer
+    - install_weston
+    - install_toggle
     - linux_preparation

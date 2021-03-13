@@ -1,0 +1,14 @@
+[Unit]
+Description=3D-printer user interface
+After=weston.service
+StartLimitIntervalSec=5
+StartLimitBurst=3
+
+[Service]
+Environment="XDG_RUNTIME_DIR=/run/user/0"
+Environment=MX_RC_FILE=/etc/toggle/styles/Plain/style.css
+ExecStart=/usr/local/bin/toggle
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

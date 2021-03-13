@@ -6,6 +6,7 @@
     dest: '{{ klipper_home }}'
     update: yes
     clone: yes
+    depth: 1
 
 - name: Recore - add debian user to tty group
   user:
@@ -54,7 +55,6 @@
     chdir: "{{ klipper_home }}"
   become: true
   become_user: debian
-  when: platform == 'recore'
 
 - name: Recore - Make out folder
   file:
@@ -63,7 +63,6 @@
     mode: '0755'
     owner: debian
     group: debian
-  when: platform == 'recore'
 
 - name: Recore - Install ar100 binary
   copy:
@@ -71,7 +70,6 @@
     dest: /home/debian/klipper/out/ar100.bin
     owner: debian
     group: debian
-  when: platform == 'recore'
 
 - name: Recore - create recore klipper config file
   copy:
@@ -81,7 +79,6 @@
     group: debian
     remote_src: yes
     force: no
-  when: platform == 'recore'
 
 - name: Recore - determine if config is the default OctoPrint config or not
   lineinfile:

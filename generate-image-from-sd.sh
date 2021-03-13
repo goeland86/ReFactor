@@ -117,7 +117,7 @@ echo
 # Run one last defrag and zero of the free space before backing it up
 echo "Final defrag and zeroing partition free space."
 mount $PARTITION ${MOUNTPOINT}
-ImageVersion=$(cat ${MOUNTPOINT}/etc/refactor.version | awk -F' ' '{printf $1}')
+ImageVersion=$(cat ${MOUNTPOINT}/etc/refactor.version | sed 's/ /-/g' | awk -F' ' '{printf $1}')
 e4defrag -c ${MOUNTPOINT} > /dev/null
 # ignore the failure on this line - it runs until it's out of space
 dd if=/dev/zero of=${MOUNTPOINT}/zero_fill || true
@@ -136,9 +136,11 @@ echo "Generating image file now."
 blocksize=$(fdisk -l $DEVICE | grep Units: | awk '{printf $8}')
 count=$(fdisk -l -o Device,End $DEVICE | grep $PARTITION | awk '{printf $2}')
 ddcount=$((count*blocksize/1000000+1))
-dd if=$DEVICE bs=1MB count=${ddcount} | xz -T 0 > Refactor-${TARGET_PLATFORM}-"${ImageVersion}".img.xz
-echo
+dd if=$DEVICE bs=1MB count=${ddcount} | xz -vc -0 -T 0 > Refactor-${TARGET_PLATFORM}-"${ImageVersion}".img.xz
+ln -s -f Refactor-${TARGET_PLATFORM}-"${ImageVersion}".img.xz Refactor-${TARGET_PLATFORM}-current.img.xz
 
 # Talkie talkie
+echo "***************************************************************************************"
 echo "Image file generated on USB drive as Refactor-${TARGET_PLATFORM}-${ImageVersion}.img.xz"
 echo "USB drive and MicroSD card can be removed safely now."
+echo "***************************************************************************************"
